@@ -49,6 +49,9 @@ public class Record
 	public void setBiopsyFindings(String biopsyFindings)
 	{}
 
+	public void setDateReceived(Date dateReceived)
+	{}
+	
 	public void setDateCompleted(Date dateCompleted)
 	{}
 
