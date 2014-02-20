@@ -1,40 +1,76 @@
+import java.util.Date;
+
 public class Record
 {
-	public Record(Patient patient, String referenceNumber, String specimen, String physician, String pathologist, Date dateReceived, int recordType)
+	private Patient patient;
+	private String referenceNumber;
+	private String specimen;
+	private String physician;
+	private String pathologist;
+	private Date dateReceived;
+	private Date dateCompleted;
+	private int recordType;
+	private String diagnosis;
+	private String comments;
+	
+	public Record(Patient patient, String referenceNumber, String specimen, String physician, String pathologist, 
+	Date dateReceived, Date dateCompleted, String diagnosis, String comments, int recordType)
 	{
-
+		this.patient = patient;
+		this.referenceNumber = referenceNumber;
+		this.specimen = specimen;
+		this.physician = physician;
+		this.pathologist = pathologist;
+		this.dateReceived = dateReceived;
+		this.dateCompleted = dateCompleted;
+		this.recordType = recordType;
 	}
 
 	//Getters
-	public String getPatient()
-	{}
+	public Patient getPatient()
+	{
+		return patient;
+	}
 
 	public String getReferenceNumber()
-	{}
+	{
+		return referenceNumber;
+	}
 
 	public String getSpecimen()
-	{}
+	{
+		return specimen;
+	}
 
 	public String getPhysician()
-	{}
+	{
+		return physician;
+	}
 
 	public String getPathologist()
-	{}
+	{
+		return pathologist;
+	}
 
-	public String getBiopsy()
-	{}
+	public String getDiagnosis()
+	{
+		return diagnosis;
+	}
 
 	public Date getDateReceived()
-	{}
+	{
+		return dateReceived;
+	}
 
 	public Date getDateCompleted()
-	{}
+	{
+		return dateCompleted;
+	}
 
 	public String getRemarks()
-	{}
-
-	public Date getLastDateModified()
-	{}
+	{
+		return comments;
+	}
 
 	//Setters
 	public void setSpecimen(String specimen)
@@ -56,8 +92,5 @@ public class Record
 	{}
 
 	public void setRenarks(String remarks)
-	{}
-
-	public void setLastDateModified(Date lastDateModified)
 	{}
 }
