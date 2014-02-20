@@ -6,9 +6,9 @@ import java.awt.event.ActionListener;
 
 public class CustomListener implements ActionListener 
 {
-	private Driver driver;
+	private ProjectDriver driver;
 	
-	public CustomListener(Driver driver) 
+	public CustomListener(ProjectDriver driver) 
 	{
 		this.driver = driver;
 	}

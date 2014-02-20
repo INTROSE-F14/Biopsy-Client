@@ -5,10 +5,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 
-public class Driver 
+public class ProjectDriver 
 {
 	private static LoginWindow loginForm;
-	private static final CustomListener listener =  new CustomListener(new Driver());
+	private static final CustomListener listener =  new CustomListener(new ProjectDriver());
 	private MainMenu mainWindow;
 	
 	public static void main(String[] args) 
