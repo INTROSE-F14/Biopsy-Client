@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
@@ -29,6 +32,7 @@ public class LoginWindow
 	{
 		mainFrame = new JFrame("Client Module");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		JPanel panel = new JPanel(new GridBagLayout());
 		panel.setBorder(new EmptyBorder(10,10,10,10));
 		actionButton = new JButton("Login");

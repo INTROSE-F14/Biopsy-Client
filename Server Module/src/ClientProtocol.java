@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Date;
 
 
 public class ClientProtocol implements Runnable{
@@ -12,9 +13,11 @@ public class ClientProtocol implements Runnable{
 	private BufferedReader in;
 	private PrintWriter out;
 	private Socket hostSocket;
+	private Server server;
 	
-	public ClientProtocol(Socket clientSocket) 
+	public ClientProtocol(Socket clientSocket, Server server) 
 	{
+		this.server = server;
 		this.hostSocket = clientSocket;
 		try
 		{
@@ -40,8 +43,19 @@ public class ClientProtocol implements Runnable{
 						out.close();
 						hostSocket.close();
 					}
-					else
+					else if(fromHost.equals("NEW_UPDATE"))
 					{
+						fromHost = in.readLine();
+						Date date = new Date(Long.parseLong(fromHost));
+						server.setLastUpdate(date);
+					}
+					else if(fromHost.equals("CHECK_UPDATE"))
+					{
+						out.println(server.getLastUpdate().getTime());
+					}
+					else if(fromHost.equals("LOGIN"))
+					{
+						fromHost = in.readLine();
 						if(authorizeLogin(fromHost))
 						{
 							out.println(Server.DB_USERNAME + ":" + Server.DB_PASSWORD + ":" + 

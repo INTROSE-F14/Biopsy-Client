@@ -2,6 +2,8 @@ package org.introse;
 
 
 
+import java.io.IOException;
+
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -18,6 +20,7 @@ import org.introse.gui.event.CustomListener;
 public class ProjectDriver 
 {
 	private static LoginWindow loginForm;
+	private final Client client = new Client();
 	private static final CustomListener listener =  new CustomListener(new ProjectDriver());
 	private MainMenu mainWindow;
 	
@@ -49,13 +52,13 @@ public class ProjectDriver
 	
 	public void login()
 	{
-		Client client = new Client();
 		String password = new String(loginForm.getPassword());
 		
 		int loginStatus = client.connectToServer(password);
 		switch(loginStatus)
 		{
 			case Client.AUTHENTICATION_SUCCESSFUL: 
+				client.getUpdate();
 				String[] serverInfo = client.getServerInfo().split(":");
 				String dbUsername = serverInfo[0];
 				String dbPassword = serverInfo[1];
@@ -83,8 +86,33 @@ public class ProjectDriver
 			public void run()
 			{
 				mainWindow = new MainMenu();
+				mainWindow.setListener(listener);
 				mainWindow.showGUI();
 			}});
+	}
 	
+	public void notifyUpdate()
+	{
+		System.out.println("New update available");
+	}
+	
+	public void sendUpdate()
+	{
+		if(!client.isUpdateAvailable())
+		{
+			try {
+				client.sendUpdate();
+				System.out.println("Update sent");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else System.out.println("Update your data first");
+	}
+	
+	public void getUpdate()
+	{
+		client.getUpdate();
+		System.out.println("Data updated");
 	}
 }

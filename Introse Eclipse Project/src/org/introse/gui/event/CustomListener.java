@@ -22,6 +22,10 @@ public class CustomListener implements ActionListener
 	{
 		if(e.getActionCommand().equals("LOGIN"))
 			driver.login();
+		else if(e.getActionCommand().equals("SEND_UPDATE"))
+			driver.sendUpdate();
+		else if(e.getActionCommand().equals("GET_UPDATE"))
+			driver.getUpdate();
 	}
 
 }

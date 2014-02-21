@@ -1,9 +1,5 @@
 package org.introse.core;
 
-/*
-	Class that stores a database information
-
-*/
 
 public class Database {
 
