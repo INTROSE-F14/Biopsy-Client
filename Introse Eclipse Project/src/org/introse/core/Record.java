@@ -1,5 +1,4 @@
 
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +19,7 @@ public abstract class Record
 	public static final String REMARKS = "Remarks";//String
 	public static final String RECORD_TYPE = "Record Type";//int
 	public static final String LAST_MODIFY = "Last Date Modified";//Calendar
+	
 	
 	public Record()
 	{
