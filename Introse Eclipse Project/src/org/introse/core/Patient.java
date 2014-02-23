@@ -1,5 +1,4 @@
 
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +24,7 @@ public class Patient
 		attributes = new HashMap<>();
 		records = new Vector<Record>();
 	}
+	
 	public Patient(Object ID)
 	{
 		attributes = new HashMap<>();
