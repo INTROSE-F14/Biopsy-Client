@@ -13,9 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.introse.core.Preferences;
-import org.introse.core.dao.PatientDao;
-import org.introse.core.dao.RecordDao;
-import org.introse.gui.customcomponent.ListItem;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.panel.ContentPanel;
 import org.introse.gui.panel.NavigationPanel;
@@ -38,15 +35,11 @@ public class MainMenu {
 	public static final String SELECTED = "#33b5e5";
 	public static final String NORMAL = "#FFFFFF";
 	
-	private RecordDao recordDao;
-	private PatientDao patientDao;
-	
-	public MainMenu(RecordDao recordDao, PatientDao patientDao)
+	public MainMenu()
 	{
 		frame = new JFrame(Preferences.PROGRAM_NAME);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.recordDao = recordDao;
-		this.patientDao = patientDao;
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		try
 		{
 			PRIMARY_FONT = Font.createFont(Font.TRUETYPE_FONT,
@@ -115,20 +108,5 @@ public class MainMenu {
 	public void exit()
 	{
 		frame.dispose();
-	}
-	
-	public RecordDao getRecordDao()
-	{
-		return recordDao;
-	}
-	
-	public PatientDao getPatientDao()
-	{
-		return patientDao;
-	}
-	
-	public void viewItem(ListItem item)
-	{
-		contentPanel.viewItem(item);
 	}
 }

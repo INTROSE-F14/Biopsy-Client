@@ -97,10 +97,15 @@ public abstract class Record
 	public boolean equals(Object b)
 	{
 		if(!(getClass().equals(b.getClass())))
+		{
+			System.out.println("CLASS 1: " + getClass() + " CLASS 2: " + b.getClass());
+			System.out.println("Different classes");
 			return false;
+		}
 		Record r = (Record)b;
 		Object rId = r.getAttribute(RecordTable.REF_NUM.toString());
 		Object myId = getAttribute(RecordTable.REF_NUM.toString());
+		System.out.println("ID 1: " + rId + " ID 2: " + myId);
 		if(rId != null && myId != null)
 			return rId.equals(myId);
 		return super.equals(b);

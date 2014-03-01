@@ -22,7 +22,6 @@ public class ListItem extends JPanel{
 	private String s1;
 	private String s2;
 	private int itemType;
-//	private JPanel container;
 	
 	public ListItem(String ID, String h1, String h2, String s1, String s2, int itemType)
 	{
@@ -35,9 +34,6 @@ public class ListItem extends JPanel{
 		this.itemType = itemType;
 		setBackground(Color.decode(MainMenu.NORMAL));
 		setBorder(new EmptyBorder(20,20,20,20));
-	//	container = new JPanel(new GridBagLayout());
-	//	container.setBorder(new EmptyBorder(20,20,20,20));
-	//	container.setBackground(Color.decode(MainMenu.NORMAL));
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridy = 0;
 		c.gridx = 0;

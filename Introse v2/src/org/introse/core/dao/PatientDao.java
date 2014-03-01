@@ -46,7 +46,7 @@ public class PatientDao extends Dao
 			{
 				Patient p = new Patient();
 				p.putAttribute(PatientTable.PATIENT_ID.toString(),
-						result.getString(PatientTable.PATIENT_ID.toString()));
+						result.getInt(PatientTable.PATIENT_ID.toString()));
 				p.putAttribute(PatientTable.LAST_NAME.toString(), 
 						result.getString(PatientTable.LAST_NAME.toString()));
 				p.putAttribute(PatientTable.FIRST_NAME.toString(), 
@@ -79,7 +79,6 @@ public class PatientDao extends Dao
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		Dao.dataVersion = client.getLatestVersion();
-		System.out.println(data.size());
 	}
 	
 	//patient should only contain the primary key
@@ -196,5 +195,68 @@ public class PatientDao extends Dao
 				match.add(patient);
 		}
 		return match;
+	}
+	
+	public void add(Object patient)
+	{
+		Patient p = (Patient)patient;
+		int patientId = (int)p.getAttribute(PatientTable.PATIENT_ID.toString());
+		String lastName = "'"+(String)p.getAttribute(PatientTable.LAST_NAME.toString())+"'";
+		String firstName = "'"+(String)p.getAttribute(PatientTable.FIRST_NAME.toString())+"'";
+		String middleName = "'"+(String)p.getAttribute(PatientTable.MIDDLE_NAME.toString())+"'";
+		
+		String room = (String)p.getAttribute(PatientTable.ROOM.toString());
+		if(room != null)
+			room = "'" + room + "'";
+		String gender = "'"+(String)p.getAttribute(PatientTable.GENDER.toString())+"'";
+		Calendar birthday = (Calendar)p.getAttribute(PatientTable.BIRTHDAY.toString());
+		String bDay = "'" + birthday.get(Calendar.YEAR) + "-" + (birthday.get(Calendar.MONTH) + 1) + "-" + birthday.get(Calendar.DATE) + "'";
+		String sql = "";
+		
+		if(get(patient) == null)
+		{
+			sql = "Insert into Patients(" + PatientTable.PATIENT_ID.toString() + ", " + PatientTable.LAST_NAME.toString()  +
+				", " + PatientTable.FIRST_NAME.toString()   + ", " + PatientTable.MIDDLE_NAME.toString()   + ", " + PatientTable.GENDER.toString()   + 
+				", " + PatientTable.ROOM.toString()   + ", " + PatientTable.BIRTHDAY.toString()   + ") value (" + patientId + ", " +
+				lastName + ", " + firstName + ", " + middleName + ", " + gender + ", " + 
+				room + ", " + bDay + ")";
+			System.out.println("NEW");
+		}
+		else {
+			sql = "Update patients set " + 
+					PatientTable.LAST_NAME.toString() + " = " + lastName + ", " + 
+					PatientTable.FIRST_NAME.toString() + " = " + firstName +", " + 
+					PatientTable.LAST_NAME.toString() + " = " + lastName + ", " + 
+					PatientTable.MIDDLE_NAME.toString() + " = " + middleName+ ", "+
+					PatientTable.GENDER.toString() + " =  " + gender+ ", " +
+					PatientTable.ROOM.toString()   + " = " + room+ ", " + 
+					PatientTable.BIRTHDAY.toString() +" = " + bDay + 
+					" WHERE " + PatientTable.PATIENT_ID.toString() + " = " + patientId;
+			System.out.println("UPDATE");
+			System.out.println(patientId);
+		}
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet result = null;
+		try 
+		{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(Preferences.serverAddress +
+					Preferences.databaseName, Preferences.username, Preferences.password);
+			stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (ClassNotFoundException | SQLException e) {e.printStackTrace();}  
+		finally
+		{
+			try
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+				if(conn != null)
+					conn.close();
+			} catch (SQLException e) {e.printStackTrace();}
+		}
 	}
 }

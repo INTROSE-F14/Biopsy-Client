@@ -127,7 +127,7 @@ public class NavigationPanel extends JPanel
 		pathButton.setActionCommand(ContentPanel.PATH_PANEL);
 		physButton.setActionCommand(ContentPanel.PHYS_PANEL);
 		specButton.setActionCommand(ContentPanel.SPEC_PANEL);
-		prefButton.setActionCommand("VIEW_PREFERENCES");
+		prefButton.setActionCommand(ContentPanel.PREFERENCES_VIEW);
 		logoutButton.setActionCommand("LOG_OUT");
 		histoButton.setName(ContentPanel.HISTO_PANEL);
 		gyneButton.setName(ContentPanel.GYNE_PANEL);
@@ -173,5 +173,36 @@ public class NavigationPanel extends JPanel
 		if(prefButton.equals(button))
 			((NavButton)prefButton).setState(true);
 		else ((NavButton)prefButton).setState(false);
+	}
+	
+	public void setSelectedButton(String button)
+	{
+		((NavButton)histoButton).setState(false);
+		((NavButton)gyneButton).setState(false);
+		((NavButton)cytoButton).setState(false);
+		((NavButton)patientButton).setState(false);
+		((NavButton)pathButton).setState(false);
+		((NavButton)physButton).setState(false);
+		((NavButton)specButton).setState(false);
+		((NavButton)prefButton).setState(false);
+		
+		switch(button)
+		{
+		case ContentPanel.HISTO_PANEL:	((NavButton)histoButton).setState(true);
+										break;
+		case ContentPanel.GYNE_PANEL:	((NavButton)gyneButton).setState(true);
+										break;
+		case ContentPanel.CYTO_PANEL:	((NavButton)cytoButton).setState(true);
+										break;
+		case ContentPanel.PATH_PANEL:	((NavButton)pathButton).setState(true);
+										break;
+		case ContentPanel.PATIENT_PANEL:	((NavButton)patientButton).setState(true);
+											break;
+		case ContentPanel.PHYS_PANEL:	((NavButton)physButton).setState(true);
+										break;
+		case ContentPanel.SPEC_PANEL:	((NavButton)specButton).setState(true);
+										break;
+		case ContentPanel.PREFERENCES_VIEW:	((NavButton)prefButton).setState(true);
+		}
 	}
 }

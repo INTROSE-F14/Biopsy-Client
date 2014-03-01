@@ -14,7 +14,6 @@ public abstract class Dao
 	public Dao(Client client)
 	{
 		this.client = client;
-		updateList();
 	}
 	
 	public List<Object> getAll()
@@ -30,4 +29,5 @@ public abstract class Dao
 	public abstract void delete(List<Object> toBeDeleted);
 	public abstract void updateList();
 	public abstract List<Object> search(Object criteria);
+	public abstract void add(Object object);
 }

@@ -1,8 +1,11 @@
 package org.introse.gui;
 
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -29,14 +32,13 @@ public class LoginWindow
 	{
 		mainFrame = new JFrame("Client Module");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		JPanel panel = new JPanel(new GridBagLayout());
-		panel.setBorder(new EmptyBorder(10,10,10,10));
+		panel.setBackground(Color.white);
+		panel.setBorder(new EmptyBorder(20,20,20,20));
 		actionButton = new JButton("Login");
 		passwordField = new JPasswordField(20);
 		
 		GridBagConstraints gc = new GridBagConstraints();
-	
 		gc.gridx = 0;
 		gc.gridy = 0;
 		gc.gridwidth = 1;
@@ -47,9 +49,9 @@ public class LoginWindow
 		gc.gridwidth = 3;
 		panel.add(passwordField, gc);
 		
-		gc.gridx = 1;
+		gc.gridx = 0;
 		gc.gridy = 2;
-		gc.gridwidth = 1;
+		gc.fill = GridBagConstraints.HORIZONTAL;
 		panel.add(actionButton, gc);
 		
 		mainFrame.setContentPane(panel);
@@ -61,6 +63,8 @@ public class LoginWindow
 	public void showGUI()
 	{
 		mainFrame.setVisible(true);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		mainFrame.setLocation(dim.width/2-mainFrame.getSize().width/2, dim.height/2-mainFrame.getSize().height/2);
 	}
 	
 	public void hideGUI()
