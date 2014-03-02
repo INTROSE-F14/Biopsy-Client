@@ -134,7 +134,9 @@ public class ProjectDriver
 	
 	public void changeView(String view, boolean removeDetails)
 	{
-		mainMenu.getContentPanel().changeView(view, removeDetails);
+		mainMenu.getContentPanel().changeView(view);
+		if(removeDetails)
+			removeDetailsPanel();
 		applyFilter();
 	}
 	

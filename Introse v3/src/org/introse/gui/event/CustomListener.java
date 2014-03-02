@@ -41,7 +41,7 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			projectDriver.setSelectedButton(e.getSource());
 			break;
 		case Constants.ActionConstants.REFRESH: projectDriver.refresh();
-						projectDriver.removeDetailsPanel();
+												projectDriver.removeDetailsPanel();
 			break;
 		case Constants.ActionConstants.LOG_OUT: projectDriver.logout();
 			break;

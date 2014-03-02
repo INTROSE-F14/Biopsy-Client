@@ -108,6 +108,9 @@ public class ContentPanel extends JPanel
 		newButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/create.png")));
 		searchButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/search.png")));
 		refreshButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/refresh.png")));
+		newButton.setIconTextGap(7);
+		searchButton.setIconTextGap(7);
+		refreshButton.setIconTextGap(7);
 		
 		createPopup = new JPopupMenu(){
 			@Override
@@ -244,7 +247,7 @@ public class ContentPanel extends JPanel
 		
 	}
 	
-	public void changeView(String view, boolean removeDetails)
+	public void changeView(String view)
 	{
 		if(!currentView.equals(view))
 		{
@@ -289,11 +292,6 @@ public class ContentPanel extends JPanel
 								  break;
 				case Constants.TitleConstants.PREFERENCES: 
 								  mainLayout.show(this, Constants.TitleConstants.PREFERENCES);
-			}
-			if(detailsPanel != null)
-			{
-				if(removeDetails)
-				setDetailsPanel(null);
 			}
 			filterField.setText("");
 			currentView = view;

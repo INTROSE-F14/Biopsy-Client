@@ -43,6 +43,8 @@ public class PatientPanel extends DetailPanel
 		printOrCancelButton.setOpaque(true);
 		printOrCancelButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
 		editOrSaveButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		editOrSaveButton.setIconTextGap(7);
+		printOrCancelButton.setIconTextGap(7);
 	}
 	
 	private void layoutComponents()
