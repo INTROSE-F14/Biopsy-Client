@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 
 import org.introse.Constants;
 import org.introse.Constants.RecordTable;
+import org.introse.core.CustomCalendar;
 import org.introse.core.GynecologyRecord;
 import org.introse.core.Record;
 import org.introse.gui.window.MainMenu;
@@ -139,6 +140,7 @@ public class GynecologyForm extends JPanel implements Form
 		c.gridx = 0;
 		c.gridy = 6;
 		c.insets = new Insets(0,0,0,0);
+		c.anchor = GridBagConstraints.LINE_START;
 		insidePanel.add(diagnosisLabel, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
@@ -209,9 +211,9 @@ public class GynecologyForm extends JPanel implements Form
 				"9","10","11","12","13","14","15","16","17","18","19","20",
 				"21","22","23","24","25","26","27","28","29","30","31"};
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-		String[] years = new String[61];
+		String[] years = new String[52];
 		int j = 0;
-		for(int i = currentYear - 50; i <= currentYear + 10; i++)
+		for(int i = currentYear; i >= currentYear - 51; i--)
 		{
 			years[j] = "" + i;
 			j++;
@@ -271,23 +273,23 @@ public class GynecologyForm extends JPanel implements Form
 		if(pathologist != null)
 		pathologistValue.setText(pathologist);
 		
-		Calendar dateReceived = (Calendar)record.getAttribute(RecordTable.DATE_RECEIVED.toString());
+		CustomCalendar dateReceived = (CustomCalendar)record.getAttribute(RecordTable.DATE_RECEIVED.toString());
 		if(dateReceived != null)
 		{
-			int month = dateReceived.get(Calendar.MONTH);
-			int day = dateReceived.get(Calendar.DATE);
-			int year = dateReceived.get(Calendar.YEAR);
+			int month = dateReceived.getMonth();
+			int day = dateReceived.getDay();
+			int year = dateReceived.getYear();
 			dayReceived.setSelectedItem(""+day);
 			monthReceived.setSelectedIndex(month);
 			yearReceived.setSelectedItem(""+year);
 		}
 		
-		Calendar dateCompleted = (Calendar)record.getAttribute(RecordTable.DATE_COMPLETED.toString());
+		CustomCalendar dateCompleted = (CustomCalendar)record.getAttribute(RecordTable.DATE_COMPLETED.toString());
 		if(dateCompleted != null)
 		{
-			int month = dateCompleted.get(Calendar.MONTH);
-			int day = dateCompleted.get(Calendar.DATE);
-			int year = dateCompleted.get(Calendar.YEAR);
+			int month = dateCompleted.getMonth();
+			int day = dateCompleted.getDay();
+			int year = dateCompleted.getYear();
 			dayCompleted.setSelectedItem(""+day);
 			monthCompleted.setSelectedIndex(month);
 			yearCompleted.setSelectedItem("" + year);
@@ -364,19 +366,17 @@ public class GynecologyForm extends JPanel implements Form
 		record.putAttribute(RecordTable.REMARKS.toString(), remarksValue.getText());
 		record.putAttribute(RecordTable.DIAGNOSIS.toString(), diagnosisValue.getText());
 		record.putAttribute(RecordTable.RECORD_TYPE.toString(), Constants.RecordConstants.GYNECOLOGY_RECORD);
-		Calendar receivedDate = Calendar.getInstance();
+		CustomCalendar receivedDate = new CustomCalendar();
 		int dayReceived = Integer.parseInt((String)this.dayReceived.getSelectedItem());
 		int monthReceived = this.monthReceived.getSelectedIndex();
 		int yearReceived = Integer.parseInt((String)this.yearReceived.getSelectedItem());
-		receivedDate.clear();
-		receivedDate.set(yearReceived, monthReceived, dayReceived);
+		receivedDate.set(monthReceived, dayReceived, yearReceived);
 		
-		Calendar completedDate = Calendar.getInstance();
+		CustomCalendar completedDate = new CustomCalendar();
 		int dayCompleted = Integer.parseInt((String)this.dayCompleted.getSelectedItem());
 		int monthCompleted = this.monthCompleted.getSelectedIndex();
 		int yearCompleted = Integer.parseInt((String)this.yearCompleted.getSelectedItem());
-		completedDate.clear();
-		completedDate.set(yearCompleted, monthCompleted, dayCompleted);
+		completedDate.set(monthCompleted, dayCompleted, yearCompleted);
 		record.putAttribute(RecordTable.DATE_RECEIVED.toString(), receivedDate);
 		record.putAttribute(RecordTable.DATE_COMPLETED.toString(), completedDate);
 		

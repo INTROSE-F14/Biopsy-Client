@@ -12,6 +12,7 @@ import java.awt.event.MouseListener;
 
 import org.introse.Constants;
 import org.introse.ProjectDriver;
+import org.introse.Constants.ActionConstants;
 import org.introse.gui.panel.ListItem;
 
 
@@ -31,7 +32,7 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 		{
 		case Constants.TitleConstants.HISTOPATHOLOGY:
 		case Constants.TitleConstants.GYNECOLOGY:
-		case Constants.TitleConstants.CYTOTOLOGY:
+		case Constants.TitleConstants.CYTOLOGY:
 		case Constants.TitleConstants.PATHOLOGISTS:
 		case Constants.TitleConstants.PATIENTS:
 		case Constants.TitleConstants.PHYSICIANS:
@@ -63,10 +64,16 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			break;
 		case Constants.ActionConstants.LOAD_PATIENT: projectDriver.changeView(Constants.TitleConstants.PATIENTS, false);
 									  projectDriver.setSelectedButton(Constants.TitleConstants.PATIENTS);
+									  break;
 /*		case Constants.ActionConstants.PRINT : projectDriver.getMainMenuDriver().printCurrentForm();
 			break;
 		
 		*/
+		case Constants.ActionConstants.SEARCH_PATIENT: projectDriver.openPatientSearch();
+			break;
+		case ActionConstants.SEARCH_RECORD: projectDriver.openRecordSearch();
+			break;
+		case ActionConstants.SEARCH: projectDriver.displaySearchResult();
 		
 		}
 	}

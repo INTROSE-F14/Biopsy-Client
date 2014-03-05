@@ -121,7 +121,7 @@ public class NavigationPanel extends JPanel
 		
 		histoButton.setActionCommand(Constants.TitleConstants.HISTOPATHOLOGY);
 		gyneButton.setActionCommand(Constants.TitleConstants.GYNECOLOGY);
-		cytoButton.setActionCommand(Constants.TitleConstants.CYTOTOLOGY);
+		cytoButton.setActionCommand(Constants.TitleConstants.CYTOLOGY);
 		patientButton.setActionCommand(Constants.TitleConstants.PATIENTS);	
 		pathButton.setActionCommand(Constants.TitleConstants.PATHOLOGISTS);
 		physButton.setActionCommand(Constants.TitleConstants.PHYSICIANS);
@@ -130,7 +130,7 @@ public class NavigationPanel extends JPanel
 		logoutButton.setActionCommand("LOG_OUT");
 		histoButton.setName(Constants.TitleConstants.HISTOPATHOLOGY);
 		gyneButton.setName(Constants.TitleConstants.GYNECOLOGY);
-		cytoButton.setName(Constants.TitleConstants.CYTOTOLOGY);
+		cytoButton.setName(Constants.TitleConstants.CYTOLOGY);
 		patientButton.setName(Constants.TitleConstants.PATIENTS);	
 		pathButton.setName(Constants.TitleConstants.PATHOLOGISTS);
 		physButton.setName(Constants.TitleConstants.PHYSICIANS);
@@ -193,7 +193,7 @@ public class NavigationPanel extends JPanel
 		case Constants.TitleConstants.GYNECOLOGY:	
 										((NavButton)gyneButton).setState(true);
 										break;
-		case Constants.TitleConstants.CYTOTOLOGY:	
+		case Constants.TitleConstants.CYTOLOGY:	
 										((NavButton)cytoButton).setState(true);
 										break;
 		case Constants.TitleConstants.PATHOLOGISTS:	

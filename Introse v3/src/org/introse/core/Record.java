@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.introse.Constants;
 
-public abstract class Record 
+public class Record 
 {
 	protected HashMap<String, Object> attributes;
 	

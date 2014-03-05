@@ -35,13 +35,14 @@ public abstract class Constants
 	{
 		public static final String HISTOPATHOLOGY = "Histopathology";
 		public static final String GYNECOLOGY = "Gynecology";
-		public static final String CYTOTOLOGY = "Cytology";
+		public static final String CYTOLOGY = "Cytology";
 		public static final String PATIENTS = "Patients";
 		public static final String PATHOLOGISTS = "Pathologists";
 		public static final String PHYSICIANS = "Physicians";
 		public static final String SPECIMENS = "Specimens";
 		public static final String PREFERENCES = "Preferences";
 		public static final String RECORDS = "Records";
+		public static final String SEARCH_RESULT = "Search result";
 	}
 	
 	public abstract class ActionConstants
@@ -54,6 +55,8 @@ public abstract class Constants
 		public static final String NEW_PHYSICIAN = "New Physician";
 		public static final String NEW_PATHOLOGIST = "New Pathologist";
 		public static final String LOAD_PATIENT = "LOAD_EXISTING_PATIENT";
+		public static final String SEARCH_PATIENT = "Search patient";
+		public static final String SEARCH_RECORD = "search record";
 		public static final int VIEW = 0;
 		public static final int EDIT = 1;
 		public static final int NEW = 2;

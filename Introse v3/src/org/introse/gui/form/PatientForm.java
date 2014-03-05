@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 
 import org.introse.Constants;
 import org.introse.Constants.PatientTable;
+import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.MainMenu;
@@ -61,6 +62,7 @@ public class PatientForm extends JPanel implements Form
 		loadExisting.setOpaque(true);
 		loadExisting.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
 		loadExisting.setIcon(new ImageIcon(getClass().getResource("/res/icons/load.png")));
+		loadExisting.setIconTextGap(7);
 	}
 	
 	private void initializeComponents()
@@ -99,9 +101,9 @@ public class PatientForm extends JPanel implements Form
 				"9","10","11","12","13","14","15","16","17","18","19","20",
 				"21","22","23","24","25","26","27","28","29","30","31"};
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-		String[] years = new String[61];
+		String[] years = new String[101];
 		int j = 0;
-		for(int i = currentYear - 50; i <= currentYear + 10; i++)
+		for(int i = currentYear; i >= currentYear - 100; i--)
 		{
 			years[j] = "" + i;
 			j++;
@@ -188,7 +190,7 @@ public class PatientForm extends JPanel implements Form
 		c.insets = new Insets(0,0,5,10);
 		insidePanel.add(birthdayLabel, c);
 		c.gridx = 2;
-		c.insets = new Insets(0,0,5,10);
+		c.insets = new Insets(0,0,10,10);
 		insidePanel.add(roomLabel, c);
 		c.gridy = 4;
 		insidePanel.add(loadExisting, c);
@@ -221,12 +223,12 @@ public class PatientForm extends JPanel implements Form
 		if(room != null)
 		roomValue.setText(room);
 		else roomValue .setText("N/A");
-		Calendar birthday = (Calendar)patient.getAttribute(PatientTable.BIRTHDAY.toString());
+		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY.toString());
 		if(birthday!= null)
 		{
-			int month = birthday.get(Calendar.MONTH);
-			int day = birthday.get(Calendar.DATE);
-			int year = birthday.get(Calendar.YEAR);
+			int month = birthday.getMonth();
+			int day = birthday.getDay();
+			int year = birthday.getYear();
 			this.birthday.setSelectedItem(""+day);
 			birthmonth.setSelectedIndex(month);
 			birthyear.setSelectedItem(""+year);
@@ -255,12 +257,11 @@ public class PatientForm extends JPanel implements Form
 		patient.putAttribute(PatientTable.GENDER.toString(), (String)genderValue.getSelectedItem());
 		patient.putAttribute(PatientTable.ROOM.toString(), roomValue.getText());
 		
-		Calendar birthDate = Calendar.getInstance();
+		CustomCalendar birthDate = new CustomCalendar();
 		int day= Integer.parseInt((String)this.birthday.getSelectedItem());
 		int month= this.birthmonth.getSelectedIndex();
 		int year= Integer.parseInt((String)this.birthyear.getSelectedItem());
-		birthDate.clear();
-		birthDate.set(year, month, day);
+		birthDate.set(month, day, year);
 		patient.putAttribute(PatientTable.BIRTHDAY.toString(), birthDate);
 		return patient;
 	}
