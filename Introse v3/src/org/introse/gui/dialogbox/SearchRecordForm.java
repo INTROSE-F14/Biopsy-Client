@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Dialog.ModalityType;
 import java.util.Calendar;
+import java.awt.Color;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import org.introse.Constants;
 
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.RecordConstants;
@@ -26,11 +28,11 @@ import org.introse.core.GynecologyRecord;
 import org.introse.core.HistopathologyRecord;
 import org.introse.core.Record;
 import org.introse.gui.event.CustomListener;
+import org.introse.gui.window.MainMenu;
 
 public class SearchRecordForm extends JDialog implements SearchDialog
 {
-    
-	private JTextField tf_refNum, tf_specimen, tf_pathologist, tf_physician;
+    private JTextField tf_refNum, tf_specimen, tf_pathologist, tf_physician;
     private JLabel lbl_refNum, lbl_specimen, lbl_dReceived, lbl_dCompleted, lbl_pathologist, lbl_physician, lbl_filler;
     private JPanel p_overall, p_buttonHolder, p_container;
     private JComboBox<String> cb_type;
@@ -49,7 +51,12 @@ public class SearchRecordForm extends JDialog implements SearchDialog
 		this.tf_specimen = new JTextField(20);
 		this.tf_pathologist = new JTextField(20);
 		this.tf_physician = new JTextField(20);
-		
+                
+                this.tf_refNum.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		this.tf_specimen.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                this.tf_pathologist.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                this.tf_physician.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                
 		this.lbl_refNum = new JLabel("Reference Number: ");
 		this.lbl_specimen = new JLabel("Specimen: ");
 		this.lbl_dReceived = new JLabel("Date Received: ");
@@ -57,15 +64,23 @@ public class SearchRecordForm extends JDialog implements SearchDialog
 		this.lbl_pathologist = new JLabel("Pathologist: ");
 		this.lbl_physician = new JLabel("Physician: ");
 		this.lbl_filler = new JLabel("");
-		
-		
+                
+                this.lbl_refNum.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                this.lbl_specimen.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                this.lbl_dReceived.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                this.lbl_dCompleted.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                this.lbl_pathologist.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                this.lbl_physician.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                
 		String[] month = {"Month", "January", "Febuary", "March", "April", "May", "June", "July", "August", "September", 
 				"October", "November", "December"};
 		String[] day = {"Day", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", 
 	                        "17", "18", "19,", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
 		String[] type = {"Type of Record", TitleConstants.HISTOPATHOLOGY, TitleConstants.GYNECOLOGY, TitleConstants.CYTOLOGY};
 		
-		this.cb_type = new JComboBox<String>(type);
+		this.cb_type = new JComboBox<>(type);
+                this.cb_type.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                
 		this.cb_month = new JComboBox[2];
 		this.cb_day = new JComboBox[2];
 		this.cb_year = new JComboBox[2];
@@ -81,17 +96,29 @@ public class SearchRecordForm extends JDialog implements SearchDialog
 		}
 		
 		for(int i=0; i<2; i++){
-	         cb_month[i] = new JComboBox<String>(month);
-	         cb_day[i] = new JComboBox<String>(day);
-	         cb_year[i] = new JComboBox<String>(years);
+	         cb_month[i] = new JComboBox<>(month);
+	         cb_day[i] = new JComboBox<>(day);
+	         cb_year[i] = new JComboBox<>(years);
+                 
+                 cb_month[i].setBorder(null);
+                 cb_day[i].setBorder(null);
+                 cb_year[i].setBorder(null);
+                 
+                 cb_month[i].setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                 cb_day[i].setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                 cb_year[i].setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	        }
 		
-		this.b_search = new JButton("Search");
-		this.b_clear = new JButton("Clear");
+		this.b_search = new JButton("SEARCH");
+		this.b_clear = new JButton("CLEAR");
+                
+                this.b_search.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.MENU));
+                this.b_clear.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.MENU));
 	      
-		this.p_container.setLayout(new GridLayout(2,1));
+		this.p_container.setLayout(new GridBagLayout());
 		this.p_overall.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
+                c.insets = new Insets(4,4,20,20);
 	
 	//First Line
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -227,7 +254,7 @@ public class SearchRecordForm extends JDialog implements SearchDialog
 		c.gridy = 0;
 		c.gridwidth = 1;
 		c.gridheight = 0;
-		c.insets = new Insets(10,0,125,10);
+		c.insets = new Insets(10,0,0,10);
 		this.p_buttonHolder.add(b_search,c);
 	      
 		c.fill = GridBagConstraints.NONE;
@@ -235,29 +262,46 @@ public class SearchRecordForm extends JDialog implements SearchDialog
 		c.gridx = 3;
 		c.gridy = 0;
 		c.gridwidth = 1;
-		c.insets = new Insets(10,0,125,10);
+		c.insets = new Insets(10,0,0,10);
 		this.p_buttonHolder.add(b_clear,c);
 	      
-		this.p_container.add(p_overall);
-		this.p_container.add(p_buttonHolder);
+		this.p_overall.setBackground(Color.white);
+                this.p_buttonHolder.setBackground(Color.white);
+                
+                c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.5;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.insets = new Insets(0,0,125,0);
+                this.p_container.add(p_overall,c);
+		
+                c.fill = GridBagConstraints.NONE;
+		c.weightx = 0.5;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridwidth = 1;
+		c.insets = new Insets(0,0,-275,0);
+                this.p_container.add(p_buttonHolder,c);
 		p_container.setBorder(new EmptyBorder(20,20,20,20));
-	      
+	        this.p_container.setBackground(Color.white);
 		setContentPane(p_container);	
    }
-   
+    @Override
 	public void showGUI()
 	{
 		this.pack();
-		this.setMinimumSize(new Dimension(600,400));
+		this.setMinimumSize(new Dimension(500,400));
 		this.setVisible(true);
 	}
    
    @Override
    public void addListener(CustomListener listener)
    {
-		this.b_search.addActionListener(listener);
-		this.b_clear.addActionListener(listener);   
-	    b_search.setActionCommand(ActionConstants.SEARCH);
+	this.b_search.addActionListener(listener);
+	this.b_clear.addActionListener(listener);   
+	b_search.setActionCommand(ActionConstants.SEARCH);
+        b_clear.setActionCommand(ActionConstants.CLEAR);
    }
    
    public void clear()
@@ -302,7 +346,7 @@ public class SearchRecordForm extends JDialog implements SearchDialog
 		int dCD = -1;
 		int dCY = -1;
 		
-		Record criteria = null;
+		Record criteria;
 		switch(rType)
 		{
 			case TitleConstants.HISTOPATHOLOGY: criteria = new HistopathologyRecord();

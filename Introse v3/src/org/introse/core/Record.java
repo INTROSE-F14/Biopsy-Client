@@ -1,6 +1,5 @@
 package org.introse.core;
 
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;

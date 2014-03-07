@@ -140,7 +140,7 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		String lastName;
 		if((lastName = (String)patient.getAttribute(Constants.PatientTable.LAST_NAME)) != null)
 		{
-			sql = sql.concat(PatientTable.LAST_NAME + " = '" + lastName + "'");
+			sql = sql.concat(PatientTable.LAST_NAME + " like '%" + lastName + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -152,7 +152,7 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		String firstName;
 		if((firstName = (String)patient.getAttribute(Constants.PatientTable.FIRST_NAME)) != null)
 		{
-			sql = sql.concat(PatientTable.FIRST_NAME + " = '" + firstName +"'");
+			sql = sql.concat(PatientTable.FIRST_NAME + " like '%" + firstName +"%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -163,7 +163,7 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		String middleName;
 		if((middleName = (String)patient.getAttribute(Constants.PatientTable.MIDDLE_NAME)) != null)
 		{
-			sql = sql.concat(PatientTable.MIDDLE_NAME + " = '" + middleName + "'");
+			sql = sql.concat(PatientTable.MIDDLE_NAME + " like '%" + middleName + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -186,7 +186,7 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		String room;
 		if((room = (String)patient.getAttribute(Constants.PatientTable.ROOM)) != null)
 		{
-			sql = sql.concat(PatientTable.ROOM + " = '" + room + "'");
+			sql = sql.concat(PatientTable.ROOM + " like '%" + room + "%'");
 			whereCount++;
 		}
 		

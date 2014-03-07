@@ -557,6 +557,10 @@ public class ProjectDriver
 		searchDialog.addListener(listener);
 		searchDialog.showGUI();
 	}
+        
+        public void clearSearchFields(){
+            this.searchDialog.clear();
+        }
 	
 	public void displaySearchResult()
 	{

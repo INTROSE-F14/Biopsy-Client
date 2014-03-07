@@ -263,7 +263,7 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 		String refNum;
 		if((refNum = (String)record.getAttribute(Constants.RecordTable.REF_NUM)) != null)
 		{
-			sql = sql.concat(RecordTable.REF_NUM + " = '" + refNum + "'");
+			sql = sql.concat(RecordTable.REF_NUM + " like '%" + refNum + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -274,7 +274,7 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 		String specimen;
 		if((specimen = (String)record.getAttribute(Constants.RecordTable.SPECIMEN)) != null)
 		{
-			sql = sql.concat(RecordTable.SPECIMEN + " = '" + specimen +"'");
+			sql = sql.concat(RecordTable.SPECIMEN + " like '%" + specimen +"%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -285,7 +285,7 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 		String pathologist;
 		if((pathologist = (String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)) != null)
 		{
-			sql = sql.concat(RecordTable.PATHOLOGIST + " = '" + pathologist + "'");
+			sql = sql.concat(RecordTable.PATHOLOGIST + " like '%" + pathologist + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -296,7 +296,7 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 		String physician;
 		if((physician = (String)record.getAttribute(Constants.RecordTable.PHYSICIAN)) != null)
 		{
-			sql = sql.concat(RecordTable.PHYSICIAN + " = '" + physician + "'");
+			sql = sql.concat(RecordTable.PHYSICIAN + " like '%" + physician + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)

@@ -1,5 +1,6 @@
 package org.introse.gui.dialogbox;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,12 +14,15 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import org.introse.Constants;
 
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.PatientTable;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
 import org.introse.gui.event.CustomListener;
+import org.introse.gui.window.MainMenu;
 
 public class SearchPatientForm extends JDialog implements SearchDialog
 {
@@ -33,10 +37,19 @@ public class SearchPatientForm extends JDialog implements SearchDialog
    {
 	    super(null, "Search Patient", ModalityType.MODELESS);
 	    
+            this.p_overall = new JPanel();
+	    this.p_buttonHolder = new JPanel();
+	    this.p_container = new JPanel();
+            
 	    this.tf_fname = new JTextField(20);
 	    this.tf_mname = new JTextField(20);
 	    this.tf_lname = new JTextField(20);
 	    this.tf_room = new JTextField(5);
+            
+            this.tf_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.tf_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.tf_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.tf_room.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	    
 	    this.lbl_fname = new JLabel("First Name: ");
 	    this.lbl_mname = new JLabel("Middle Name: ");
@@ -44,10 +57,13 @@ public class SearchPatientForm extends JDialog implements SearchDialog
 	    this.lbl_birthday = new JLabel("Birthday: ");
 	    this.lbl_gender = new JLabel("Gender: ");
 	    this.lbl_room = new JLabel("Room: ");
-	    
-	    this.p_overall = new JPanel();
-	    this.p_buttonHolder = new JPanel();
-	    this.p_container = new JPanel();
+            
+            this.lbl_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.lbl_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.lbl_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.lbl_birthday.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.lbl_gender.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.lbl_room.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	    
 	    String[] month = {"Month", "January", "Febuary", "March", "April", "May", "June", "July", "August", 
 	    		"September", "October", "November", "December"};
@@ -68,14 +84,29 @@ public class SearchPatientForm extends JDialog implements SearchDialog
 	    this.cb_day = new JComboBox<String>(day);
 	    this.cb_year = new JComboBox<String>(years);
 	    this.cb_gender = new JComboBox<String>(gender);
+            
+            this.cb_month.setBorder(null);
+            this.cb_day.setBorder(null);
+            this.cb_year.setBorder(null);
+            this.cb_gender.setBorder(null);
+            
+            this.cb_month.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.cb_day.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.cb_year.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+            this.cb_gender.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	    
 	    this.b_search = new JButton("SEARCH");
 	    this.b_clear = new JButton("CLEAR");
+            
+            this.b_search.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.MENU));
+            this.b_clear.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.MENU));
 	    
-	    this.p_container.setLayout(new GridLayout(2,1));
+	    this.p_container.setLayout(new GridBagLayout());
 	    this.p_overall.setLayout(new GridBagLayout());
 	    GridBagConstraints c = new GridBagConstraints();
-	    
+            c.insets = new Insets(4,4,20,20);
+
+//First Line
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 0.5;
 	    c.gridx = 0;
@@ -88,7 +119,8 @@ public class SearchPatientForm extends JDialog implements SearchDialog
 	    c.gridy = 0;
 	    c.gridwidth = 3;
 	    this.p_overall.add(tf_fname, c);
-	    
+
+//Second Line
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 0.5;
 	    c.gridx = 0;
@@ -101,7 +133,8 @@ public class SearchPatientForm extends JDialog implements SearchDialog
 	    c.gridy = 1;
 	    c.gridwidth = 3;
 	    this.p_overall.add(tf_mname, c);
-	    
+
+//Third Line            
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 0.5;
 	    c.gridx = 0;
@@ -115,6 +148,7 @@ public class SearchPatientForm extends JDialog implements SearchDialog
 	    c.gridwidth = 3;
 	    this.p_overall.add(tf_lname, c);
 	    
+//Fourth Line            
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 0.5;
 	    c.gridx = 0;
@@ -142,7 +176,8 @@ public class SearchPatientForm extends JDialog implements SearchDialog
 	    c.gridy = 3;
 	    c.gridwidth = 1;
 	    this.p_overall.add(cb_year, c);
-	    
+	
+//Fifth Line            
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 0.5;
 	    c.gridx = 0;
@@ -156,7 +191,8 @@ public class SearchPatientForm extends JDialog implements SearchDialog
 	    c.gridy = 4;
 	    c.gridwidth = 1;
 	    this.p_overall.add(cb_gender, c);
-	
+            
+//Sixth Line	
 	    c.fill = GridBagConstraints.HORIZONTAL;
 	    c.weightx = 0.5;
 	    c.gridx = 0;
@@ -170,27 +206,48 @@ public class SearchPatientForm extends JDialog implements SearchDialog
 	    c.gridy = 5;
 	    c.gridwidth = 1;
 	    this.p_overall.add(tf_room, c);
-	    
+
+//Seventh Line            
 	    this.p_buttonHolder.setLayout(new GridBagLayout());
-	    c.fill = GridBagConstraints.HORIZONTAL;
-	    c.weightx = 0.5;
-	    c.gridx = 0;
-	    c.gridy = 0;
-	    c.gridwidth = 1;
-	    c.gridheight = 0;
-	    c.insets = new Insets(10,0,125,10);
-	    this.p_buttonHolder.add(b_search,c);
-	      
-	    c.fill = GridBagConstraints.HORIZONTAL;
+	    c.fill = GridBagConstraints.NONE;
 	    c.weightx = 0.5;
 	    c.gridx = 1;
 	    c.gridy = 0;
 	    c.gridwidth = 1;
-	    c.insets = new Insets(10,0,125,10);
+	    c.gridheight = 0;
+	    c.insets = new Insets(10,0,0,10);
+	    this.p_buttonHolder.add(b_search,c);
+	      
+	    c.fill = GridBagConstraints.NONE;
+	    c.weightx = 0.5;
+	    c.gridx = 3;
+	    c.gridy = 0;
+	    c.gridwidth = 1;
+	    c.insets = new Insets(10,0,0,10);
 	    this.p_buttonHolder.add(b_clear,c);
-	    
-	    this.p_container.add(p_overall);
-	    this.p_container.add(p_buttonHolder);
+             
+	    this.p_overall.setBackground(Color.white);
+            this.p_buttonHolder.setBackground(Color.white);
+	    this.p_overall.setBackground(Color.white);
+                
+            c.fill = GridBagConstraints.NONE;
+            c.weightx = 0.5;
+            c.gridx = 0;
+            c.gridy = 0;
+            c.gridwidth = 1;
+            c.insets = new Insets(0,0,125,0);
+            this.p_container.add(p_overall,c);
+            
+            c.fill = GridBagConstraints.NONE;
+            c.weightx = 0.5;
+            c.gridx = 0;
+            c.gridy = 1;
+            c.gridwidth = 1;
+            c.insets = new Insets(0,0,-210,0);
+            this.p_container.add(p_buttonHolder,c);
+            
+            this.p_container.setBorder(new EmptyBorder(20,20,20,20));
+            this.p_container.setBackground(Color.white);
 	    setContentPane(p_container);
    }
 
@@ -206,6 +263,7 @@ public class SearchPatientForm extends JDialog implements SearchDialog
         this.b_search.addActionListener(listener);
         this.b_clear.addActionListener(listener);   
         b_search.setActionCommand(ActionConstants.SEARCH);
+        b_clear.setActionCommand(ActionConstants.CLEAR);
     }
    
     public void clear()
@@ -216,15 +274,15 @@ public class SearchPatientForm extends JDialog implements SearchDialog
         this.cb_gender.setSelectedIndex(0);
 
         this.tf_fname.setText("");
-        tf_mname.setText("");
-        tf_lname.setText("");
-        tf_room.setText("");
+        this.tf_mname.setText("");
+        this.tf_lname.setText("");
+        this.tf_room.setText("");
     }
 
 	@Override
 	public Object getSearchCriteria() 
 	{
-		Patient criteria = new Patient();
+	    Patient criteria = new Patient();
 	    CustomCalendar cal = new CustomCalendar();
 	
 	    String gType = (String)this.cb_gender.getSelectedItem();
@@ -235,8 +293,8 @@ public class SearchPatientForm extends JDialog implements SearchDialog
 	    int bDay = this.cb_day.getSelectedIndex();
 	    int bYear = this.cb_year.getSelectedIndex();
 	    int bMo = -1; 
-     	int bD= -1;
-    	int bY  = -1;
+            int bD= -1;
+            int bY  = -1;
 
 	     if(pFName.length() != 0)
 	        criteria.putAttribute(PatientTable.FIRST_NAME.toString(), pFName);

@@ -69,11 +69,13 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			break;
 		
 		*/
+                case Constants.ActionConstants.CLEAR: projectDriver.clearSearchFields();
+                        break;
 		case Constants.ActionConstants.SEARCH_PATIENT: projectDriver.openPatientSearch();
 			break;
-		case ActionConstants.SEARCH_RECORD: projectDriver.openRecordSearch();
+		case Constants.ActionConstants.SEARCH_RECORD: projectDriver.openRecordSearch();
 			break;
-		case ActionConstants.SEARCH: projectDriver.displaySearchResult();
+		case Constants.ActionConstants.SEARCH: projectDriver.displaySearchResult();
 		
 		}
 	}

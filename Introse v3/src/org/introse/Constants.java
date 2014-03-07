@@ -66,6 +66,7 @@ public abstract class Constants
 		public static final String EDIT_RECORD = "EDIT_RECORD";
 		public static final String SAVE = "SAVE_RECORD";
 		public static final String CANCEL = "CANCEL_EDIT";
+                public static final String CLEAR = "CLEAR";
 		public static final String PRINT = "PRINT";
 		public static final String SEARCH= "Search";
 	}
