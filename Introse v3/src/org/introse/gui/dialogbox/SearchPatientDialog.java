@@ -27,8 +27,8 @@ import org.introse.gui.window.MainMenu;
 public class SearchPatientDialog extends JDialog implements SearchDialog
 {
    
-   private JTextField tf_fname,tf_mname, tf_lname, tf_room;
-   private JLabel lbl_fname, lbl_mname, lbl_lname, lbl_birthday, lbl_gender, lbl_room;
+   private JTextField tf_fname,tf_mname, tf_lname;
+   private JLabel lbl_fname, lbl_mname, lbl_lname, lbl_birthday, lbl_gender;
    private JComboBox<String> cb_month, cb_day, cb_year, cb_gender;
    private JPanel p_overall, p_buttonHolder, p_container;
    private JButton b_search, b_clear;
@@ -44,26 +44,22 @@ public class SearchPatientDialog extends JDialog implements SearchDialog
 	    this.tf_fname = new JTextField(20);
 	    this.tf_mname = new JTextField(20);
 	    this.tf_lname = new JTextField(20);
-	    this.tf_room = new JTextField(5);
             
             this.tf_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
             this.tf_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
             this.tf_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-            this.tf_room.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	    
 	    this.lbl_fname = new JLabel("First Name: ");
 	    this.lbl_mname = new JLabel("Middle Name: ");
 	    this.lbl_lname = new JLabel("Last Name: ");
 	    this.lbl_birthday = new JLabel("Birthday: ");
 	    this.lbl_gender = new JLabel("Gender: ");
-	    this.lbl_room = new JLabel("Room: ");
             
             this.lbl_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
             this.lbl_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
             this.lbl_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
             this.lbl_birthday.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
             this.lbl_gender.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-            this.lbl_room.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	    
 	    String[] month = {"Month", "January", "Febuary", "March", "April", "May", "June", "July", "August", 
 	    		"September", "October", "November", "December"};
@@ -192,22 +188,7 @@ public class SearchPatientDialog extends JDialog implements SearchDialog
 	    c.gridwidth = 1;
 	    this.p_overall.add(cb_gender, c);
             
-//Sixth Line	
-	    c.fill = GridBagConstraints.HORIZONTAL;
-	    c.weightx = 0.5;
-	    c.gridx = 0;
-	    c.gridy = 5;
-	    c.gridwidth = 1;
-	    this.p_overall.add(lbl_room, c);
-	    
-	    c.fill = GridBagConstraints.HORIZONTAL;
-	    c.weightx = 0.5;
-	    c.gridx = 1;
-	    c.gridy = 5;
-	    c.gridwidth = 1;
-	    this.p_overall.add(tf_room, c);
-
-//Seventh Line            
+//Sixth Line            
 	    this.p_buttonHolder.setLayout(new GridBagLayout());
 	    c.fill = GridBagConstraints.NONE;
 	    c.weightx = 0.5;
@@ -276,7 +257,6 @@ public class SearchPatientDialog extends JDialog implements SearchDialog
         this.tf_fname.setText("");
         this.tf_mname.setText("");
         this.tf_lname.setText("");
-        this.tf_room.setText("");
     }
 
 	@Override

@@ -32,8 +32,8 @@ import org.introse.gui.window.MainMenu;
 
 public class SearchRecordDialog extends JDialog implements SearchDialog
 {
-    private JTextField tf_refNum, tf_specimen, tf_pathologist, tf_physician;
-    private JLabel lbl_refNum, lbl_specimen, lbl_dReceived, lbl_dCompleted, lbl_pathologist, lbl_physician, lbl_filler;
+    private JTextField tf_refNum, tf_specimen, tf_pathologist, tf_physician, tf_room;
+    private JLabel lbl_refNum, lbl_specimen, lbl_dReceived, lbl_dCompleted, lbl_pathologist, lbl_physician, lbl_room, lbl_filler;
     private JPanel p_overall, p_buttonHolder, p_container;
     private JComboBox<String> cb_type;
     private JComboBox<String>[] cb_month, cb_day, cb_year;
@@ -51,11 +51,13 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
 		this.tf_specimen = new JTextField(20);
 		this.tf_pathologist = new JTextField(20);
 		this.tf_physician = new JTextField(20);
+                this.tf_room = new JTextField(5);
                 
                 this.tf_refNum.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		this.tf_specimen.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
                 this.tf_pathologist.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
                 this.tf_physician.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                this.tf_room.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
                 
 		this.lbl_refNum = new JLabel("Reference Number: ");
 		this.lbl_specimen = new JLabel("Specimen: ");
@@ -63,6 +65,7 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
 		this.lbl_dCompleted = new JLabel("Date Completed: ");
 		this.lbl_pathologist = new JLabel("Pathologist: ");
 		this.lbl_physician = new JLabel("Physician: ");
+                this.lbl_room = new JLabel("Room: ");
 		this.lbl_filler = new JLabel("");
                 
                 this.lbl_refNum.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
@@ -71,6 +74,7 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
                 this.lbl_dCompleted.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
                 this.lbl_pathologist.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
                 this.lbl_physician.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+                this.lbl_room.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
                 
 		String[] month = {"Month", "January", "Febuary", "March", "April", "May", "June", "July", "August", "September", 
 				"October", "November", "December"};
@@ -247,6 +251,20 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
 		this.p_overall.add(tf_physician, c);
 	      
 	//Eighth Line
+                c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 0;
+		c.gridy = 7;
+		this.p_overall.add(lbl_room, c);
+	      
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0.5;
+		c.gridx = 1;
+		c.gridy = 7;
+		c.gridwidth = 1;
+		this.p_overall.add(tf_room, c);
+                
+        //Ninth Line
 	        this.p_buttonHolder.setLayout(new GridBagLayout());
 		c.fill = GridBagConstraints.NONE;
 		c.weightx = 0.5;
@@ -281,7 +299,7 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
 		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 1;
-		c.insets = new Insets(0,0,-275,0);
+		c.insets = new Insets(0,0,-325,0);
                 this.p_container.add(p_buttonHolder,c);
 		p_container.setBorder(new EmptyBorder(20,20,20,20));
 	        this.p_container.setBackground(Color.white);
@@ -318,6 +336,7 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
 		this.tf_specimen.setText("");
 		this.tf_pathologist.setText("");
 		this.tf_physician.setText("");
+                this.tf_room.setText("");
    }
    
 	@Override
@@ -331,6 +350,7 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
 		String sName = this.tf_specimen.getText();
 		String pathologistName = this.tf_pathologist.getText();
 		String physicianName = this.tf_physician.getText();
+                String roomName = this.tf_room.getText();
 		
 		int dRMonth = this.cb_month[0].getSelectedIndex();
 		int dRDay = this.cb_day[0].getSelectedIndex();
@@ -395,6 +415,9 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
 		
 		if(physicianName.length() != 0)
 			criteria.putAttribute(RecordTable.PHYSICIAN.toString(), physicianName);
+                
+                if(roomName.length() != 0)
+                        criteria.putAttribute(RecordTable.ROOM.toString(), roomName);
 		
 		return criteria;
 	}
