@@ -11,22 +11,12 @@ import java.util.Vector;
 
 import org.introse.Constants;
 import org.introse.Constants.PatientTable;
-import org.introse.Constants.RecordTable;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
 import org.introse.core.Preferences;
 
-public class MysqlPatientDao implements MysqlDao, PatientDao
+public class MysqlPatientDao extends MysqlDao implements PatientDao
 {
-	
-	@Override
-	public Connection createConnection() throws ClassNotFoundException,
-			SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection(Preferences.serverAddress +
-				Preferences.databaseName, Preferences.username, Preferences.password);
-		return conn;
-	}
 	
 	//patient should only contain the primary key
 	//sample:
@@ -70,8 +60,6 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
 				p.putAttribute(PatientTable.GENDER.toString(), 
 						result.getString(PatientTable.GENDER.toString()));
-				p.putAttribute(PatientTable.ROOM.toString(), 
-						result.getString(PatientTable.ROOM.toString()));
 				return p;
 			}
 		} catch (ClassNotFoundException | SQLException e) 
@@ -140,7 +128,7 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		String lastName;
 		if((lastName = (String)patient.getAttribute(Constants.PatientTable.LAST_NAME)) != null)
 		{
-			sql = sql.concat(PatientTable.LAST_NAME + " like '%" + lastName + "%'");
+			sql = sql.concat(PatientTable.LAST_NAME + " LIKE '%" + lastName + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -152,7 +140,7 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		String firstName;
 		if((firstName = (String)patient.getAttribute(Constants.PatientTable.FIRST_NAME)) != null)
 		{
-			sql = sql.concat(PatientTable.FIRST_NAME + " like '%" + firstName +"%'");
+			sql = sql.concat(PatientTable.FIRST_NAME + " LIKE '%" + firstName +"%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -163,7 +151,7 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		String middleName;
 		if((middleName = (String)patient.getAttribute(Constants.PatientTable.MIDDLE_NAME)) != null)
 		{
-			sql = sql.concat(PatientTable.MIDDLE_NAME + " like '%" + middleName + "%'");
+			sql = sql.concat(PatientTable.MIDDLE_NAME + " LIKE '%" + middleName + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -176,18 +164,11 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		{
 			sql = sql.concat(PatientTable.GENDER + " = '" + gender + "'");
 			whereCount++;
-		}
-	
+		}	
 		if(whereCount > 0)
 		{
 			sql = sql.concat(" AND ");
 			whereCount--;
-		}
-		String room;
-		if((room = (String)patient.getAttribute(Constants.PatientTable.ROOM)) != null)
-		{
-			sql = sql.concat(PatientTable.ROOM + " like '%" + room + "%'");
-			whereCount++;
 		}
 		
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(Constants.PatientTable.BIRTHDAY);
@@ -222,7 +203,6 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		
 		try 
 		{
-			System.out.println(sql);
 			conn = createConnection();
 			stmt = conn.createStatement();
 			result = stmt.executeQuery(sql);
@@ -244,8 +224,6 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
 				p.putAttribute(PatientTable.GENDER.toString(), 
 						result.getString(PatientTable.GENDER.toString()));
-				p.putAttribute(PatientTable.ROOM.toString(), 
-						result.getString(PatientTable.ROOM.toString()));
 				matches.add(p);
 			}
 		} catch (ClassNotFoundException | SQLException e) 
@@ -272,18 +250,14 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		String firstName = "'"+(String)patient.getAttribute(PatientTable.FIRST_NAME)+"'";
 		String middleName = "'"+(String)patient.getAttribute(PatientTable.MIDDLE_NAME)+"'";
 		
-		String room = (String)patient.getAttribute(PatientTable.ROOM);
-		if(room != null)
-			room = "'" + room + "'";
 		String gender = "'"+(String)patient.getAttribute(PatientTable.GENDER)+"'";
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
 		String bDay = "'" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "'";
 		
 		String sql = "Insert into Patients(" + PatientTable.PATIENT_ID + ", " + PatientTable.LAST_NAME  +
 				", " + PatientTable.FIRST_NAME + ", " + PatientTable.MIDDLE_NAME + ", " + PatientTable.GENDER + 
-				", " + PatientTable.ROOM + ", " + PatientTable.BIRTHDAY + ") value (" + patientId + ", " +
-				lastName + ", " + firstName + ", " + middleName + ", " + gender + ", " + 
-				room + ", " + bDay + ")";
+				", " + PatientTable.BIRTHDAY + ") value (" + patientId + ", " +
+				lastName + ", " + firstName + ", " + middleName + ", " + gender + ", " + bDay + ")";
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
@@ -339,8 +313,6 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
 				p.putAttribute(PatientTable.GENDER.toString(), 
 						result.getString(PatientTable.GENDER.toString()));
-				p.putAttribute(PatientTable.ROOM.toString(), 
-						result.getString(PatientTable.ROOM.toString()));
 				patients.add(p);
 			}
 			return patients;
@@ -370,10 +342,6 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 		String lastName = "'"+(String)patient.getAttribute(PatientTable.LAST_NAME)+"'";
 		String firstName = "'"+(String)patient.getAttribute(PatientTable.FIRST_NAME)+"'";
 		String middleName = "'"+(String)patient.getAttribute(PatientTable.MIDDLE_NAME)+"'";
-		
-		String room = (String)patient.getAttribute(PatientTable.ROOM);
-		if(room != null)
-			room = "'" + room + "'";
 		String gender = "'"+(String)patient.getAttribute(PatientTable.GENDER)+"'";
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
 		String bDay = "'" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "'";
@@ -383,8 +351,7 @@ public class MysqlPatientDao implements MysqlDao, PatientDao
 				PatientTable.FIRST_NAME + " = " + firstName +", " + 
 				PatientTable.LAST_NAME + " = " + lastName + ", " + 
 				PatientTable.MIDDLE_NAME + " = " + middleName+ ", "+
-				PatientTable.GENDER + " =  " + gender+ ", " +
-				PatientTable.ROOM + " = " + room+ ", " + 
+				PatientTable.GENDER + " =  " + gender + ", " + 
 				PatientTable.BIRTHDAY +" = " + bDay + 
 				" WHERE " + PatientTable.PATIENT_ID + " = " + patientId;
 		

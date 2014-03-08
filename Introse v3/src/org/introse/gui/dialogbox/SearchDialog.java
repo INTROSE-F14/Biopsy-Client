@@ -7,7 +7,6 @@ public interface SearchDialog
 	public void addListener(CustomListener listener);
 	public Object getSearchCriteria();
 	public void showGUI();
-        
-        public abstract void clear();
+    public abstract void clear();
 }
 

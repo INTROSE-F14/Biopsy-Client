@@ -18,6 +18,7 @@ import org.introse.Constants;
 import org.introse.Constants.PatientTable;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
+import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.MainMenu;
 
@@ -27,20 +28,14 @@ public class PatientForm extends JPanel implements Form
 	private JTextField firstNameValue;
 	private JTextField middleNameValue;
 	private JComboBox<String> genderValue;
-	private JTextField roomValue;
 	private JButton loadExisting;
 	
 	private JLabel lastNameLabel;
 	private JLabel firstNameLabel;
 	private JLabel middleNameLabel;
 	private JLabel genderLabel;
-	private JLabel roomLabel;
 	private JLabel birthdayLabel;
-	
-	private JComboBox<String> birthday;
-	private JComboBox<String> birthmonth;
-	private JComboBox<String> birthyear;
-	private JPanel birthdate;
+	private DatePicker birthday;
 	private JPanel insidePanel;
 	private int patientID;
 	
@@ -73,7 +68,6 @@ public class PatientForm extends JPanel implements Form
 		firstNameLabel = new JLabel("First name");
 		middleNameLabel = new JLabel("Middle name");
 		genderLabel = new JLabel("Gender");
-		roomLabel = new JLabel("Room");
 		birthdayLabel = new JLabel("Birthday");
 		
 		lastNameValue = new JTextField(10);
@@ -82,7 +76,6 @@ public class PatientForm extends JPanel implements Form
 		String[] gender = {"M","F"};
 		genderValue= new JComboBox<String>(gender);
 		genderValue.setBorder(null);
-		roomValue= new JTextField(10);
 		
 		lastNameValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		lastNameValue.setHorizontalAlignment(JTextField.CENTER);
@@ -91,43 +84,10 @@ public class PatientForm extends JPanel implements Form
 		middleNameValue.setFont(lastNameValue.getFont());
 		middleNameValue.setHorizontalAlignment(JTextField.CENTER);
 		genderValue.setFont(lastNameValue.getFont());
-		roomValue.setHorizontalAlignment(JTextField.CENTER);
-		roomValue.setFont(lastNameValue.getFont());	
-		
-		String[] monthNames = {"January", "February", 
-				 "March", "April", "May", "June", "July", "August", 
-				 "September", "October", "November", "December"};
-		String[] monthDays = {"1","2", "3","4","5","6","7","8",
-				"9","10","11","12","13","14","15","16","17","18","19","20",
-				"21","22","23","24","25","26","27","28","29","30","31"};
-		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-		String[] years = new String[101];
-		int j = 0;
-		for(int i = currentYear; i >= currentYear - 100; i--)
-		{
-			years[j] = "" + i;
-			j++;
-		}
-		birthday= new JComboBox<String>(monthDays);
-		birthmonth= new JComboBox<String>(monthNames);
-		birthyear= new JComboBox<String>(years);
-		birthday.setBorder(null);
-		birthmonth.setBorder(null);
-		birthyear.setBorder(null);
-		
-		birthdate = new JPanel(new GridBagLayout());
-		birthdate.setBackground(Color.white);
-	
+		birthday = new DatePicker(100);
 		Calendar c = Calendar.getInstance();
-		int month = c.get(Calendar.MONTH);
-		int day = c.get(Calendar.DATE);
-		int year = c.get(Calendar.YEAR);
-		birthday.setSelectedItem(""+day);
-		birthmonth.setSelectedIndex(month);
-		birthyear.setSelectedItem(""+year);
-		birthday.setFont(lastNameValue.getFont());
-		birthmonth.setFont(lastNameValue.getFont());
-		birthyear.setFont(lastNameValue.getFont());
+		birthday.setDate(c);
+		birthday.setPickerFont(lastNameValue.getFont());
 		loadExisting = new JButton("Load Existing");
 		loadExisting.setVisible(false);
 	}
@@ -135,16 +95,6 @@ public class PatientForm extends JPanel implements Form
 	private void layoutComponents()
 	{
 		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.gridy = 0;
-		c.insets = new Insets(0,0,5,5);
-		birthdate.add(birthday, c);
-		c.gridx = 1;
-		birthdate.add(birthmonth, c);
-		c.gridx = 2;
-		c.insets = new Insets(0,0,5,0);
-		birthdate.add(birthyear, c);
-		
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridx = 0;
@@ -176,10 +126,10 @@ public class PatientForm extends JPanel implements Form
 		insidePanel.add(genderValue, c);
 		c.gridx = 1;
 		c.insets = new Insets(0,0,1,10);
-		insidePanel.add(birthdate, c);
+		insidePanel.add(birthday, c);
 		c.gridx = 2;
 		c.insets = new Insets(0,0,1,10);
-		insidePanel.add(roomValue, c);
+		insidePanel.add(loadExisting, c);
 		c.gridx = 0;
 		c.gridy = 3;
 		c.fill = GridBagConstraints.NONE;
@@ -189,11 +139,6 @@ public class PatientForm extends JPanel implements Form
 		c.gridwidth = 1;
 		c.insets = new Insets(0,0,5,10);
 		insidePanel.add(birthdayLabel, c);
-		c.gridx = 2;
-		c.insets = new Insets(0,0,10,10);
-		insidePanel.add(roomLabel, c);
-		c.gridy = 4;
-		insidePanel.add(loadExisting, c);
 		
 		c.gridx = 0;
 		c.gridy = 0;
@@ -219,20 +164,9 @@ public class PatientForm extends JPanel implements Form
 		middleNameValue.setText(middleName);
 		if(gender != null)
 		genderValue.setSelectedItem(gender);
-		String room = (String)patient.getAttribute(PatientTable.ROOM.toString());
-		if(room != null)
-		roomValue.setText(room);
-		else roomValue .setText("N/A");
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY.toString());
 		if(birthday!= null)
-		{
-			int month = birthday.getMonth();
-			int day = birthday.getDay();
-			int year = birthday.getYear();
-			this.birthday.setSelectedItem(""+day);
-			birthmonth.setSelectedIndex(month);
-			birthyear.setSelectedItem(""+year);
-		}
+			this.birthday.setDate(birthday);
 	}
 	
 	public void setEditable(boolean isEditable)
@@ -241,10 +175,7 @@ public class PatientForm extends JPanel implements Form
 		firstNameValue.setEditable(isEditable);
 		middleNameValue.setEditable(isEditable);
 		genderValue.setEnabled(isEditable);
-		roomValue.setEditable(isEditable);
 		birthday.setEnabled(isEditable);
-		birthmonth.setEnabled(isEditable);
-		birthyear.setEnabled(isEditable);
 	}
 
 	public Object getObject() 
@@ -255,12 +186,11 @@ public class PatientForm extends JPanel implements Form
 		patient.putAttribute(PatientTable.FIRST_NAME.toString(), firstNameValue.getText());
 		patient.putAttribute(PatientTable.MIDDLE_NAME.toString(), middleNameValue.getText());
 		patient.putAttribute(PatientTable.GENDER.toString(), (String)genderValue.getSelectedItem());
-		patient.putAttribute(PatientTable.ROOM.toString(), roomValue.getText());
 		
 		CustomCalendar birthDate = new CustomCalendar();
-		int day= Integer.parseInt((String)this.birthday.getSelectedItem());
-		int month= this.birthmonth.getSelectedIndex();
-		int year= Integer.parseInt((String)this.birthyear.getSelectedItem());
+		int day= birthday.getDay();
+		int month= birthday.getMonth();
+		int year= birthday.getYear();
 		birthDate.set(month, day, year);
 		patient.putAttribute(PatientTable.BIRTHDAY.toString(), birthDate);
 		return patient;
@@ -268,9 +198,9 @@ public class PatientForm extends JPanel implements Form
 
 	public boolean areFieldsValid() 
 	{
-		int day= this.birthday.getSelectedIndex();
-		int month= this.birthmonth.getSelectedIndex();
-		int year= Integer.parseInt((String)this.birthyear.getSelectedItem());
+		int day= birthday.getDay();
+		int month= birthday.getMonth();
+		int year= birthday.getYear();		
 		if(!(lastNameValue.getText().length() > 0))
 			return false;
 		if(!(firstNameValue.getText().length() > 0))

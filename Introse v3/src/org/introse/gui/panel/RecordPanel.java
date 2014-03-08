@@ -89,6 +89,7 @@ public class RecordPanel extends DetailPanel
 		printOrCancelButton.addActionListener(listener);
 		editOrSaveButton.addMouseListener(listener);
 		printOrCancelButton.addMouseListener(listener);
+		((Form)recordForm).addListener(listener);
 	}
 	
 	public void setMode(int mode)

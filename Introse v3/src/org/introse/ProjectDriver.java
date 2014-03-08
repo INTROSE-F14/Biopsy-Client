@@ -20,18 +20,20 @@ import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
 import org.introse.core.CytologyRecord;
 import org.introse.core.Database;
+import org.introse.core.Diagnosis;
 import org.introse.core.GynecologyRecord;
 import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
 import org.introse.core.Preferences;
 import org.introse.core.Record;
+import org.introse.core.dao.MysqlDiagnosisDao;
 import org.introse.core.dao.MysqlPatientDao;
 import org.introse.core.dao.MysqlRecordDao;
 import org.introse.core.network.Client;
 import org.introse.gui.dialogbox.ErrorDialog;
 import org.introse.gui.dialogbox.SearchDialog;
-import org.introse.gui.dialogbox.SearchPatientForm;
-import org.introse.gui.dialogbox.SearchRecordForm;
+import org.introse.gui.dialogbox.SearchPatientDialog;
+import org.introse.gui.dialogbox.SearchRecordDialog;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.form.CytologyForm;
 import org.introse.gui.form.Form;
@@ -55,6 +57,7 @@ public class ProjectDriver
 	private MainMenu mainMenu;
 	private MysqlRecordDao recordDao;
 	private MysqlPatientDao patientDao;
+	private MysqlDiagnosisDao diagnosisDao;
 	private List<ListItem> patientList;
 	private List<ListItem> histopathologyList;
 	private List<ListItem> gynecologyList;
@@ -125,6 +128,7 @@ public class ProjectDriver
 	{
 		recordDao = new MysqlRecordDao();
 		patientDao = new MysqlPatientDao();
+		diagnosisDao = new MysqlDiagnosisDao();
 		showMainMenu();
 	}
 	
@@ -344,6 +348,8 @@ public class ProjectDriver
 			
 			JPanel recordForm = null;
 			JPanel patientForm = null;
+			List<Diagnosis> diagnosis = diagnosisDao.getDiagnosis(record);
+			record.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
 			
 			if(object instanceof HistopathologyRecord)
 				recordForm = new HistopathologyForm();
@@ -387,7 +393,7 @@ public class ProjectDriver
 				Record r = panel.getRecord();
 				DetailPanel rP = (DetailPanel)panel;
 				r.putAttribute(Constants.RecordTable.PATIENT_ID, 
-						 p.getAttribute(PatientTable.PATIENT_ID));
+						 p.getAttribute(PatientTable.PATIENT_ID));				
 				switch(rP.getMode())
 				{
 				case Constants.ActionConstants.NEW:  if(patientDao.get(p) == null)
@@ -398,6 +404,11 @@ public class ProjectDriver
 				case Constants.ActionConstants.EDIT: recordDao.update(r);
 													 break;
 				}
+				diagnosisDao.delete(r);
+				List<Diagnosis> diagnosis = (List)r.getAttribute(RecordTable.DIAGNOSIS);
+				Iterator<Diagnosis> i = diagnosis.iterator();
+				while(i.hasNext())
+					diagnosisDao.add(i.next());
 			}
 			else if(panel instanceof PatientPanel)
 			{
@@ -424,6 +435,8 @@ public class ProjectDriver
 			{
 				Record record = panel.getRecord();
 				record = (Record)recordDao.get(record);
+				List<Diagnosis> diagnosis = diagnosisDao.getDiagnosis(record);
+				record.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
 				((RecordPanel)panel).getRecordForm().setFields(record);
 				Patient patient = panel.getPatient();
 				((RecordPanel)panel).getPatientForm().setFields(patientDao.get(patient));
@@ -546,26 +559,44 @@ public class ProjectDriver
 	
 	public void openPatientSearch()
 	{
-		searchDialog = new SearchPatientForm();
-		searchDialog.addListener(listener);
+		if(searchDialog == null)
+		{
+			searchDialog = new SearchPatientDialog();
+			searchDialog.addListener(listener);
+		}
+		else if(searchDialog instanceof SearchRecordDialog)
+		{
+			((SearchRecordDialog)searchDialog).dispose();
+			searchDialog = new SearchPatientDialog();
+			searchDialog.addListener(listener);
+		}
 		searchDialog.showGUI();
 	}
 	
 	public void openRecordSearch()
 	{
-		searchDialog = new SearchRecordForm();
-		searchDialog.addListener(listener);
+		if(searchDialog == null)
+		{
+			searchDialog = new SearchRecordDialog();
+			searchDialog.addListener(listener);
+		}
+		else if(searchDialog instanceof SearchPatientDialog)
+		{
+			((SearchPatientDialog)searchDialog).dispose();
+			searchDialog = new SearchRecordDialog();
+			searchDialog.addListener(listener);
+		}
 		searchDialog.showGUI();
 	}
-        
-        public void clearSearchFields(){
-            this.searchDialog.clear();
-        }
 	
+    public void clearSearchFields(){
+        this.searchDialog.clear();
+    }
+
 	public void displaySearchResult()
 	{
 		ContentPanel panel = mainMenu.getContentPanel();
-		if(searchDialog instanceof SearchRecordForm)
+		if(searchDialog instanceof SearchRecordDialog)
 		{
 			Record record = (Record)searchDialog.getSearchCriteria();
 			List<Record> matches = recordDao.search(record);

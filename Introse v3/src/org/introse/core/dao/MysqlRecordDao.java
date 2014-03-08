@@ -1,7 +1,6 @@
 package org.introse.core.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,19 +15,10 @@ import org.introse.core.CustomCalendar;
 import org.introse.core.CytologyRecord;
 import org.introse.core.GynecologyRecord;
 import org.introse.core.HistopathologyRecord;
-import org.introse.core.Preferences;
 import org.introse.core.Record;
 
-public class MysqlRecordDao implements RecordDao, MysqlDao
+public class MysqlRecordDao extends MysqlDao implements RecordDao
 {
-	public Connection createConnection() throws ClassNotFoundException, SQLException
-	{
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection(Preferences.serverAddress +
-				Preferences.databaseName, Preferences.username, Preferences.password);
-		return conn;
-	}
-
 	@Override
 	public List<Record> getAll() 
 	{
@@ -71,10 +61,10 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 						result.getString(Constants.RecordTable.PHYSICIAN));
 				record.putAttribute(Constants.RecordTable.SPECIMEN, 
 						result.getString(Constants.RecordTable.SPECIMEN));
-				record.putAttribute(Constants.RecordTable.DIAGNOSIS, 
-						result.getString(Constants.RecordTable.DIAGNOSIS));
 				record.putAttribute(Constants.RecordTable.REMARKS,
 						result.getString(Constants.RecordTable.REMARKS));
+				record.putAttribute(Constants.RecordTable.ROOM, 
+						result.getString(RecordTable.ROOM));
 				Calendar dateReceived = Calendar.getInstance();
 				Calendar dateCompleted = Calendar.getInstance();
 				dateCompleted.clear();
@@ -161,10 +151,10 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 						result.getString(Constants.RecordTable.PHYSICIAN));
 				record.putAttribute(Constants.RecordTable.SPECIMEN, 
 						result.getString(Constants.RecordTable.SPECIMEN));
-				record.putAttribute(Constants.RecordTable.DIAGNOSIS, 
-						result.getString(Constants.RecordTable.DIAGNOSIS));
 				record.putAttribute(Constants.RecordTable.REMARKS,
 						result.getString(Constants.RecordTable.REMARKS));
+				record.putAttribute(Constants.RecordTable.ROOM, 
+						result.getString(Constants.RecordTable.ROOM));
 				Calendar dateReceived = Calendar.getInstance();
 				Calendar dateCompleted = Calendar.getInstance();
 				dateCompleted.clear();
@@ -263,7 +253,7 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 		String refNum;
 		if((refNum = (String)record.getAttribute(Constants.RecordTable.REF_NUM)) != null)
 		{
-			sql = sql.concat(RecordTable.REF_NUM + " like '%" + refNum + "%'");
+			sql = sql.concat(RecordTable.REF_NUM + " LIKE '%" + refNum + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -274,7 +264,7 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 		String specimen;
 		if((specimen = (String)record.getAttribute(Constants.RecordTable.SPECIMEN)) != null)
 		{
-			sql = sql.concat(RecordTable.SPECIMEN + " like '%" + specimen +"%'");
+			sql = sql.concat(RecordTable.SPECIMEN + " LIKE '%" + specimen +"%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -285,7 +275,7 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 		String pathologist;
 		if((pathologist = (String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)) != null)
 		{
-			sql = sql.concat(RecordTable.PATHOLOGIST + " like '%" + pathologist + "%'");
+			sql = sql.concat(RecordTable.PATHOLOGIST + " LIKE '%" + pathologist + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -296,7 +286,18 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 		String physician;
 		if((physician = (String)record.getAttribute(Constants.RecordTable.PHYSICIAN)) != null)
 		{
-			sql = sql.concat(RecordTable.PHYSICIAN + " like '%" + physician + "%'");
+			sql = sql.concat(RecordTable.PHYSICIAN + " LIKE '%" + physician + "%'");
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		String room;
+		if((room = (String)record.getAttribute(Constants.RecordTable.ROOM)) != null)
+		{
+			sql = sql.concat(RecordTable.ROOM + " LIKE '%" + room + "%'");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -406,8 +407,6 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 						result.getString(Constants.RecordTable.PHYSICIAN));
 				record.putAttribute(Constants.RecordTable.SPECIMEN, 
 						result.getString(Constants.RecordTable.SPECIMEN));
-				record.putAttribute(Constants.RecordTable.DIAGNOSIS, 
-						result.getString(Constants.RecordTable.DIAGNOSIS));
 				record.putAttribute(Constants.RecordTable.REMARKS,
 						result.getString(Constants.RecordTable.REMARKS));
 				Calendar dateReceived = Calendar.getInstance();
@@ -453,12 +452,13 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 		String specimen = "'"+(String)record.getAttribute(Constants.RecordTable.SPECIMEN)+"'";
 		String pathologist = "'"+(String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)+"'";
 		String physician = "'" + (String)record.getAttribute(Constants.RecordTable.PHYSICIAN) +"'";
-		String diagnosis = "'"+(String)record.getAttribute(Constants.RecordTable.DIAGNOSIS)+"'";
 		String remarks = "'"+(String)record.getAttribute(Constants.RecordTable.REMARKS)+"'";
 		int recordType = (int)record.getAttribute(Constants.RecordTable.RECORD_TYPE);
 		CustomCalendar received = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED);
 		CustomCalendar completed = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_COMPLETED);
-		
+		String room = (String)record.getAttribute(RecordTable.ROOM);
+		if (room != null)
+			room = "'" + room + "'";
 		String dateReceived = "'" + received.getYear() + 
 				"-" + (received.getMonth() + 1) + "-" + received.getDay() + "'";
 		String dateCompleted = "'" + completed.getYear() + 
@@ -467,11 +467,11 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 
 		String sql = "Insert into Records(" + Constants.RecordTable.PATIENT_ID + ", "+ Constants.RecordTable.REF_NUM  +
 					", " + Constants.RecordTable.SPECIMEN + ", " + Constants.RecordTable.PATHOLOGIST + ", " +
-					Constants.RecordTable.PHYSICIAN + ", " + Constants.RecordTable.DIAGNOSIS + ", " + 
-					Constants.RecordTable.REMARKS + ", " + Constants.RecordTable.DATE_RECEIVED +", " + 
-					Constants.RecordTable.DATE_COMPLETED + ", " + Constants.RecordTable.RECORD_TYPE + ") value (" 
-					+ patientId + ", " + refNum + ", " + specimen + ", " + pathologist + ", " + physician + ", " + 
-					diagnosis + ", " + remarks + ", " + dateReceived + ", "+ dateCompleted + "," + recordType + ")";
+					Constants.RecordTable.PHYSICIAN + ", " + Constants.RecordTable.REMARKS + ", " + 
+					Constants.RecordTable.DATE_RECEIVED +", " + Constants.RecordTable.DATE_COMPLETED + ", " + 
+					Constants.RecordTable.RECORD_TYPE + ", " + RecordTable.ROOM + ") value (" + patientId + ", " + refNum + ", " + 
+					specimen + ", " + pathologist + ", " + physician + ", " + remarks + ", " + 
+					dateReceived + ", "+ dateCompleted + "," + recordType + ", " + room + ")";
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
@@ -498,15 +498,16 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 	@Override
 	public void update(Record record) 
 	{
-		Record r = (Record)record;
-		String refNum = "'"+(String)r.getAttribute(Constants.RecordTable.REF_NUM)+"'";
-		String specimen = "'"+(String)r.getAttribute(Constants.RecordTable.SPECIMEN)+"'";
-		String pathologist = "'"+(String)r.getAttribute(Constants.RecordTable.PATHOLOGIST)+"'";
-		String physician = "'" + (String)r.getAttribute(Constants.RecordTable.PHYSICIAN) +"'";
-		String diagnosis = "'"+(String)r.getAttribute(Constants.RecordTable.DIAGNOSIS)+"'";
-		String remarks = "'"+(String)r.getAttribute(Constants.RecordTable.REMARKS)+"'";
-		CustomCalendar received = (CustomCalendar)r.getAttribute(Constants.RecordTable.DATE_RECEIVED);
-		CustomCalendar completed = (CustomCalendar)r.getAttribute(Constants.RecordTable.DATE_COMPLETED);
+		String refNum = "'"+(String)record.getAttribute(Constants.RecordTable.REF_NUM)+"'";
+		String specimen = "'"+(String)record.getAttribute(Constants.RecordTable.SPECIMEN)+"'";
+		String pathologist = "'"+(String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)+"'";
+		String physician = "'" + (String)record.getAttribute(Constants.RecordTable.PHYSICIAN) +"'";
+		String remarks = "'"+(String)record.getAttribute(Constants.RecordTable.REMARKS)+"'";
+		String room = (String)record.getAttribute(RecordTable.ROOM);
+		if(room != null)
+			room = "'" + room + "'";
+		CustomCalendar received = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED);
+		CustomCalendar completed = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_COMPLETED);
 		
 		String dateReceived = "'" + received.getYear() + 
 				"-" + (received.getMonth() + 1) + "-" + received.getDay() + "'";
@@ -517,10 +518,10 @@ public class MysqlRecordDao implements RecordDao, MysqlDao
 				Constants.RecordTable.SPECIMEN + " = " + specimen +", " + 
 				Constants.RecordTable.PATHOLOGIST + " = " + pathologist + ", " + 
 				Constants.RecordTable.PHYSICIAN + " = " + physician + ", "+
-				Constants.RecordTable.DIAGNOSIS + " =  " + diagnosis + ", " +
 				Constants.RecordTable.REMARKS   + " = " + remarks + ", " + 
 				Constants.RecordTable.DATE_RECEIVED +" = " + dateReceived + ", "+
-				Constants.RecordTable.DATE_COMPLETED + " = " + dateCompleted + 
+				Constants.RecordTable.DATE_COMPLETED + " = " + dateCompleted + ", " + 
+				RecordTable.ROOM + " = " + room +
 					" WHERE " + Constants.RecordTable.REF_NUM + " = " + refNum;
 		Connection conn = null;
 		Statement stmt = null;

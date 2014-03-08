@@ -7,9 +7,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,10 +18,14 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.introse.Constants;
+import org.introse.Constants.CategoriesConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.core.CustomCalendar;
+import org.introse.core.Diagnosis;
 import org.introse.core.HistopathologyRecord;
 import org.introse.core.Record;
+import org.introse.gui.combobox.DatePicker;
+import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.MainMenu;
 
 public class HistopathologyForm extends JPanel implements Form
@@ -33,7 +38,7 @@ public class HistopathologyForm extends JPanel implements Form
 	private JTextArea remarksValue;
 	private JScrollPane diagnosisScroller;
 	private JScrollPane remarksScroller;
-	
+	private JTextField roomValue;
 	private JLabel refNumberLabel;
 	private JLabel specimenLabel;
 	private JLabel physicianLabel;
@@ -42,15 +47,10 @@ public class HistopathologyForm extends JPanel implements Form
 	private JLabel dateCompletedLabel;
 	private JLabel diagnosisLabel;
 	private JLabel remarksLabel;
+	private JLabel roomLabel;
 	
-	private JComboBox<String> dayReceived;
-	private JComboBox<String> monthReceived;
-	private JComboBox<String> yearReceived;
-	private JComboBox<String> dayCompleted;
-	private JComboBox<String> monthCompleted;
-	private JComboBox<String> yearCompleted;
-	private JPanel dateReceivedPanel;
-	private JPanel dateCompletedPanel;
+	private DatePicker receivedDate;
+	private DatePicker completedDate;
 	private JPanel insidePanel;
 	
 	public HistopathologyForm()
@@ -67,95 +67,93 @@ public class HistopathologyForm extends JPanel implements Form
 	private void layoutComponents()
 	{
 		GridBagConstraints c = new GridBagConstraints();
-		c.gridx = 0;
-		c.insets = new Insets(0,0,5,5);
-		dateReceivedPanel.add(dayReceived, c);
-		c.gridx = 1;
-		dateReceivedPanel.add(monthReceived, c);
-		c.gridx = 2;
-		c.insets = new Insets(0,0,5,0);
-		dateReceivedPanel.add(yearReceived, c);
-		c.gridx = 0;
-		c.gridy = 0;
-		c.insets = new Insets(0,0,5,5);
-		dateCompletedPanel.add(dayCompleted, c);
-		c.gridx = 1;
-		dateCompletedPanel.add(monthCompleted, c);
-		c.gridx = 2;
-		c.insets = new Insets(0,0,5,0);
-		dateCompletedPanel.add(yearCompleted, c);
-
+		int y = 0;
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 0;
-		c.insets = new Insets(0,0,0,10);
+		c.gridy = y++;
+		c.gridwidth = 2;
+		c.insets = new Insets(0,0,0,0);
 		insidePanel.add(refNumberValue, c);
+		c.fill = GridBagConstraints.NONE;
+		c.gridx = 0;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,10,0);
+		insidePanel.add(refNumberLabel, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridwidth = 1;
+		c.gridy = y;
+		c.insets = new Insets(0,0,0,10);
+		insidePanel.add(roomValue, c);
 		c.gridx = 1;
-		c.gridy = 0;
+		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
 		insidePanel.add(specimenValue, c);
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
-		c.gridy = 1;
+		c.gridy = y;
 		c.insets = new Insets(0,0,10,10);
-		insidePanel.add(refNumberLabel, c);
+		insidePanel.add(roomLabel, c);
 		c.gridx = 1;
-		c.gridy = 1;
+		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
 		insidePanel.add(specimenLabel, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = y;
 		c.insets = new Insets(0,0,0,10);
 		insidePanel.add(pathologistValue, c);
 		c.gridx = 1;
+		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
 		insidePanel.add(physicianValue, c);
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = y;
 		c.insets = new Insets(0,0,10,10);
 		insidePanel.add(pathologistLabel, c);
 		c.gridx = 1;
+		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
 		insidePanel.add(physicianLabel, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridy = 4;
+		c.gridy = y;
 		c.gridx = 0;
 		c.insets = new Insets(0,0,0,10);
-		insidePanel.add(dateReceivedPanel, c);
+		insidePanel.add(receivedDate, c);
 		c.gridx = 1;
+		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
-		insidePanel.add(dateCompletedPanel, c);
+		insidePanel.add(completedDate, c);
 		c.fill = GridBagConstraints.NONE;
-		c.gridy = 5;
+		c.gridy = y;
 		c.gridx = 0;
 		c.insets = new Insets(0,0,10,10);
 		insidePanel.add(dateReceivedLabel, c);
 		c.gridx = 1;
+		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
 		insidePanel.add(dateCompletedLabel, c);
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
 		c.anchor = GridBagConstraints.LINE_START;
 		insidePanel.add(diagnosisLabel, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 7;
+		c.gridy = y++;
 		c.gridwidth = 2;
 		c.insets = new Insets(0,0,10,0);
 		insidePanel.add(diagnosisScroller, c);
 		c.fill = GridBagConstraints.NONE;
-		c.gridy = 8;
+		c.gridy = y++;
 		c.gridx = 0;
 		c.gridwidth = 1;
 		c.insets = new Insets(0,0,0,0);
 		insidePanel.add(remarksLabel, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
-		c.gridy = 9;
+		c.gridy = y++;
 		c.gridwidth = 2;
 		insidePanel.add(remarksScroller, c);
 		
@@ -177,7 +175,7 @@ public class HistopathologyForm extends JPanel implements Form
 		dateCompletedLabel = new JLabel("Date Completed");
 		diagnosisLabel = new JLabel("Diagnosis");
 		remarksLabel = new JLabel("Remarks");
-		
+		roomLabel = new JLabel("Patient's Room");
 		refNumberValue= new JTextField(15);
 		refNumberValue.setEditable(false);
 		specimenValue= new JTextField(15);
@@ -185,6 +183,7 @@ public class HistopathologyForm extends JPanel implements Form
 		pathologistValue= new JTextField(15);
 		diagnosisValue= new JTextArea(3,30);
 		remarksValue= new JTextArea(3,30);
+		roomValue = new JTextField(15);
 		
 		diagnosisScroller = new JScrollPane(diagnosisValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -202,57 +201,17 @@ public class HistopathologyForm extends JPanel implements Form
 		pathologistValue.setFont(specimenValue.getFont());
 		diagnosisValue.setFont(specimenValue.getFont().deriveFont(Constants.StyleConstants.MENU));
 		remarksValue.setFont(diagnosisValue.getFont());
-		
-		String[] monthNames = {"January", "February", 
-				 "March", "April", "May", "June", "July", "August", 
-				 "September", "October", "November", "December"};
-		String[] monthDays = {"1","2", "3","4","5","6","7","8",
-				"9","10","11","12","13","14","15","16","17","18","19","20",
-				"21","22","23","24","25","26","27","28","29","30","31"};
-		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-		String[] years = new String[52];
-		int j = 0;
-		for(int i = currentYear; i >= currentYear - 51; i--)
-		{
-			years[j] = "" + i;
-			j++;
-		}
-		dayReceived = new JComboBox<String>(monthDays);
-		monthReceived = new JComboBox<String>(monthNames);
-		yearReceived = new JComboBox<String>(years);
-		dayReceived.setBorder(null);
-		monthReceived.setBorder(null);
-		yearReceived.setBorder(null);
-		dayCompleted = new JComboBox<String>(monthDays);
-		monthCompleted = new JComboBox<String>(monthNames);
-		yearCompleted = new JComboBox<String>(years);
-		dayCompleted.setBorder(null);
-		monthCompleted.setBorder(null);
-		yearCompleted.setBorder(null);
-		
-		dateReceivedPanel = new JPanel(new GridBagLayout());
-		dateCompletedPanel = new JPanel(new GridBagLayout());
-		dateReceivedPanel.setBackground(Color.white);
-		dateCompletedPanel.setBackground(Color.white);
+		roomValue.setFont(specimenValue.getFont());
+		roomValue.setHorizontalAlignment(JTextField.CENTER);
+		receivedDate = new DatePicker(50);
+		completedDate = new DatePicker(50);
 	
 		Calendar c = Calendar.getInstance();
-		int month = c.get(Calendar.MONTH);
-		int day = c.get(Calendar.DATE);
-		int year = c.get(Calendar.YEAR);
-		dayReceived.setSelectedItem(""+day);
-		monthReceived.setSelectedIndex(month);
-		yearReceived.setSelectedItem(""+year);
-		dayCompleted.setSelectedItem(""+day);
-		monthCompleted.setSelectedIndex(month);
-		yearCompleted.setSelectedItem(""+year);
+		receivedDate.setDate(c);
+		completedDate.setDate(c);
 
-		dayReceived.setFont(specimenValue.getFont());
-		monthReceived.setFont(specimenValue.getFont());
-		yearReceived.setFont(specimenValue.getFont());
-		dayCompleted.setFont(specimenValue.getFont());
-		monthCompleted.setFont(specimenValue.getFont());
-		yearCompleted.setFont(specimenValue.getFont());
-		
+		completedDate.setPickerFont(specimenValue.getFont());
+		receivedDate.setPickerFont(specimenValue.getFont());
 	}
 	
 	public void setFields(Object object)
@@ -262,69 +221,55 @@ public class HistopathologyForm extends JPanel implements Form
 		String specimen = (String)record.getAttribute(RecordTable.SPECIMEN.toString());
 		String physician = (String)record.getAttribute(RecordTable.PHYSICIAN.toString());
 		String pathologist = (String)record.getAttribute(RecordTable.PATHOLOGIST.toString());
-		
+		String room = (String)record.getAttribute(RecordTable.ROOM);
 		if(refNumber != null)
-		refNumberValue.setText(refNumber);
+			refNumberValue.setText(refNumber);
 		if(specimen != null)
-		specimenValue.setText(specimen);
+			specimenValue.setText(specimen);
 		if(physician != null)
-		physicianValue.setText(physician);
+			physicianValue.setText(physician);
 		if(pathologist != null)
-		pathologistValue.setText(pathologist);
+			pathologistValue.setText(pathologist);
+		if(room!= null)
+			roomValue.setText(room);
 		
 		CustomCalendar dateReceived = (CustomCalendar)record.getAttribute(RecordTable.DATE_RECEIVED.toString());
 		if(dateReceived != null)
-		{
-			int month = dateReceived.getMonth();
-			int day = dateReceived.getDay();
-			int year = dateReceived.getYear();
-			dayReceived.setSelectedItem(""+day);
-			monthReceived.setSelectedIndex(month);
-			yearReceived.setSelectedItem(""+year);
-		}
+			receivedDate.setDate(dateReceived);
 		
 		CustomCalendar dateCompleted = (CustomCalendar)record.getAttribute(RecordTable.DATE_COMPLETED.toString());
 		if(dateCompleted != null)
-		{
-			int month = dateCompleted.getMonth();
-			int day = dateCompleted.getDay();
-			int year = dateCompleted.getYear();
-			dayCompleted.setSelectedItem(""+day);
-			monthCompleted.setSelectedIndex(month);
-			yearCompleted.setSelectedItem("" + year);
-		}
+			completedDate.setDate(dateCompleted);
 		
-		String diagnosis = (String)record.getAttribute(RecordTable.DIAGNOSIS.toString());
+		List<Diagnosis> diagnosis = (List<Diagnosis>)record.getAttribute(RecordTable.DIAGNOSIS);
+		if(diagnosis != null && diagnosis.size() > 0)
+			diagnosisValue.setText(diagnosis.get(0).getValue());
+		
 		String remarks = (String)record.getAttribute(RecordTable.REMARKS.toString());
-		if(diagnosis != null)
-		diagnosisValue.setText(diagnosis);
 		if(remarks != null)
 		remarksValue.setText(remarks);
 	}
 	
 	public void setEditable(boolean isEditable)
 	{
-		yearReceived.setEnabled(isEditable);
-		monthReceived.setEnabled(isEditable);
-		dayReceived.setEnabled(isEditable);
-		yearCompleted.setEnabled(isEditable);
-		monthCompleted.setEnabled(isEditable);
-		dayCompleted.setEnabled(isEditable);
+		receivedDate.setEnabled(isEditable);
+		completedDate.setEnabled(isEditable);
 		specimenValue.setEditable(isEditable);
 		physicianValue.setEditable(isEditable);
 		pathologistValue.setEditable(isEditable);
 		diagnosisValue.setEditable(isEditable);
 		remarksValue.setEditable(isEditable);
+		roomValue.setEditable(isEditable);
 	}
 	
 	public boolean areFieldsValid()
 	{
-		int dayReceived = this.dayReceived.getSelectedIndex();
-		int monthReceived = this.monthReceived.getSelectedIndex();
-		int yearReceived = Integer.parseInt((String)this.yearReceived.getSelectedItem());
-		int dayCompleted = this.dayCompleted.getSelectedIndex();
-		int monthCompleted = this.monthCompleted.getSelectedIndex();
-		int yearCompleted = Integer.parseInt((String)this.yearCompleted.getSelectedItem());
+		int dayReceived = receivedDate.getDay();
+		int monthReceived = receivedDate.getMonth();
+		int yearReceived = receivedDate.getYear();
+		int dayCompleted = completedDate.getDay();
+		int monthCompleted = completedDate.getMonth();
+		int yearCompleted = completedDate.getYear();
 
 		if(!(specimenValue.getText().length() > 0))
 			return false;
@@ -363,22 +308,34 @@ public class HistopathologyForm extends JPanel implements Form
 		record.putAttribute(RecordTable.PATHOLOGIST.toString(), pathologistValue.getText());
 		record.putAttribute(RecordTable.PHYSICIAN.toString(), physicianValue.getText());
 		record.putAttribute(RecordTable.REMARKS.toString(), remarksValue.getText());
-		record.putAttribute(RecordTable.DIAGNOSIS.toString(), diagnosisValue.getText());
 		record.putAttribute(RecordTable.RECORD_TYPE.toString(), Constants.RecordConstants.HISTOPATHOLOGY_RECORD);
-		CustomCalendar receivedDate = new CustomCalendar();
-		int dayReceived = Integer.parseInt((String)this.dayReceived.getSelectedItem());
-		int monthReceived = this.monthReceived.getSelectedIndex();
-		int yearReceived = Integer.parseInt((String)this.yearReceived.getSelectedItem());
-		receivedDate.set(monthReceived, dayReceived, yearReceived);;
+		if(roomValue.getText().replaceAll("\\s", "").length() > 0)
+			record.putAttribute(RecordTable.ROOM, roomValue.getText());
+		CustomCalendar dateReceived = new CustomCalendar();
+		int dayReceived = receivedDate.getDay();
+		int monthReceived = receivedDate.getMonth();
+		int yearReceived = receivedDate.getYear();
+		dateReceived.set(monthReceived, dayReceived, yearReceived);
 		
-		CustomCalendar completedDate = new CustomCalendar();
-		int dayCompleted = Integer.parseInt((String)this.dayCompleted.getSelectedItem());
-		int monthCompleted = this.monthCompleted.getSelectedIndex();
-		int yearCompleted = Integer.parseInt((String)this.yearCompleted.getSelectedItem());
-		completedDate.set(monthCompleted, dayCompleted, yearCompleted);
-		record.putAttribute(RecordTable.DATE_RECEIVED.toString(), receivedDate);
-		record.putAttribute(RecordTable.DATE_COMPLETED.toString(), completedDate);
+		CustomCalendar dateCompleted = new CustomCalendar();
+		int dayCompleted = completedDate.getDay();
+		int monthCompleted = completedDate.getMonth();
+		int yearCompleted = completedDate.getYear();
+		dateCompleted.set(monthCompleted, dayCompleted, yearCompleted);
+		record.putAttribute(RecordTable.DATE_RECEIVED.toString(), dateReceived);
+		record.putAttribute(RecordTable.DATE_COMPLETED.toString(), dateCompleted);
+		
+		Diagnosis diagnosis = new Diagnosis(CategoriesConstants.OTHERS, diagnosisValue.getText(), 
+				refNumberValue.getText());
+		List<Diagnosis> newDiagnosis = new Vector<Diagnosis>();
+		newDiagnosis.add(diagnosis);
+		record.putAttribute(RecordTable.DIAGNOSIS, newDiagnosis);
 		
 		return record;
+	}
+
+	@Override
+	public void addListener(CustomListener listener) {
+		
 	}
 }

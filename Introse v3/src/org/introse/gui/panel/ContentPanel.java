@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.introse.Constants;
@@ -225,6 +226,8 @@ public class ContentPanel extends JPanel
 		c.gridheight = 3;
 		c.fill = GridBagConstraints.BOTH;
 		listPanel.add(detailsPanel, c);
+		
+		
 	}
 	
 	public void createSettingsPanel()
@@ -385,13 +388,11 @@ public class ContentPanel extends JPanel
 	public void setDetailsPanel(JPanel panel)
 	{
 		detailsPanel.removeAll();
-		if(panel == null)
+		if(panel != null)
 		{
-			panel = new JPanel();
-			panel.setBackground(Color.white);
+			detailsPanel.add(((DetailPanel)panel).getScroller());
+			detailsPanel.revalidate();
 		}
-		detailsPanel.add(panel);
-		detailsPanel.revalidate();
 		detailsPanel.repaint();
 	}
 }
