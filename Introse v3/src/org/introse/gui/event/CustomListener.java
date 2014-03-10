@@ -13,7 +13,7 @@ import java.awt.event.MouseListener;
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
 import org.introse.ProjectDriver;
-import org.introse.core.ListItem;
+import org.introse.gui.panel.ListItem;
 
 
 public class CustomListener implements ActionListener, MouseListener, KeyListener

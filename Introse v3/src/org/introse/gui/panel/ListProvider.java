@@ -20,7 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants.StyleConstants;
-import org.introse.core.ListItem;
 import org.introse.gui.window.MainMenu;
 
 public class ListProvider {

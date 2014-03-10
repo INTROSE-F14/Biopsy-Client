@@ -21,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants;
 import org.introse.Constants.PatientTable;
+import org.introse.gui.panel.ListItem;
 
 public class Patient extends ListItem
 {

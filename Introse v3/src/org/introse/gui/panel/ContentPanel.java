@@ -22,7 +22,6 @@ import javax.swing.JTextField;
 
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
-import org.introse.core.ListItem;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.MainMenu;
 
