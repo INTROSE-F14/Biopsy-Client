@@ -37,7 +37,7 @@ public class SearchPatientDialog extends JDialog implements SearchDialog
    {
 	    super(null, "Search Patient", ModalityType.MODELESS);
 	    
-            this.p_overall = new JPanel();
+        this.p_overall = new JPanel();
 	    this.p_buttonHolder = new JPanel();
 	    this.p_container = new JPanel();
             
@@ -45,9 +45,9 @@ public class SearchPatientDialog extends JDialog implements SearchDialog
 	    this.tf_mname = new JTextField(20);
 	    this.tf_lname = new JTextField(20);
             
-            this.tf_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-            this.tf_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-            this.tf_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+        this.tf_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+        this.tf_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+        this.tf_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	    
 	    this.lbl_fname = new JLabel("First Name: ");
 	    this.lbl_mname = new JLabel("Middle Name: ");
@@ -55,11 +55,11 @@ public class SearchPatientDialog extends JDialog implements SearchDialog
 	    this.lbl_birthday = new JLabel("Birthday: ");
 	    this.lbl_gender = new JLabel("Gender: ");
             
-            this.lbl_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-            this.lbl_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-            this.lbl_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-            this.lbl_birthday.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-            this.lbl_gender.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+        this.lbl_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+        this.lbl_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+        this.lbl_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+        this.lbl_birthday.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+        this.lbl_gender.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	    
 	    String[] month = {"Month", "January", "Febuary", "March", "April", "May", "June", "July", "August", 
 	    		"September", "October", "November", "December"};

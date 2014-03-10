@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import org.introse.Constants;
 import org.introse.Constants.CategoriesConstants;
 import org.introse.Constants.RecordTable;
+import org.introse.Constants.SpecimenTypesConstants;
 import org.introse.core.CustomCalendar;
 import org.introse.core.CytologyRecord;
 import org.introse.core.Diagnosis;
@@ -335,6 +336,7 @@ public class CytologyForm extends JPanel implements Form
 		newDiagnosis.add(diagnosis);
 		record.putAttribute(RecordTable.DIAGNOSIS, newDiagnosis);
 		
+		record.putAttribute(RecordTable.SPEC_TYPE, SpecimenTypesConstants.OTHER_SPECS);
 		return record;
 	}
 

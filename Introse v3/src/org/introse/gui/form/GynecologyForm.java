@@ -30,6 +30,7 @@ import javax.swing.SwingConstants;
 import org.introse.Constants;
 import org.introse.Constants.CategoriesConstants;
 import org.introse.Constants.RecordTable;
+import org.introse.Constants.SpecimenTypesConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
@@ -64,6 +65,18 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 	private DatePicker completedDate;
 	private JPanel insidePanel;
 	private JPanel diagnosisPanel;
+	
+	private JLabel specimenTypeLabel;
+	private ButtonGroup specGroup;
+	private JRadioButton conventionalSmear;
+	private JRadioButton liquidBased;
+	private JRadioButton others;
+	
+	private JLabel specimenAdequacyLabel;
+	private ButtonGroup saGroup;
+	private JRadioButton satisfactory;
+	private JRadioButton unsatisfactory;
+	private JTextField unsatisfactoryDueTo;
 	
 	private JCheckBox nilm, eca, omn;
 	private JCheckBox organisms;
@@ -207,7 +220,29 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = y++;
+		diagnosisPanel.add(specimenTypeLabel, c);
+		c.gridy = y++;
+		c.insets = new Insets(0,20,0,0);
+		diagnosisPanel.add(conventionalSmear, c);
+		c.gridy = y++;
+		diagnosisPanel.add(liquidBased, c);
+		c.gridy = y++;
+		diagnosisPanel.add(others, c);
+		c.gridy = y++;
+		c.insets = new Insets(0,0,0,0);
+		diagnosisPanel.add(specimenAdequacyLabel, c);
+		c.gridy = y++;
+		c.insets = new Insets(0,20,0,0);
+		diagnosisPanel.add(satisfactory, c);
+		c.gridy = y++;
+		diagnosisPanel.add(unsatisfactory, c);
+		c.gridx = 1;
+		c.insets = new Insets(0,5,0,0);
+		diagnosisPanel.add(unsatisfactoryDueTo, c);
 		///////////////////////////
+		c.gridwidth = 5;
+		c.gridx = 0;
+		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
 		diagnosisPanel.add(nilm, c);
 		c.gridy = y++;
@@ -336,6 +371,28 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		eca.setBackground(Color.white);
 		omn.setBackground(Color.white);
 		
+		specimenTypeLabel = new JLabel(TitleConstants.SPEC_TYPE);
+		specGroup = new ButtonGroup();
+		conventionalSmear = new JRadioButton(TitleConstants.CONVENTIONAL);
+		liquidBased = new JRadioButton(TitleConstants.LIQUID_BASED);
+		others = new JRadioButton(TitleConstants.OTHERS);
+		specGroup.add(conventionalSmear);
+		specGroup.add(liquidBased);
+		specGroup.add(others);
+		conventionalSmear.setBackground(Color.white);
+		liquidBased.setBackground(Color.white);
+		others.setBackground(Color.white);
+		
+		specimenAdequacyLabel = new JLabel(TitleConstants.SPEC_ADEQ);
+		saGroup = new ButtonGroup();
+		satisfactory = new JRadioButton(TitleConstants.SATISFACTORY);
+		unsatisfactory = new JRadioButton(TitleConstants.UNSATISFACTORY);
+		satisfactory.setBackground(Color.white);
+		unsatisfactory.setBackground(Color.white);
+		unsatisfactoryDueTo = new JTextField(35);
+		saGroup.add(satisfactory);
+		saGroup.add(unsatisfactory);
+		
 		organisms = new JCheckBox(TitleConstants.ORGANISMS);
 		organismsGroup = new ButtonGroup();
 		org1 = new JRadioButton(TitleConstants.ORG1);
@@ -457,6 +514,7 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		String physician = (String)record.getAttribute(RecordTable.PHYSICIAN.toString());
 		String pathologist = (String)record.getAttribute(RecordTable.PATHOLOGIST.toString());
 		String room = (String)record.getAttribute(RecordTable.ROOM);
+		
 		if(refNumber != null)
 			refNumberValue.setText(refNumber);
 		if(specimen != null)
@@ -475,6 +533,16 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		CustomCalendar dateCompleted = (CustomCalendar)record.getAttribute(RecordTable.DATE_COMPLETED);
 		if(dateCompleted != null)
 			completedDate.setDate(dateCompleted);
+		
+		if(record.getAttribute(RecordTable.SPEC_TYPE) != null)
+		switch((int)record.getAttribute(RecordTable.SPEC_TYPE))
+		{
+		case SpecimenTypesConstants.CONVENTIONAL_SMEAR: conventionalSmear.setSelected(true);
+												 break;
+		case SpecimenTypesConstants.LIQUID_BASED: liquidBased.setSelected(true);
+											break;
+		case SpecimenTypesConstants.OTHER_SPECS: others.setSelected(true);
+		}
 		
 		resetButtons();
 		List<Diagnosis> diagnosis = (List)record.getAttribute(RecordTable.DIAGNOSIS);
@@ -592,6 +660,15 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 					break;
 				case CategoriesConstants.OMN: omn.setSelected(true);
 											  omnArea.setText(value);
+											  break;
+				case CategoriesConstants.SA: if(value.contains(TitleConstants.SATISFACTORY))
+												satisfactory.setSelected(true);
+											 else if(value.contains(TitleConstants.UNSATISFACTORY))
+											 {
+												 unsatisfactory.setSelected(true);
+												 unsatisfactoryDueTo.setText(
+														 value.substring(TitleConstants.UNSATISFACTORY.length() + 1));
+											 }
 				}
 			}
 		}
@@ -613,6 +690,11 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		nilm.setEnabled(isEditable);
 		eca.setEnabled(isEditable);
 		omn.setEnabled(isEditable);
+		satisfactory.setEnabled(isEditable);
+		unsatisfactory.setEnabled(isEditable);
+		conventionalSmear.setEnabled(isEditable);
+		liquidBased.setEnabled(isEditable);
+		others.setEnabled(isEditable);
 		updateButtons();
 	}
 	
@@ -671,6 +753,8 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		omnArea.setEditable(omn.isSelected() && omn.isEnabled());
 		if(!omn.isSelected())
 			omnArea.setText("");
+		
+		unsatisfactoryDueTo.setEnabled(unsatisfactory.isSelected() && unsatisfactory.isEnabled());
 	}
 	
 	public boolean areFieldsValid()
@@ -706,7 +790,12 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 			return false;
 		if(monthReceived == 1 && dayReceived > 28)
 			return false;
-		
+		if(!conventionalSmear.isSelected() && !liquidBased.isSelected() && !others.isSelected())
+			return false;
+		if(!satisfactory.isSelected() && !unsatisfactory.isSelected())
+			return false;
+		if(unsatisfactory.isSelected() && unsatisfactoryDueTo.getText().replaceAll("\\s", "").length() < 1)
+			return false;
 		if(!nilm.isSelected() && !eca.isSelected() && !omn.isSelected())
 			return false;
 		if(nilm.isSelected())
@@ -778,7 +867,19 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		record.putAttribute(RecordTable.DATE_RECEIVED.toString(), dateReceived);
 		record.putAttribute(RecordTable.DATE_COMPLETED.toString(), dateCompleted);
 		
+		int specimenType = SpecimenTypesConstants.OTHER_SPECS;
+		if(conventionalSmear.isSelected())
+			specimenType = SpecimenTypesConstants.CONVENTIONAL_SMEAR;
+		else if(liquidBased.isSelected())
+			specimenType = SpecimenTypesConstants.LIQUID_BASED;
+		record.putAttribute(RecordTable.SPEC_TYPE, specimenType);
+		
 		List<Diagnosis> diagnosisList = new Vector<Diagnosis>();
+		if(satisfactory.isSelected())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.SA, satisfactory.getText(), referenceNumber));
+		else if(unsatisfactory.isSelected())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.SA, 
+					unsatisfactory.getText() + " " + unsatisfactoryDueTo.getText(), referenceNumber));
 		
 		if(org1.isSelected() && org1.isEnabled())
 			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org1.getText(), referenceNumber));
@@ -867,7 +968,8 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		glandular2.addActionListener(this);
 		glandular3.addActionListener(this);
 		showDiagnosis.addActionListener(this);
-		
+		unsatisfactory.addActionListener(this);
+		satisfactory.addActionListener(this);
 	}
 	
 	public void resetButtons()
@@ -886,6 +988,7 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		glandularCell.setSelected(false);
 		glandularGroup.clearSelection();
 		omnArea.setText("");
+		saGroup.clearSelection();
 	}
 	
 }

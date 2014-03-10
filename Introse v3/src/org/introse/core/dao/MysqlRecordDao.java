@@ -39,13 +39,13 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				int recordType = result.getInt(Constants.RecordTable.RECORD_TYPE);
 				switch(recordType)
 				{
-				case 0: //histopathology
+				case RecordConstants.HISTOPATHOLOGY_RECORD: //histopathology
 					record = new HistopathologyRecord();
 					break;
-				case 1: //gynecology
+				case RecordConstants.GYNECOLOGY_RECORD: //gynecology
 					record = new GynecologyRecord();
 					break;
-				case 2: //cytology
+				case RecordConstants.CYTOLOGY_RECORD: //cytology
 					record = new CytologyRecord();
 					break;
 				}
@@ -78,6 +78,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				dC.set(dateCompleted.get(Calendar.MONTH), dateCompleted.get(Calendar.DATE), dateCompleted.get(Calendar.YEAR));
 				record.putAttribute(Constants.RecordTable.DATE_COMPLETED, dC);
 				record.putAttribute(Constants.RecordTable.DATE_RECEIVED, dR);
+				System.out.println("SPECIMEN TYPE: " +result.getInt(RecordTable.SPEC_TYPE));
+				record.putAttribute(Constants.RecordTable.SPEC_TYPE, result.getInt(RecordTable.SPEC_TYPE));
 				records.add(record);
 			}
 			return records;
@@ -168,6 +170,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				dR.set(dateReceived.get(Calendar.MONTH), dateReceived.get(Calendar.DATE), dateReceived.get(Calendar.YEAR));
 				record.putAttribute(Constants.RecordTable.DATE_COMPLETED, dC);
 				record.putAttribute(Constants.RecordTable.DATE_RECEIVED, dR);
+				record.putAttribute(RecordTable.SPEC_TYPE, result.getInt(RecordTable.SPEC_TYPE));
+				System.out.println("SPECIMEN TYPE: " +result.getInt(RecordTable.SPEC_TYPE));
 				return record;
 			}
 		} catch (ClassNotFoundException | SQLException e) 
@@ -422,9 +426,9 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				dC.set(dateCompleted.get(Calendar.MONTH), dateCompleted.get(Calendar.DATE), dateCompleted.get(Calendar.YEAR));
 				record.putAttribute(Constants.RecordTable.DATE_COMPLETED, dC);
 				record.putAttribute(Constants.RecordTable.DATE_RECEIVED, dR);
+				record.putAttribute(Constants.RecordTable.SPEC_TYPE, result.getInt(RecordTable.SPEC_TYPE));
 				records.add(record);
 			}
-			return records;
 		} catch (ClassNotFoundException | SQLException e) 
 		{e.printStackTrace();} 
 		finally
@@ -441,7 +445,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			} catch (SQLException e) 
 			{e.printStackTrace();}
 		}
-		return null;
+		return records;
 	}
 	
 	@Override
@@ -454,6 +458,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		String physician = "'" + (String)record.getAttribute(Constants.RecordTable.PHYSICIAN) +"'";
 		String remarks = "'"+(String)record.getAttribute(Constants.RecordTable.REMARKS)+"'";
 		int recordType = (int)record.getAttribute(Constants.RecordTable.RECORD_TYPE);
+		int specimenType = (int)record.getAttribute(RecordTable.SPEC_TYPE);
+		
 		CustomCalendar received = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED);
 		CustomCalendar completed = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_COMPLETED);
 		String room = (String)record.getAttribute(RecordTable.ROOM);
@@ -469,9 +475,10 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					", " + Constants.RecordTable.SPECIMEN + ", " + Constants.RecordTable.PATHOLOGIST + ", " +
 					Constants.RecordTable.PHYSICIAN + ", " + Constants.RecordTable.REMARKS + ", " + 
 					Constants.RecordTable.DATE_RECEIVED +", " + Constants.RecordTable.DATE_COMPLETED + ", " + 
-					Constants.RecordTable.RECORD_TYPE + ", " + RecordTable.ROOM + ") value (" + patientId + ", " + refNum + ", " + 
-					specimen + ", " + pathologist + ", " + physician + ", " + remarks + ", " + 
-					dateReceived + ", "+ dateCompleted + "," + recordType + ", " + room + ")";
+					Constants.RecordTable.RECORD_TYPE + ", " + RecordTable.ROOM + ", " + RecordTable.SPEC_TYPE + 
+					") value (" + patientId + ", " + refNum + ", " + specimen + ", " + pathologist + ", " + 
+					physician + ", " + remarks + ", " + dateReceived + ", "+ dateCompleted + "," + recordType + 
+					", " + room + ", " + specimenType + ")";
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
@@ -504,6 +511,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		String physician = "'" + (String)record.getAttribute(Constants.RecordTable.PHYSICIAN) +"'";
 		String remarks = "'"+(String)record.getAttribute(Constants.RecordTable.REMARKS)+"'";
 		String room = (String)record.getAttribute(RecordTable.ROOM);
+		int specimenType = (int)record.getAttribute(RecordTable.SPEC_TYPE);
 		if(room != null)
 			room = "'" + room + "'";
 		CustomCalendar received = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED);
@@ -521,7 +529,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				Constants.RecordTable.REMARKS   + " = " + remarks + ", " + 
 				Constants.RecordTable.DATE_RECEIVED +" = " + dateReceived + ", "+
 				Constants.RecordTable.DATE_COMPLETED + " = " + dateCompleted + ", " + 
-				RecordTable.ROOM + " = " + room +
+				RecordTable.ROOM + " = " + room + ", " +
+				RecordTable.SPEC_TYPE + " = " + specimenType + 
 					" WHERE " + Constants.RecordTable.REF_NUM + " = " + refNum;
 		Connection conn = null;
 		Statement stmt = null;

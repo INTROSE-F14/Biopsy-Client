@@ -12,7 +12,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Date;
 
 import org.introse.Constants;
 
@@ -101,87 +100,5 @@ public class Client
 				clientSocket.close();
 			return false;
 		}
-	}
-	
-	public void sendLatestVersion(Date latestVersion) throws IOException
-	{
-		try(Socket clientSocket = new Socket(serverAddress, Constants.NetworkConstants.PORT);)
-		{
-			PrintWriter out = null;
-			BufferedReader in = null;
-			
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			out.println("NEW_UPDATE");
-			out.println(latestVersion.getTime());
-			out.println("DONE");
-			if(in != null)
-				in.close();
-			if(out != null)
-				out.close();
-			if(clientSocket != null)
-				clientSocket.close();
-		}
-	}
-	
-	public Date getLatestVersion()
-	{
-		Date lastUpdate = null;
-		try(Socket clientSocket = new Socket(serverAddress, Constants.NetworkConstants.PORT);)
-		{
-			PrintWriter out = null;
-			BufferedReader in = null;
-			
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			
-			out.println("CHECK_UPDATE");
-			String fromHost = in.readLine();
-			lastUpdate = new Date(Long.parseLong(fromHost));
-			out.println("DONE");
-			
-			if(in != null)
-				in.close();
-			if(out != null)
-				out.close();
-			if(clientSocket != null)
-				clientSocket.close();
-		} catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-		return lastUpdate;
-	}
-	
-	//returns true if there is an update;
-	public boolean isUpdateAvailable(Date currentVersion) 
-	{
-		boolean isUpdateAvailable = false;
-		
-		try(Socket clientSocket = new Socket(serverAddress, Constants.NetworkConstants.PORT);)
-		{
-			PrintWriter out = null;
-			BufferedReader in = null;
-			
-			out = new PrintWriter(clientSocket.getOutputStream(), true);
-			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			
-			out.println("CHECK_UPDATE");
-			String fromHost = in.readLine();
-			if(currentVersion.getTime() < Long.parseLong(fromHost))
-				isUpdateAvailable = true;
-			out.println("DONE");
-			
-			if(in != null)
-				in.close();
-			if(out != null)
-				out.close();
-			if(clientSocket != null)
-				clientSocket.close();
-		} catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-		return isUpdateAvailable;
 	}
 }

@@ -18,11 +18,11 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
+import org.introse.core.ListItem;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.MainMenu;
 

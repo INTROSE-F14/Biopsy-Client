@@ -31,6 +31,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 	@Override
 	public Patient get(Patient patient) 
 	{
+		Patient p = null;
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
@@ -44,7 +45,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 			
 			if(result.next())
 			{
-				Patient p = new Patient();
+				p = new Patient();
 				p.putAttribute(PatientTable.PATIENT_ID.toString(),
 						result.getInt(PatientTable.PATIENT_ID.toString()));
 				p.putAttribute(PatientTable.LAST_NAME.toString(), 
@@ -60,7 +61,6 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
 				p.putAttribute(PatientTable.GENDER.toString(), 
 						result.getString(PatientTable.GENDER.toString()));
-				return p;
 			}
 		} catch (ClassNotFoundException | SQLException e) 
 		{e.printStackTrace();}  
@@ -76,7 +76,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
-		return null;
+		return p;
 	}
 
 	

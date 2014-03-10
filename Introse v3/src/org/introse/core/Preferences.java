@@ -52,11 +52,23 @@ public abstract class Preferences
 		}
 	}
 	
-	public static void setDatabase(Database db)
+	public static void setDatabaseName(String name)
 	{
-		serverAddress = db.getURL();
-		databaseName = db.getDatabaseName();
-		username = db.getUsername();
-		password = db.getPassword();
+		Preferences.databaseName = name;
+	}
+	
+	public static void setDatabaseAddress(String ip, int port)
+	{
+		Preferences.serverAddress = "jdbc:mysql:/" + ip + ":" + port + "/";
+	}
+	
+	public static void setDatabaseUsername(String username)
+	{
+		Preferences.username = username;
+	}
+	
+	public static void setDatabasePassword(String password)
+	{
+		Preferences.password = password;
 	}
 }

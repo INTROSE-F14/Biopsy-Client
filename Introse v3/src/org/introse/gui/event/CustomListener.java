@@ -11,9 +11,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import org.introse.Constants;
-import org.introse.ProjectDriver;
 import org.introse.Constants.ActionConstants;
-import org.introse.gui.panel.ListItem;
+import org.introse.ProjectDriver;
+import org.introse.core.ListItem;
 
 
 public class CustomListener implements ActionListener, MouseListener, KeyListener
@@ -109,8 +109,8 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			e.getComponent().setBackground(Color.decode(Constants.StyleConstants.HOVER));
 			if(e.getComponent() instanceof ListItem)
 			{
-				ListItem item = (ListItem)e.getComponent();
-				projectDriver.viewItem(item);
+				ListItem listItem = (ListItem)e.getComponent();
+				projectDriver.viewItem(listItem);
 			}
 		}
 	}

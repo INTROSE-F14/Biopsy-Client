@@ -17,12 +17,11 @@ import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
-import org.introse.core.CustomCalendar;
 import org.introse.core.CytologyRecord;
-import org.introse.core.Database;
 import org.introse.core.Diagnosis;
 import org.introse.core.GynecologyRecord;
 import org.introse.core.HistopathologyRecord;
+import org.introse.core.ListItem;
 import org.introse.core.Patient;
 import org.introse.core.Preferences;
 import org.introse.core.Record;
@@ -42,7 +41,6 @@ import org.introse.gui.form.HistopathologyForm;
 import org.introse.gui.form.PatientForm;
 import org.introse.gui.panel.ContentPanel;
 import org.introse.gui.panel.DetailPanel;
-import org.introse.gui.panel.ListItem;
 import org.introse.gui.panel.PatientPanel;
 import org.introse.gui.panel.RecordPanel;
 import org.introse.gui.window.LoginWindow;
@@ -105,8 +103,10 @@ public class ProjectDriver
 				String dbName = serverInfo[2];
 				int port = Integer.parseInt(serverInfo[3]);
 				String ip = serverInfo[4];
-				Database db = new Database(ip, dbUsername, dbPassword, dbName,port);
-				Preferences.setDatabase(db);
+				Preferences.setDatabaseName(dbName);
+				Preferences.setDatabaseAddress(ip, port);
+				Preferences.setDatabaseUsername(dbUsername);
+				Preferences.setDatabasePassword(dbPassword);
 				loginForm.exit();
 				startMainMenu();
 				break;
@@ -117,11 +117,6 @@ public class ProjectDriver
 				new ErrorDialog("Server Error", "An error occured while trying to connect to the server").showGui();
 				break;
 		}
-	}
-	
-	public Client getClient()
-	{
-		return client;
 	}
 	
 	public void startMainMenu()
@@ -174,19 +169,9 @@ public class ProjectDriver
 		Iterator<Record> i = records.iterator();
 		while(i.hasNext())
 		{
-			Record curRecord = i.next();
-			int patientID = (int)curRecord.getAttribute(Constants.RecordTable.PATIENT_ID);
-			Patient patient = new Patient(patientID);
-			Patient p = (Patient)patientDao.get(patient);
-			String patientName = p.getAttribute(PatientTable.LAST_NAME) + 
-					", " + p.getAttribute(PatientTable.FIRST_NAME) + " " + 
-					p.getAttribute(PatientTable.MIDDLE_NAME);
-			ListItem item = new ListItem((String)curRecord.getAttribute(Constants.RecordTable.REF_NUM),
-					(String)curRecord.getAttribute(Constants.RecordTable.REF_NUM), 
-					(String)curRecord.getAttribute(Constants.RecordTable.SPECIMEN), patientName, 
-					(String)curRecord.getAttribute(Constants.RecordTable.PATHOLOGIST),
-					recordType);
-			recordList.add(item);
+			ListItem listItem = i.next();
+			listItem.initializePanel();
+			recordList.add(listItem);
 		}
 		return recordList;
 	}
@@ -197,37 +182,17 @@ public class ProjectDriver
 		Iterator<Patient> i = patients.iterator();
 		
 		while(i.hasNext())
-		{
-			Patient patient = (Patient)i.next();
-			int patientID = (int)patient.getAttribute(PatientTable.PATIENT_ID);
-			String patientName = patient.getAttribute(PatientTable.LAST_NAME) + 
-					", " + patient.getAttribute(PatientTable.FIRST_NAME) + " " + 
-					patient.getAttribute(PatientTable.MIDDLE_NAME);
-			String gender = (String)patient.getAttribute(PatientTable.GENDER);
-			
-			CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
-			Calendar today = Calendar.getInstance();
-			Calendar bDay = Calendar.getInstance();
-			
-			today.clear();
-			today.set(Calendar.getInstance().get(Calendar.YEAR), 
-					Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DATE));
-			bDay.clear();
-			bDay.set(today.get(Calendar.YEAR), birthday.getMonth(), birthday.getDay());
-			
-			int age = today.get(Calendar.YEAR) - birthday.getYear();
-			if(today.compareTo(bDay) < 0)
-				age--;
-			
-			ListItem item = new ListItem(""+patientID, patientName, gender, "Another header", 
-					age+"", Constants.RecordConstants.PATIENT);
-			patientList.add(item);
+		{	
+			ListItem listItem = i.next();
+			listItem.initializePanel();
+			patientList.add(listItem);
 		}
 		return patientList;
 	}
 	
 	public void refresh()
 	{
+		
 		Record record = new HistopathologyRecord();
 		record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.HISTOPATHOLOGY_RECORD);
 		histopathologyList = generateRecordList(recordDao.search(record), RecordConstants.HISTOPATHOLOGY_RECORD);
@@ -279,50 +244,20 @@ public class ProjectDriver
 		Iterator<ListItem> i = currentList.iterator();
 		while(i.hasNext())
 		{
-			ListItem item = i.next();
-			if(item.getHeader1().toLowerCase().contains(filter.toLowerCase()) || 
-					item.getHeader2().toLowerCase().contains(filter.toLowerCase()) ||
-					item.getSubheader1().toLowerCase().contains(filter.toLowerCase()) ||
-					item.getSubheader2().toLowerCase().contains(filter.toLowerCase()))
-				filteredList.add(item);
+			ListItem listItem = i.next();
+			for(int j = 0; j < listItem.getLabelCount(); j++)
+			if(listItem.getLabel(j).toLowerCase().contains(filter.toLowerCase()))
+			{
+				filteredList.add(listItem);
+				continue;
+			}
 		}
 		return filteredList;
 	}
 	
-	public void viewItem(ListItem item)
+	public void viewItem(ListItem listItem)
 	{
-		Object object = null;
-		String id = item.getID();
-		switch(item.getType())
-		{
-			case Constants.RecordConstants.HISTOPATHOLOGY_RECORD:
-				object = new HistopathologyRecord();
-				((HistopathologyRecord)object).putAttribute(Constants.RecordTable.REF_NUM, id);
-				object = (HistopathologyRecord)recordDao.get((Record)object);
-				break;
-				
-			case Constants.RecordConstants.CYTOLOGY_RECORD:
-				object = new CytologyRecord();
-				((CytologyRecord)object).putAttribute(Constants.RecordTable.REF_NUM, id);
-				object = (CytologyRecord)recordDao.get((Record)object);
-				break;
-			case Constants.RecordConstants.GYNECOLOGY_RECORD:
-				object = new GynecologyRecord();
-				((GynecologyRecord)object).putAttribute(Constants.RecordTable.REF_NUM, id);
-				object = (GynecologyRecord)recordDao.get((Record)object);
-				break;
-			case Constants.RecordConstants.PATIENT:
-				object = new Patient();
-				((Patient)object).putAttribute(PatientTable.PATIENT_ID, Integer.parseInt(id));
-				object = (Patient)patientDao.get((Patient)object);
-				break;
-				
-			case Constants.RecordConstants.OTHERS:
-				 object = new Record();
-				((Record)object).putAttribute(Constants.RecordTable.REF_NUM, id);
-				object = (Record)recordDao.get((Record)object);
-					
-		}
+		Object object = listItem;
 		if(object != null)
 		{
 			if(panel != null && panel instanceof RecordPanel)

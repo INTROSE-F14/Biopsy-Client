@@ -31,6 +31,18 @@ public abstract class Constants
 		public static final int OTHERS = 4;
 	}
 	
+	public abstract class SpecimenTypesTable
+	{
+		public static final String TYPE_ID = "type_id";
+		public static final String TYPE_NAME = "type_name";
+	}
+	
+	public abstract class SpecimenTypesConstants
+	{
+		public static final int CONVENTIONAL_SMEAR = 1;
+		public static final int LIQUID_BASED = 2;
+		public static final int OTHER_SPECS  = 3;
+	}
 	public abstract class TitleConstants
 	{
 		public static final String HISTOPATHOLOGY = "Histopathology";
@@ -43,6 +55,13 @@ public abstract class Constants
 		public static final String PREFERENCES = "Preferences";
 		public static final String RECORDS = "Records";
 		public static final String SEARCH_RESULT = "Search result";
+		public static final String SPEC_TYPE = "Specimen Type";
+		public static final String CONVENTIONAL = "Conventional smear";
+		public static final String LIQUID_BASED = "Liquid based preparation";
+		public static final String OTHERS = "Others";
+		public static final String SPEC_ADEQ = "Specimen Adequacy";
+		public static final String SATISFACTORY = "Satisfactory for evaluation";
+		public static final String UNSATISFACTORY = "Unsatisfactory for evaluation due to";
 		public static final String NILM = "Negative for Intraepithelial Lesion or Malignancy (NILM)";
 		public static final String ECA = "Epithelial Cell Abnormalities";
 		public static final String OMN = "Other Malignant Neoplasms";
@@ -126,6 +145,7 @@ public abstract class Constants
 		public static final String REMARKS = "remarks";
 		public static final String DIAGNOSIS = "diagnosis";
 		public static final String ROOM = "room";
+		public static final String SPEC_TYPE = "specimentype";
 	}
 	
 	public abstract class PatientTable
@@ -163,5 +183,6 @@ public abstract class Constants
 		public static final int OTHER = 7;
 		public static final int SC = 8;
 		public static final int GC = 9;
+		public static final int SA = 10;
 	}
 }

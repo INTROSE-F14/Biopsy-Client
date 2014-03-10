@@ -1,20 +1,26 @@
 package org.introse.core;
 
 
-import java.util.Calendar;
-import java.util.Date;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants;
+import org.introse.Constants.RecordTable;
 
-public class Record 
+public class Record  extends ListItem
 {
 	protected HashMap<String, Object> attributes;
 	
 	public Record()
 	{
+		super();
 		attributes = new HashMap<>();
 	}
 	
@@ -46,6 +52,7 @@ public class Record
 		return attributes;
 	}
 	
+	/*
 	public boolean matches(Record record)
 	{
 		if(record.getClass().equals(getClass()))
@@ -94,7 +101,7 @@ public class Record
 		}
 		return false;
 	}
-	
+	/*
 	@Override
 	public boolean equals(Object b)
 	{
@@ -110,5 +117,92 @@ public class Record
 		if(rId != null && myId != null)
 			return rId.equals(myId);
 		return super.equals(b);
+	}*/
+	
+	public void initializePanel()
+	{
+		JLabel irnLabel = new JLabel("Internal Reference Number"), 
+				pathologistLabel = new JLabel("Pathologist"), 
+				specimenLabel = new JLabel("Specimen"), 
+				physicianLabel = new JLabel("Physician");
+		
+		String label1 = (String)getAttribute(RecordTable.REF_NUM), 
+				label2 = (String)getAttribute(RecordTable.PATHOLOGIST), 
+				label3 = (String)getAttribute(RecordTable.SPECIMEN), 
+				label4 = (String)getAttribute(RecordTable.PHYSICIAN);
+		
+		JLabel irnValue = new JLabel(label1),
+				pathologistValue = new JLabel(label2),
+				physicianValue = new JLabel(label4),
+				specimenValue = new JLabel(label3);
+		irnValue.setFont(irnValue.getFont().deriveFont(Font.BOLD));
+		this.labels.add(label1);
+		this.labels.add(label2);
+		this.labels.add(label3);
+		this.labels.add(label4);
+		setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		setBorder(new EmptyBorder(20,20,20,20));
+		
+		int y = 0;
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.NONE;
+		c.insets = new Insets(0,20,0,20);
+		c.weightx = 0.0;
+		c.gridx = 0;
+		c.gridy = y;
+		add(irnLabel, c);
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1.0;
+		c.gridy = y++;
+		c.gridx = 1;
+		add(irnValue, c);
+		
+		c.anchor = GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.NONE;
+		c.insets = new Insets(0,20,0,20);
+		c.weightx = 0.0;
+		c.gridx = 0;
+		c.gridy = y;
+		add(specimenLabel, c);
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+		c.insets = new Insets(0,0,0,0);
+		c.gridx = 1;
+		c.gridy = y++;
+		add(specimenValue, c);
+		
+		c.anchor = GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.NONE;
+		c.insets = new Insets(0,20,0,20);
+		c.weightx = 0.0;
+		c.gridx = 0;
+		c.gridy = y;
+		add(pathologistLabel, c);
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0,0,0,0);
+		c.weightx = 1.0;
+		c.gridy = y++;
+		c.gridx = 1;
+		add(pathologistValue, c);
+		
+		c.anchor = GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.NONE;
+		c.insets = new Insets(0,20,0,20);
+		c.weightx = 0.0;
+		c.gridx = 0;
+		c.gridy = y;
+		add(physicianLabel, c);
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+		c.insets = new Insets(0,0,0,0);
+		c.gridx = 1;
+		c.gridy = y++;
+		add(physicianValue, c);
 	}
 }

@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants.StyleConstants;
+import org.introse.core.ListItem;
 import org.introse.gui.window.MainMenu;
 
 public class ListProvider {
@@ -65,7 +66,6 @@ public class ListProvider {
 	public void updateList(List<ListItem> list)
 	{
 		listPanel.removeAll();
-
 		CardLayout cl = (CardLayout)container.getLayout();
 		if(list.size() < 1)
 			cl.last(container);
@@ -73,12 +73,13 @@ public class ListProvider {
 		
 		Iterator<ListItem> i = list.iterator();
 		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.LINE_START;
 		int y = 0;
 		while(i.hasNext())
 		{
-			
 			ListItem listItem = i.next();
-			listItem.setPreferredSize(new Dimension(listScroller.getPreferredSize().width - 20,100));
+			listItem.setPreferredSize(new Dimension(listScroller.getPreferredSize().width - 20,listItem.getPreferredSize().height));
 			listItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 			listItem.addListener(listener);
 			c.gridy = y++;
