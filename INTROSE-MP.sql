@@ -29,7 +29,7 @@ CREATE TABLE Records
 (
 	internalReferenceNumber VARCHAR(20) NOT NULL,
 	recordType INT(1) UNSIGNED NOT NULL,
-	specimenType VARCHAR(30) NOT NULL,
+	specimenType INT UNSIGNED NOT NULL,
 	patientID INT UNSIGNED AUTO_INCREMENT NOT NULL,
 	physician VARCHAR(100) NOT NULL,
 	pathologist VARCHAR(100) NOT NULL,
@@ -39,7 +39,8 @@ CREATE TABLE Records
 	remarks VARCHAR(200) NOT NULL,
 	room VARCHAR(15),
 	PRIMARY KEY(internalReferenceNumber),
-	FOREIGN KEY(patientID) REFERENCES Patients(patientID)
+	FOREIGN KEY(patientID) REFERENCES Patients(patientID),
+	FOREIGN KEY(specimenType) REFERENCES SpecimenTypes(type_id)
 );
 
 DROP TABLE IF EXISTS Dictionary;
@@ -70,6 +71,14 @@ CREATE TABLE Diagnosis
 	FOREIGN KEY(internalreferencenumber) REFERENCES Records(internalreferencenumber)
 );
 
+DROP TABLE IF EXISTS SpecimenTypes;
+CREATE TABLE SpecimenTypes
+(
+	type_id INT UNSIGNED,
+	type_name VARCHAR(30) NOT NULL,
+	PRIMARY KEY(type_id)
+);
+
 
 insert into categories values
 (1, 'Negative for Intraepithelial Lesion or Malignancy (NILM)', null),
@@ -82,3 +91,8 @@ insert into categories values
 (8, 'Squamous Cell', 2),
 (9, 'Glandular Cell', 2), 
 (10, 'Specimen Adequacy', null);
+
+insert into specimentypes values
+(1, 'Conventional Smear'),
+(2, 'Liquid Based Preparation'),
+(3, 'Others');
