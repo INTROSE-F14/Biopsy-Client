@@ -168,11 +168,11 @@ public class ContentPanel extends JPanel
 		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 3;
-		topPanel.add(filterField, c);
-		c.gridy = 2;
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets(10,0,0,0);
 		topPanel.add(headerLabel, c);
+		c.gridy = 2;
+		c.insets = new Insets(10,0,0,0);
+		topPanel.add(filterField, c);
 		
 		c.gridx = 0;
 		c.gridy = 0;
