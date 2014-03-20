@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Iterator;
@@ -45,9 +47,32 @@ public class PatientLoader extends JDialog implements KeyListener
 		
 		listPanel = new JPanel(new GridBagLayout());
 		listPanel.setBackground(Color.white);
-		
-		filterField = new JTextField(25);
+		listPanel.requestFocusInWindow();
+		filterField = new JTextField(TitleConstants.QUICK_FILTER, 25);
+		filterField.setForeground(Color.gray);
 		filterField.addKeyListener(this);
+		filterField.addFocusListener(new FocusListener()
+		{
+
+			@Override
+			public void focusGained(FocusEvent e) 
+			{
+				if(((JTextField)e.getComponent()).getText().equals(TitleConstants.QUICK_FILTER))
+					((JTextField)e.getComponent()).setText("");
+				((JTextField)e.getComponent()).setForeground(Color.black);
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) 
+			{
+				if(((JTextField)e.getComponent()).getText().length() < 1)
+				{
+					((JTextField)e.getComponent()).setText("Quick filter");
+					((JTextField)e.getComponent()).setForeground(Color.GRAY);
+				}
+			}
+			
+		});
 		patientList.getScroller().setPreferredSize(new Dimension(patientList.getScroller().getPreferredSize().width + 10,
 				(int)(Preferences.getScreenHeight() * 0.7)));
 		GridBagConstraints c = new GridBagConstraints();

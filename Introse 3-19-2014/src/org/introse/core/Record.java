@@ -110,6 +110,8 @@ public class Record  extends ListItem implements Printable
 	
 	public void initializePanel()
 	{
+		setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.3), 
+				(int)(Preferences.getScreenHeight() * 0.15)));
 		JLabel irnLabel = new JLabel("Internal Reference Number"), 
 				pathologistLabel = new JLabel("Pathologist"), 
 				specimenLabel = new JLabel("Specimen"), 

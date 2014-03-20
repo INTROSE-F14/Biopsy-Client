@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 
 import org.introse.Constants;
 import org.introse.Constants.CategoriesConstants;
+import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
@@ -276,15 +277,20 @@ public class CytologyForm extends JPanel implements Form
 		int monthCompleted = completedDate.getMonth();
 		int yearCompleted = completedDate.getYear();
 
-		if(!(specimenValue.getText().length() > 0))
+		if(!(specimenValue.getText().length() > 0) || 
+				specimenValue.getText().length() > RecordConstants.SPECIMEN_LENGTH)
 			return false;
-		if(!(physicianValue.getText().length() > 0))
+		if(!(physicianValue.getText().length() > 0) || 
+				physicianValue.getText().length() > RecordConstants.PHYSICIAN_LENGTH)
 			return false;
-		if(!(pathologistValue.getText().length() > 0))
+		if(!(pathologistValue.getText().length() > 0) ||
+				pathologistValue.getText().length() > RecordConstants.PATHOLOGIST_LENGTH)
 			return false;
-		if(!(diagnosisValue.getText().length() > 0))
+		if(!(diagnosisValue.getText().length() > 0) ||
+				diagnosisValue.getText().length() > RecordConstants.DIAGNOSIS_LENGTH)
 			return false;
-		if(!(remarksValue.getText().length() > 0))
+		if(!(remarksValue.getText().length() > 0) ||
+				remarksValue.getText().length() > RecordConstants.REMARKS_LENGTH)
 			return false;
 		if((monthReceived == 3 || monthReceived == 5 || 
 				monthReceived == 8 || monthReceived == 10) && dayReceived > 29)

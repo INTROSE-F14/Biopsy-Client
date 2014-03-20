@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.util.Calendar;
 
@@ -15,8 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import org.introse.Constants;
 
+import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.PatientTable;
 import org.introse.core.CustomCalendar;
@@ -35,7 +34,7 @@ public class SearchPatientDialog extends JDialog implements SearchDialog
    
    public SearchPatientDialog()
    {
-	    super(null, "Search Patient", ModalityType.MODELESS);
+	    super(null, "Search Patient", ModalityType.APPLICATION_MODAL);
 	    
         this.p_overall = new JPanel();
 	    this.p_buttonHolder = new JPanel();

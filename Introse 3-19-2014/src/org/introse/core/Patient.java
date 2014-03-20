@@ -107,6 +107,8 @@ public class Patient extends ListItem
 		String label2 = (String)getAttribute(PatientTable.GENDER);
 		setBackground(Color.decode(Constants.StyleConstants.NORMAL));
 		setBorder(new EmptyBorder(20,20,20,20));
+		setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.3), 
+				(int)(Preferences.getScreenHeight() * 0.1)));;
 		
 		this.labels.add(label1);
 		this.labels.add(label2);

@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.introse.Constants;
+import org.introse.Constants.PatientConstants;
 import org.introse.Constants.PatientTable;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
@@ -201,11 +202,14 @@ public class PatientForm extends JPanel implements Form
 		int day= birthday.getDay();
 		int month= birthday.getMonth();
 		int year= birthday.getYear();		
-		if(!(lastNameValue.getText().length() > 0))
+		if(!(lastNameValue.getText().length() > 0) || 
+				lastNameValue.getText().length() > PatientConstants.LAST_NAME_LENGTH)
 			return false;
-		if(!(firstNameValue.getText().length() > 0))
+		if(!(firstNameValue.getText().length() > 0) ||
+				firstNameValue.getText().length() > PatientConstants.FIRST_NAME_LENGTH)
 			return false;
-		if(!(middleNameValue.getText().length() > 0))
+		if(!(middleNameValue.getText().length() > 0) ||
+				middleNameValue.getText().length() > PatientConstants.MIDDLE_NAME_LENGTH)
 			return false;
 		if((month== 3 || month== 5 || 
 				month== 8 || month== 10) && day> 29)

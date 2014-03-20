@@ -1,13 +1,11 @@
 package org.introse.gui.dialogbox;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Dialog.ModalityType;
 import java.util.Calendar;
-import java.awt.Color;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -16,8 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import org.introse.Constants;
 
+import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
@@ -42,7 +40,7 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
 	
    public SearchRecordDialog()
    {
-		super(null, "Search Record", ModalityType.MODELESS);
+		super(null, "Search Record", ModalityType.APPLICATION_MODAL);
 		this.p_overall = new JPanel();
 		this.p_buttonHolder = new JPanel();
 		this.p_container = new JPanel();

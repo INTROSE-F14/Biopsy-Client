@@ -30,6 +30,20 @@ public abstract class Constants
 		public static final int CYTOLOGY_RECORD = 2;
 		public static final int PATIENT = 3;
 		public static final int OTHERS = 4;
+		
+		public static final int SPECIMEN_LENGTH = 50;
+		public static final int PHYSICIAN_LENGTH = 100;
+		public static final int PATHOLOGIST_LENGTH = 100;
+		public static final int REMARKS_LENGTH = 200;
+		public static final int ROOM_LENGTH = 15;
+		public static final int DIAGNOSIS_LENGTH = 200;
+	}
+	
+	public abstract class PatientConstants
+	{
+		public static final int LAST_NAME_LENGTH = 30;
+		public static final int FIRST_NAME_LENGTH = 30;
+		public static final int MIDDLE_NAME_LENGTH = 30;
 	}
 
 	public abstract class TitleConstants
