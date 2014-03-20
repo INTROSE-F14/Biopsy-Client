@@ -4,11 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Rectangle;
+import java.awt.Image;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants.StyleConstants;
+import org.introse.core.Preferences;
 import org.introse.gui.window.MainMenu;
 
 public class ListProvider {
@@ -41,12 +42,18 @@ public class ListProvider {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		listScroller.setBorder(null);
-		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		Rectangle rect = g.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
-		listScroller.setPreferredSize(new Dimension((int)(rect.width * 0.3), (int)(rect.height * 0.7)));
+		listScroller.setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.3), 
+				(int)(Preferences.getScreenHeight()* 0.8)));
+		
+		ImageIcon icon = new ImageIcon(getClass().getResource("/res/icons/empty.png"));
+		BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+		icon.paintIcon(null, image.getGraphics(), 0, 0);
+		Image scaledImage = image.getScaledInstance(image.getWidth() * (Preferences.getScreenWidth() / Preferences.BASE_WIDTH), 
+				image.getHeight() * (Preferences.getScreenHeight() / Preferences.BASE_HEIGHT), 
+				Image.SCALE_FAST);
 		emptyPanel = new JPanel(new BorderLayout());
 		JLabel emptyLabel = new JLabel("No records found");
-		emptyLabel.setIcon(new ImageIcon(getClass().getResource("/res/icons/empty.png")));
+		emptyLabel.setIcon(new ImageIcon(scaledImage));
 		emptyLabel.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.HEADER));
 		emptyLabel.setHorizontalTextPosition(JLabel.CENTER);
 		emptyLabel.setVerticalTextPosition(JLabel.BOTTOM);
@@ -73,14 +80,18 @@ public class ListProvider {
 		Iterator<ListItem> i = list.iterator();
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.anchor = GridBagConstraints.LINE_START;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.weighty = 0.0;
 		int y = 0;
 		while(i.hasNext())
 		{
 			ListItem listItem = i.next();
-			listItem.setPreferredSize(new Dimension(listScroller.getPreferredSize().width - 20,listItem.getPreferredSize().height));
+			listItem.setPreferredSize(new Dimension(listScroller.getPreferredSize().width - 20,
+					listItem.getPreferredSize().height));
 			listItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 			listItem.addListener(listener);
+			if(!i.hasNext())
+				c.weighty = 1.0;
 			c.gridy = y++;
 			listPanel.add(listItem, c);
 		}

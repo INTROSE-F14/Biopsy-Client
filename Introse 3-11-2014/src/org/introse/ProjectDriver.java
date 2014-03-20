@@ -255,7 +255,7 @@ public class ProjectDriver
 		Object object = listItem;
 		if(object != null)
 		{
-			if(panel != null && panel instanceof RecordPanel)
+			if(panel != null && panel instanceof RecordPanel && listItem instanceof Patient)
 				if(panel.getMode() == Constants.ActionConstants.NEW)
 				{
 					loadExistingPatient(object);

@@ -68,11 +68,12 @@ public class MainMenu {
 	{
 		navigationPanel = new NavigationPanel();
 		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.gridheight = 1;
-		c.gridwidth = 1;
-		c.insets = new Insets(20,20,20,20);
+		c.insets = new Insets(100,20,20,20);
 		mainPanel.add(navigationPanel, c);
 	}
 	
@@ -80,12 +81,12 @@ public class MainMenu {
 	{
 		contentPanel = new ContentPanel(this);
 		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
 		c.gridx = 1;
 		c.gridy = 0;
-		c.gridheight = 2;
-		c.gridwidth = 3;
-		c.insets = new Insets(20,20,20,20);
-		mainPanel.add(contentPanel);
+		mainPanel.add(contentPanel, c);
 	}
 	
 	public ContentPanel getContentPanel()

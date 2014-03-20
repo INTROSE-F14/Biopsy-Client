@@ -411,6 +411,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 						result.getString(Constants.RecordTable.SPECIMEN));
 				record.putAttribute(Constants.RecordTable.REMARKS,
 						result.getString(Constants.RecordTable.REMARKS));
+				record.putAttribute(RecordTable.ROOM, result.getString(RecordTable.ROOM));
 				Calendar dateReceived = Calendar.getInstance();
 				Calendar dateCompleted = Calendar.getInstance();
 				dateCompleted.clear();

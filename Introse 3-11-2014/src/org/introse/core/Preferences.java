@@ -17,6 +17,8 @@ package org.introse.core;
  */
 
 
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -24,6 +26,8 @@ import java.io.FileReader;
 
 public abstract class Preferences 
 {
+	public static final int BASE_HEIGHT = 768;
+	public static final int BASE_WIDTH = 1366;
 	public static String serverAddress;
 	public static String databaseName;
 	public static String username;
@@ -70,5 +74,19 @@ public abstract class Preferences
 	public static void setDatabasePassword(String password)
 	{
 		Preferences.password = password;
+	}
+	
+	public static int getScreenWidth()
+	{
+		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Rectangle rect = g.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+		return rect.width;
+	}
+	
+	public static int getScreenHeight()
+	{
+		GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		Rectangle rect = g.getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+		return rect.height;
 	}
 }

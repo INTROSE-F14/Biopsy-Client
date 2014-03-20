@@ -34,11 +34,6 @@ public class ContentPanel extends JPanel
 	private JPanel listPanel;
 	private JPanel settingsPanel;
 	private JPanel detailsPanel;
-	private JPanel histopathologyPanel;
-	private JPanel cytologyPanel;
-	private JPanel gynecologyPanel;
-	private JPanel patientPanel;
-	private JPanel searchPanel;
 	private JButton newButton;
 	private JButton searchButton;
 	private JButton refreshButton;
@@ -153,6 +148,24 @@ public class ContentPanel extends JPanel
 		searchPopup.add(searchPatientMenu);
 		searchPopup.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 		
+		bottomPanel = new JPanel(new CardLayout());
+		bottomPanel.setBackground(Color.white);
+		
+		JPanel pathPanel = new JPanel(new GridLayout(0, 1)); //list for pathologists
+		JPanel physPanel = new JPanel(new GridLayout(0, 1)); //list for physicians
+		JPanel specPanel = new JPanel(new GridLayout(0, 1)); //list for specimens
+		bottomPanel.add(Constants.TitleConstants.HISTOPATHOLOGY, histopathologyList.getPanel());
+		bottomPanel.add(Constants.TitleConstants.GYNECOLOGY, gynecologyList.getPanel());
+		bottomPanel.add(Constants.TitleConstants.CYTOLOGY, cytologyList.getPanel());
+		bottomPanel.add(Constants.TitleConstants.PATIENTS,patientList.getPanel());
+		bottomPanel.add(Constants.TitleConstants.SEARCH_RESULT, searchList.getPanel());
+		bottomPanel.add(Constants.TitleConstants.PATHOLOGISTS, pathPanel);
+		bottomPanel.add(Constants.TitleConstants.PHYSICIANS, physPanel);
+		bottomPanel.add(Constants.TitleConstants.SPECIMENS, specPanel);
+		
+		detailsPanel = new JPanel();
+		detailsPanel.setBackground(Color.white);
+		detailsPanel.setPreferredSize(new Dimension(700,700));
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -174,59 +187,26 @@ public class ContentPanel extends JPanel
 		c.insets = new Insets(10,0,0,0);
 		topPanel.add(headerLabel, c);
 		
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.insets = new Insets(0,0,10,0);
+		c.gridheight = 1;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.gridwidth = 2;
-		c.gridheight = 1;
-		c.insets = new Insets(0,0,10,0);
-		c.fill = GridBagConstraints.BOTH;
 		listPanel.add(topPanel, c);
-		
-		bottomPanel = new JPanel(new CardLayout());
-		bottomPanel.setBackground(Color.white);
-		
-		histopathologyPanel = new JPanel();
-		histopathologyPanel.setBackground(Color.white);
-		histopathologyPanel.add(histopathologyList.getPanel());
-		gynecologyPanel = new JPanel();
-		gynecologyPanel.setBackground(Color.white);
-		gynecologyPanel.add(gynecologyList.getPanel());
-		cytologyPanel = new JPanel();
-		cytologyPanel.setBackground(Color.white);
-		cytologyPanel.add(cytologyList.getPanel());
-		patientPanel = new JPanel();
-		patientPanel.setBackground(Color.white);
-		patientPanel.add(patientList.getPanel());
-		searchPanel = new JPanel();
-		searchPanel.setBackground(Color.white);
-		searchPanel.add(searchList.getPanel());
-		JPanel pathPanel = new JPanel(new GridLayout(0, 1)); //list for pathologists
-		JPanel physPanel = new JPanel(new GridLayout(0, 1)); //list for physicians
-		JPanel specPanel = new JPanel(new GridLayout(0, 1)); //list for specimens
-		bottomPanel.add(Constants.TitleConstants.HISTOPATHOLOGY, histopathologyPanel);
-		bottomPanel.add(Constants.TitleConstants.GYNECOLOGY, gynecologyPanel);
-		bottomPanel.add(Constants.TitleConstants.CYTOLOGY, cytologyPanel);
-		bottomPanel.add(Constants.TitleConstants.PATIENTS,patientPanel);
-		bottomPanel.add(Constants.TitleConstants.SEARCH_RESULT, searchPanel);
-		bottomPanel.add(Constants.TitleConstants.PATHOLOGISTS, pathPanel);
-		bottomPanel.add(Constants.TitleConstants.PHYSICIANS, physPanel);
-		bottomPanel.add(Constants.TitleConstants.SPECIMENS, specPanel);
-		
 		
 		c.gridy = 1;
 		c.gridheight = 2;
 		listPanel.add(bottomPanel, c);
 		
-		detailsPanel = new JPanel();
-		detailsPanel.setBackground(Color.white);
-		detailsPanel.setPreferredSize(new Dimension(700,600));
-		c.gridx = 2;
+		c.gridx = 1;
 		c.gridy = 0;
 		c.gridheight = 3;
+		c.insets = new Insets(0,20,0,0);
 		c.fill = GridBagConstraints.BOTH;
 		listPanel.add(detailsPanel, c);
-		
-		
 	}
 	
 	public void createSettingsPanel()
@@ -357,31 +337,26 @@ public class ContentPanel extends JPanel
 	public void updateHistopathologyList(List<ListItem> list)
 	{
 		histopathologyList.updateList(list);
-		histopathologyPanel.revalidate();
 	}
 	
 	public void updateGynecologyList(List<ListItem> list)
 	{
 		gynecologyList.updateList(list);
-		gynecologyPanel.revalidate();
 	}
 	
 	public void updateCytologyList(List<ListItem> list)
 	{
 		cytologyList.updateList(list);
-		cytologyPanel.revalidate();
 	}
 	
 	public void updatePatientList(List<ListItem> list)
 	{
 		patientList.updateList(list);
-		patientPanel.revalidate();
 	}
 	
 	public void updateSearchList(List<ListItem> list)
 	{
 		searchList.updateList(list);
-		searchPanel.revalidate();
 	}
 	
 	public void setDetailsPanel(JPanel panel)
