@@ -7,7 +7,11 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -20,7 +24,7 @@ import org.introse.gui.event.CustomListener;
 import org.introse.gui.panel.ListItem;
 import org.introse.gui.panel.ListProvider;
 
-public class PatientLoader extends JDialog 
+public class PatientLoader extends JDialog implements KeyListener
 {
 	private ListProvider patientList;
 	private List<ListItem> patients; 
@@ -43,7 +47,7 @@ public class PatientLoader extends JDialog
 		listPanel.setBackground(Color.white);
 		
 		filterField = new JTextField(25);
-		
+		filterField.addKeyListener(this);
 		patientList.getScroller().setPreferredSize(new Dimension(patientList.getScroller().getPreferredSize().width + 10,
 				(int)(Preferences.getScreenHeight() * 0.7)));
 		GridBagConstraints c = new GridBagConstraints();
@@ -69,5 +73,41 @@ public class PatientLoader extends JDialog
 		pack();
 		setResizable(false);
 		setVisible(true);
+	}
+	
+	public List<ListItem> filterList(String filter, List<ListItem> currentList)
+	{
+		if(filter.length() < 1 || filter.equals(TitleConstants.QUICK_FILTER))
+			return currentList;
+		List<ListItem> filteredList = new Vector<ListItem>();
+		Iterator<ListItem> i = currentList.iterator();
+		while(i.hasNext())
+		{
+			ListItem listItem = i.next();
+			for(int j = 0; j < listItem.getLabelCount(); j++)
+				if(listItem.getLabel(j).toLowerCase().contains(filter.toLowerCase()))
+				{
+					filteredList.add(listItem);
+					j = listItem.getLabelCount();
+				}
+		}
+		return filteredList;
+	}
+	
+	@Override
+	public void keyPressed(KeyEvent e) 
+	{
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) 
+	{
+		patientList.updateList(filterList(filterField.getText(), patients));	
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) 
+	{
+			
 	}
 }

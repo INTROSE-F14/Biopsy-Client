@@ -56,15 +56,15 @@ public class ListProvider
 		BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 		icon.paintIcon(null, image.getGraphics(), 0, 0);
 		
-		int scaleWidth = Preferences.getScreenWidth() / Preferences.BASE_WIDTH;;
-		int scaleHeight = Preferences.getScreenHeight() / Preferences.BASE_HEIGHT;
+		float scaleWidth = Preferences.getScreenWidth() / Preferences.BASE_WIDTH;;
+		float scaleHeight = Preferences.getScreenHeight() / Preferences.BASE_HEIGHT;
 		if(scaleWidth > 1)
 			scaleWidth = 1;
 		if(scaleHeight > 1)
 			scaleHeight = 1;
 		
-		Image scaledImage = image.getScaledInstance(image.getWidth() * scaleWidth, 
-				image.getHeight() * scaleHeight, 
+		Image scaledImage = image.getScaledInstance((int)(image.getWidth() * scaleWidth), 
+				(int)(image.getHeight() * scaleHeight), 
 				Image.SCALE_FAST);
 		emptyPanel = new JPanel(new GridBagLayout());
 		JLabel emptyLabel = new JLabel("No records found");
@@ -112,7 +112,7 @@ public class ListProvider
 	{
 		Iterator<ListItem> i = items.iterator();
 		GridBagConstraints c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.CENTER;
+		c.anchor = GridBagConstraints.NORTHWEST;
 		c.weighty = 0.0;
 		c.weightx = 1.0;
 		int y = 0;
