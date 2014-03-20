@@ -32,16 +32,22 @@ public class ListProvider
 	private JScrollPane listScroller;
 	private MouseListener listener;
 	private List<ListItem> list;
+	private int orientation;
 	
-	public ListProvider()
+	public ListProvider(int orientation)
 	{
 		list  = new Vector<ListItem>();
+		this.orientation = orientation;
 		container = new JPanel(new CardLayout());
 		container.setBackground(Color.white);
 		listPanel = new JPanel(new GridBagLayout());
 		listPanel.setBackground(Color.white);
-		listPanel.setBorder(new EmptyBorder(1,1,1,1));
-		listScroller = new JScrollPane(listPanel,
+		listPanel.setBorder(new EmptyBorder(5,0,5,5));
+		if(orientation == SwingConstants.VERTICAL)
+			listScroller = new JScrollPane(listPanel,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		else listScroller = new JScrollPane(listPanel,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		listScroller.setBorder(null);
@@ -50,19 +56,19 @@ public class ListProvider
 		BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 		icon.paintIcon(null, image.getGraphics(), 0, 0);
 		
-		//int scaleWidth = Preferences.getScreenWidth() / Preferences.BASE_WIDTH;;
-		//int scaleHeight = Preferences.getScreenHeight() / Preferences.BASE_HEIGHT;
-		//if(scaleWidth > 1)
-		//	scaleWidth = 1;
-		//if(scaleHeight > 1)
-		//	scaleHeight = 1;
+		int scaleWidth = Preferences.getScreenWidth() / Preferences.BASE_WIDTH;;
+		int scaleHeight = Preferences.getScreenHeight() / Preferences.BASE_HEIGHT;
+		if(scaleWidth > 1)
+			scaleWidth = 1;
+		if(scaleHeight > 1)
+			scaleHeight = 1;
 		
-		//Image scaledImage = image.getScaledInstance(image.getWidth() * scaleWidth, 
-		//		image.getHeight() * scaleHeight, 
-		//		Image.SCALE_FAST);
+		Image scaledImage = image.getScaledInstance(image.getWidth() * scaleWidth, 
+				image.getHeight() * scaleHeight, 
+				Image.SCALE_FAST);
 		emptyPanel = new JPanel(new GridBagLayout());
 		JLabel emptyLabel = new JLabel("No records found");
-	//	emptyLabel.setIcon(new ImageIcon(scaledImage));
+		emptyLabel.setIcon(new ImageIcon(scaledImage));
 		emptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		emptyLabel.setHorizontalTextPosition(JLabel.CENTER);
 		emptyLabel.setVerticalTextPosition(JLabel.BOTTOM);
@@ -92,7 +98,40 @@ public class ListProvider
 			cl.last(container);
 		else cl.first(container);
 		
-		Iterator<ListItem> i = list.iterator();
+		if(orientation == SwingConstants.VERTICAL)
+			generateVerticalList(list);
+		else if(orientation == SwingConstants.HORIZONTAL)
+			generateHorizontalList(list);
+		
+		listPanel.revalidate();
+		listScroller.revalidate();
+		container.revalidate();
+	}
+	
+	private void generateVerticalList(List<ListItem> items)
+	{
+		Iterator<ListItem> i = items.iterator();
+		GridBagConstraints c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.CENTER;
+		c.weighty = 0.0;
+		c.weightx = 1.0;
+		int y = 0;
+		while(i.hasNext())
+		{
+			ListItem listItem = i.next();
+			listItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+			listItem.addListener(listener);
+			c.gridy = y++;
+			c.insets = new Insets(0,5,5,5);
+			if(!i.hasNext())
+				c.weighty = 1.0;
+			listPanel.add(listItem, c);
+		}
+	}
+	
+	private void generateHorizontalList(List<ListItem> items)
+	{
+		Iterator<ListItem> i = items.iterator();
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.weightx = 0.0;
@@ -120,9 +159,6 @@ public class ListProvider
 			else y++;
 			listPanel.add(listItem, c);
 		}
-		listPanel.revalidate();
-		listScroller.revalidate();
-		container.revalidate();
 	}
 	 
 	public JPanel getPanel()
@@ -133,5 +169,10 @@ public class ListProvider
 	public List<ListItem> getList()
 	{
 		return list;
+	}
+	
+	public JScrollPane getScroller()
+	{
+		return listScroller;
 	}
 }

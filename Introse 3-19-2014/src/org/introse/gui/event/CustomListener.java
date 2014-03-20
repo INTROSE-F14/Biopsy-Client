@@ -64,9 +64,10 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			break;
 		case Constants.ActionConstants.NEW_PATIENT:	projectDriver.createNew(Constants.RecordConstants.PATIENT);
 			break;
-		case Constants.ActionConstants.LOAD_PATIENT: projectDriver.changeView(Constants.TitleConstants.PATIENTS, false);
+		case Constants.ActionConstants.LOAD_PATIENT:/* projectDriver.changeView(Constants.TitleConstants.PATIENTS, false);
 									  projectDriver.setSelectedButton(Constants.TitleConstants.PATIENTS);
-									  projectDriver.applyFilter(TitleConstants.PATIENTS);
+									  projectDriver.applyFilter(TitleConstants.PATIENTS);*/
+										projectDriver.openPatientLoad();
 									  break;
 		case Constants.ActionConstants.SEARCH_PATIENT: projectDriver.openPatientSearch();
 			break;

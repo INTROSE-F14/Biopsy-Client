@@ -29,6 +29,7 @@ import org.introse.core.dao.MysqlPatientDao;
 import org.introse.core.dao.MysqlRecordDao;
 import org.introse.core.network.Client;
 import org.introse.gui.dialogbox.ErrorDialog;
+import org.introse.gui.dialogbox.PatientLoader;
 import org.introse.gui.dialogbox.SearchDialog;
 import org.introse.gui.dialogbox.SearchPatientDialog;
 import org.introse.gui.dialogbox.SearchRecordDialog;
@@ -63,6 +64,7 @@ public class ProjectDriver
 	private List<ListItem> searchList;
 	private DetailPanel panel;
 	private SearchDialog searchDialog;
+	private PatientLoader loader;
 	
 	public static void main(String[] args) 
 	{
@@ -175,7 +177,6 @@ public class ProjectDriver
 	{
 		List<ListItem> patientList = new Vector<ListItem>();
 		Iterator<Patient> i = patients.iterator();
-		
 		while(i.hasNext())
 		{	
 			ListItem listItem = i.next();
@@ -385,7 +386,11 @@ public class ProjectDriver
 			}
 			panel.setMode(Constants.ActionConstants.VIEW);
 		}
-		else removeDetailsPanel();
+		else
+		{
+			removeDetailsPanel();
+			mainMenu.getContentPanel().changeView(mainMenu.getContentPanel().getPreviousView());
+		}
 	}
 	
 	public void createNew(int type)
@@ -494,6 +499,7 @@ public class ProjectDriver
 	public void loadExistingPatient(Object patient)
 	{
 		((RecordPanel)panel).getPatientForm().setFields(patient);
+		loader.dispose();
 	}
 	
 	public void openPatientSearch()
@@ -551,5 +557,11 @@ public class ProjectDriver
 		panel.changeView(TitleConstants.SEARCH_RESULT);
 		removeDetailsPanel();
 		setSelectedButton("");
+	}
+	
+	public void openPatientLoad()
+	{
+		loader = new PatientLoader(patientList, listener);
+		loader.showGUI();
 	}
 }

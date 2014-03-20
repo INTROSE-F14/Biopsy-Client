@@ -255,6 +255,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		String refNum;
 		if((refNum = (String)record.getAttribute(Constants.RecordTable.REF_NUM)) != null)
 		{
+			refNum = refNum.replace("%", "\\%");
 			sql = sql.concat(RecordTable.REF_NUM + " LIKE '%" + refNum + "%'");
 			whereCount++;
 		}
@@ -266,6 +267,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		String specimen;
 		if((specimen = (String)record.getAttribute(Constants.RecordTable.SPECIMEN)) != null)
 		{
+			specimen = specimen.replace("%", "\\%");
 			sql = sql.concat(RecordTable.SPECIMEN + " LIKE '%" + specimen +"%'");
 			whereCount++;
 		}
@@ -277,6 +279,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		String pathologist;
 		if((pathologist = (String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)) != null)
 		{
+			pathologist = pathologist.replace("%", "\\%");
 			sql = sql.concat(RecordTable.PATHOLOGIST + " LIKE '%" + pathologist + "%'");
 			whereCount++;
 		}
@@ -288,6 +291,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		String physician;
 		if((physician = (String)record.getAttribute(Constants.RecordTable.PHYSICIAN)) != null)
 		{
+			physician = physician.replace("%", "\\%");
 			sql = sql.concat(RecordTable.PHYSICIAN + " LIKE '%" + physician + "%'");
 			whereCount++;
 		}
@@ -299,6 +303,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		String room;
 		if((room = (String)record.getAttribute(Constants.RecordTable.ROOM)) != null)
 		{
+			room = room.replace("%", "\\%");
 			sql = sql.concat(RecordTable.ROOM + " LIKE '%" + room + "%'");
 			whereCount++;
 		}

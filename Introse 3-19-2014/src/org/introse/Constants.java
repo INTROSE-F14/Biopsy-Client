@@ -95,6 +95,7 @@ public abstract class Constants
 		public static final String GLANDULAR3BOX4 = "not otherwise specified (NOS)";
 		public static final String QUICK_FILTER = "Quick filter";
 		public static final String DETAIL_PANEL = "Detail panel";
+		public static final String LOAD_PATIENT = "Load patient";
 	}
 	
 	public abstract class ActionConstants

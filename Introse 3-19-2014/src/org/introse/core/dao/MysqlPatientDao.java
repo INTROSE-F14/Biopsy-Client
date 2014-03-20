@@ -128,6 +128,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		String lastName;
 		if((lastName = (String)patient.getAttribute(Constants.PatientTable.LAST_NAME)) != null)
 		{
+			lastName = lastName.replace("%", "\\%");
 			sql = sql.concat(PatientTable.LAST_NAME + " LIKE '%" + lastName + "%'");
 			whereCount++;
 		}
@@ -140,6 +141,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		String firstName;
 		if((firstName = (String)patient.getAttribute(Constants.PatientTable.FIRST_NAME)) != null)
 		{
+			firstName = firstName.replace("%", "\\%");
 			sql = sql.concat(PatientTable.FIRST_NAME + " LIKE '%" + firstName +"%'");
 			whereCount++;
 		}
@@ -151,6 +153,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		String middleName;
 		if((middleName = (String)patient.getAttribute(Constants.PatientTable.MIDDLE_NAME)) != null)
 		{
+			middleName.replace("%", "\\%");
 			sql = sql.concat(PatientTable.MIDDLE_NAME + " LIKE '%" + middleName + "%'");
 			whereCount++;
 		}
