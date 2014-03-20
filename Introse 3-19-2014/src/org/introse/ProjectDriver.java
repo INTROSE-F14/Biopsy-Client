@@ -263,6 +263,12 @@ public class ProjectDriver
 		Object object = listItem;
 		if(object != null)
 		{
+			if(searchDialog != null && listItem instanceof Patient)
+			{
+				Patient patient = (Patient)object;
+				//use patient for search kayo na bahala :)
+				return;
+			}
 			if(panel != null && panel instanceof RecordPanel && listItem instanceof Patient)
 				if(panel.getMode() == Constants.ActionConstants.NEW)
 				{
