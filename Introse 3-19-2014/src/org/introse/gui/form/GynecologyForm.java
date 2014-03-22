@@ -766,16 +766,16 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		int monthCompleted = completedDate.getMonth();
 		int yearCompleted = completedDate.getYear();
 
-		if(!(specimenValue.getText().length() > 0) || 
+		if(!(specimenValue.getText().replaceAll("\\s","").length() > 0) || 
 				specimenValue.getText().length() > RecordConstants.SPECIMEN_LENGTH)
 			return false;
-		if(!(physicianValue.getText().length() > 0) || 
+		if(!(physicianValue.getText().replaceAll("\\s","").length() > 0) || 
 				physicianValue.getText().length() > RecordConstants.PHYSICIAN_LENGTH)
 			return false;
-		if(!(pathologistValue.getText().length() > 0) ||
+		if(!(pathologistValue.getText().replaceAll("\\s","").length() > 0) ||
 				pathologistValue.getText().length() > RecordConstants.PATHOLOGIST_LENGTH)
 			return false;
-		if(!(remarksValue.getText().length() > 0) ||
+		if(!(remarksValue.getText().replaceAll("\\s","").length() > 0) ||
 				remarksValue.getText().length() > RecordConstants.REMARKS_LENGTH)
 			return false;
 		if((monthReceived == 3 || monthReceived == 5 || 
