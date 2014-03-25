@@ -39,11 +39,11 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 		case Constants.TitleConstants.PHYSICIANS:
 		case Constants.TitleConstants.SPECIMENS:
 		case Constants.TitleConstants.PREFERENCES:
-			projectDriver.changeView(actionCommand, true);
+			projectDriver.changeView(actionCommand);
 			projectDriver.setSelectedButton(e.getSource());
 			projectDriver.applyFilter(actionCommand);
 			break;
-		case Constants.ActionConstants.REFRESH: projectDriver.refresh();
+		case Constants.ActionConstants.REFRESH: projectDriver.refresh(null);
 												projectDriver.removeDetailsPanel();
 			break;
 		case Constants.ActionConstants.LOG_OUT: projectDriver.logout();
@@ -76,9 +76,10 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 		case ActionConstants.SEARCH: projectDriver.displaySearchResult();
 			break;
         case Constants.ActionConstants.CLEAR: projectDriver.clearSearchFields();
+        break;
+        case ActionConstants.BACK: projectDriver.changeView(projectDriver.getPreviousView());
 		}
 	}
-
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {}

@@ -2,21 +2,16 @@ package org.introse.gui.form;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -25,45 +20,32 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 import org.introse.Constants;
 import org.introse.Constants.CategoriesConstants;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
-import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
-import org.introse.core.CustomCalendar;
 import org.introse.core.Diagnosis;
 import org.introse.core.GynecologyRecord;
+import org.introse.core.Patient;
 import org.introse.core.Record;
-import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
+import org.introse.gui.panel.PageViewer;
+import org.introse.gui.panel.RecordOverview;
 import org.introse.gui.window.MainMenu;
 
 
-public class GynecologyForm extends JPanel implements Form, ActionListener
+public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 {
-	private JTextField refNumberValue;
-	private JTextField specimenValue;
-	private JTextField physicianValue;
-	private JTextField pathologistValue;
-	private JTextField roomValue;
-	private JTextArea remarksValue;
-	private JScrollPane remarksScroller;
+	private PageViewer pv;
+	private JPanel findingsPanel;
+	private JTextArea remarksValue, grossDescValue, microNoteValue;
+	private JScrollPane remarksScroller, grossDescScroller, 
+	microNoteScroller;
+	private JLabel remarksLabel, grossDescLabel, microNoteLabel;
+	private RecordOverview overviewPanel;
 	private JScrollPane omnScroller;
-	
-	private JLabel refNumberLabel;
-	private JLabel specimenLabel;
-	private JLabel physicianLabel;
-	private JLabel pathologistLabel;
-	private JLabel dateReceivedLabel;
-	private JLabel dateCompletedLabel;
-	private JLabel remarksLabel;
-	private JLabel roomLabel;
-	private DatePicker receivedDate;
-	private DatePicker completedDate;
-	private JPanel insidePanel;
 	private JPanel diagnosisPanel;
 	
 	private JLabel specimenTypeLabel;
@@ -98,17 +80,11 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 	private JRadioButton glandular1, glandular2, glandular3;
 	private JComboBox<String> glandular1Box, glandular3Box;
 	private JTextArea omnArea;
-	private JButton showDiagnosis;
-	private ImageIcon collapse;
-	private ImageIcon uncollapse;
 	
 	public GynecologyForm()
 	{
 		super(new GridBagLayout());
 		setBackground(Color.white);
-		setBorder(BorderFactory.createTitledBorder(BorderFactory.createTitledBorder
-				(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-				"Record Information")));
 		initializeComponents();
 		layoutComponents();
 		updateButtons();
@@ -118,103 +94,30 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		int y = 0;
-		c.anchor = GridBagConstraints.CENTER;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.LINE_START;
 		c.gridy = y++;
-		c.gridwidth = 2;
 		c.insets = new Insets(0,0,0,0);
-		insidePanel.add(refNumberValue, c);
-		c.fill = GridBagConstraints.NONE;
-		c.gridx = 0;
+		findingsPanel.add(remarksLabel, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
-		insidePanel.add(refNumberLabel, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridwidth = 1;
-		c.gridy = y;
-		c.insets = new Insets(0,0,0,10);
-		insidePanel.add(roomValue, c);
-		c.gridx = 1;
+		findingsPanel.add(remarksScroller, c);
 		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
-		insidePanel.add(specimenValue, c);
-		c.fill = GridBagConstraints.NONE;
-		c.gridx = 0;
-		c.gridy = y;
-		c.insets = new Insets(0,0,10,10);
-		insidePanel.add(roomLabel, c);
-		c.gridx = 1;
+		findingsPanel.add(microNoteLabel, c);
 		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
-		insidePanel.add(specimenLabel, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = y;
-		c.insets = new Insets(0,0,0,10);
-		insidePanel.add(pathologistValue, c);
-		c.gridx = 1;
+		findingsPanel.add(microNoteScroller, c);
 		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
-		insidePanel.add(physicianValue, c);
-		c.fill = GridBagConstraints.NONE;
-		c.gridx = 0;
-		c.gridy = y;
-		c.insets = new Insets(0,0,10,10);
-		insidePanel.add(pathologistLabel, c);
-		c.gridx = 1;
+		findingsPanel.add(grossDescLabel, c);
 		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
-		insidePanel.add(physicianLabel, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridy = y;
-		c.gridx = 0;
-		c.insets = new Insets(0,0,0,10);
-		insidePanel.add(receivedDate, c);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.insets = new Insets(0,0,0,0);
-		insidePanel.add(completedDate, c);
-		c.fill = GridBagConstraints.NONE;
-		c.gridy = y;
-		c.gridx = 0;
-		c.insets = new Insets(0,0,10,10);
-		insidePanel.add(dateReceivedLabel, c);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.insets = new Insets(0,0,10,0);
-		insidePanel.add(dateCompletedLabel, c);
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(0,0,0,0);
-		c.anchor = GridBagConstraints.CENTER;
-		insidePanel.add(showDiagnosis, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		c.insets = new Insets(0,0,10,0);
-		insidePanel.add(diagnosisPanel, c);
-		c.fill = GridBagConstraints.NONE;
-		c.gridy = y++;
-		c.gridx = 0;
-		c.gridwidth = 1;
-		c.insets = new Insets(0,0,0,0);
-		insidePanel.add(remarksLabel, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = y++;
-		c.gridwidth = 2;
-		insidePanel.add(remarksScroller, c);
-		
-		c.gridx = 0;
-		c.gridy = 0;
-		c.insets = new Insets(20,20,20,20);
-		add(insidePanel, c);
+		findingsPanel.add(grossDescScroller, c);
 		
 		
-		y = 0;
+		y= 0 ;
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.NONE;
@@ -236,12 +139,10 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		diagnosisPanel.add(satisfactory, c);
 		c.gridy = y++;
 		diagnosisPanel.add(unsatisfactory, c);
-		c.gridx = 1;
-		c.insets = new Insets(0,5,0,0);
+		c.gridy = y++;
+		c.insets = new Insets(0,20,0,0);
 		diagnosisPanel.add(unsatisfactoryDueTo, c);
 		///////////////////////////
-		c.gridwidth = 5;
-		c.gridx = 0;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
 		diagnosisPanel.add(nilm, c);
@@ -281,6 +182,8 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		c.insets = new Insets(0,40,0,0);
 		diagnosisPanel.add(other1, c);
 		
+		y = 0;
+		c.gridx = 1;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
 		diagnosisPanel.add(eca, c);
@@ -326,44 +229,55 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		c.insets = new Insets(0,0,0,0);
 		diagnosisPanel.add(omn, c);
 		c.gridy = y++;
+		c.fill = GridBagConstraints.BOTH;
+		c.gridheight = 8;
+		c.insets = new Insets(0,0,10,0);
 		diagnosisPanel.add(omnScroller, c);
+		
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridheight = 2;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		add(pv, c);
 	}
 	
 	private void initializeComponents()
 	{	
-		collapse = new ImageIcon(getClass().getResource("/res/icons/collapse.png"));
-		uncollapse = new ImageIcon(getClass().getResource("/res/icons/uncollapse.png"));
-		insidePanel = new JPanel(new GridBagLayout());
-		insidePanel.setBackground(Color.white);
-		refNumberLabel = new JLabel("Internal Reference Number");
-		specimenLabel = new JLabel("Specimen(s)");
-		physicianLabel = new JLabel("Physician");
-		pathologistLabel = new JLabel("Pathologist");
-		dateReceivedLabel = new JLabel("Date Recieved");
-		dateCompletedLabel = new JLabel("Date Completed");
-		roomLabel = new JLabel("Patient's Room");
-		showDiagnosis= new JButton("Interpretation and Result");
-		showDiagnosis.setIcon(collapse);
-		showDiagnosis.setBorderPainted(false);
-		showDiagnosis.setContentAreaFilled(false);
-		showDiagnosis.setHorizontalTextPosition(SwingConstants.LEADING);
-		showDiagnosis.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.HEADER));
-		showDiagnosis.setOpaque(true);
-		showDiagnosis.setBackground(Color.white);
-		showDiagnosis.setIconTextGap(10);
-		remarksLabel = new JLabel("Remarks");
-		
-		refNumberValue= new JTextField(15);
-		refNumberValue.setEditable(false);
-		specimenValue= new JTextField(15);
-		physicianValue= new JTextField(15);
-		pathologistValue= new JTextField(15);
-		remarksValue= new JTextArea(3,30);
-		roomValue = new JTextField(15);
-		
+		overviewPanel = new RecordOverview(RecordConstants.GYNECOLOGY_RECORD);
+		overviewPanel.setBackground(Color.white);
+		findingsPanel = new JPanel(new GridBagLayout());
+		findingsPanel.setBackground(Color.white);
 		diagnosisPanel = new JPanel(new GridBagLayout());
 		diagnosisPanel.setBackground(Color.white);
 		diagnosisPanel.setBorder(null);
+		List<JPanel> pages = new Vector<JPanel>();
+		List<String> titles = new Vector<String>();
+		pages.add(overviewPanel);
+		pages.add(findingsPanel);
+		pages.add(diagnosisPanel);
+		titles.add(TitleConstants.RECORD_OVERVIEW);
+		titles.add(TitleConstants.RESULTS);
+		titles.add(TitleConstants.RESULTS);
+		pv = new PageViewer(pages, titles, 0);
+		remarksLabel = new JLabel("Remarks");
+		grossDescLabel = new JLabel("Gross Description");
+		microNoteLabel = new JLabel("Microscopic Notes");
+		grossDescValue = new JTextArea(5,40);
+		microNoteValue = new JTextArea(5,40);
+		remarksValue= new JTextArea(5,40);
+		remarksScroller = new JScrollPane(remarksValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		grossDescScroller = new JScrollPane(grossDescValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		microNoteScroller = new JScrollPane(microNoteValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		remarksValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		grossDescValue.setFont(remarksValue.getFont());
+		microNoteValue.setFont(remarksValue.getFont());
 		nilm = new JCheckBox(TitleConstants.NILM);
 		eca = new JCheckBox(TitleConstants.ECA);
 		omn = new JCheckBox(TitleConstants.OMN);
@@ -481,58 +395,12 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		omnScroller = new JScrollPane(omnArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		omnScroller.setPreferredSize(new Dimension(500, 70));
-		remarksScroller = new JScrollPane(remarksValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		remarksScroller.setPreferredSize(new Dimension(500, 70));
-		refNumberValue.setHorizontalAlignment(JTextField.CENTER);
-		refNumberValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Font.BOLD).deriveFont(Constants.StyleConstants.SUBHEADER));
-		specimenValue.setHorizontalAlignment(JTextField.CENTER);
-		specimenValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-		physicianValue.setHorizontalAlignment(JTextField.CENTER);
-		physicianValue.setFont(specimenValue.getFont());
-		pathologistValue.setHorizontalAlignment(JTextField.CENTER);
-		pathologistValue.setFont(specimenValue.getFont());
-		remarksValue.setFont(specimenValue.getFont());
-		roomValue.setFont(specimenValue.getFont());
-		roomValue.setHorizontalAlignment(JTextField.CENTER);
-		receivedDate = new DatePicker(50);
-		completedDate = new DatePicker(50);
-		receivedDate.setPickerFont(specimenValue.getFont());
-		completedDate.setPickerFont(specimenValue.getFont());
-
-		Calendar c = Calendar.getInstance();
-		receivedDate.setDate(c);
-		completedDate.setDate(c);
-		diagnosisPanel.setVisible(false);
 	}
 	
-	public void setFields(Object object)
+	public void setFields(Record record, Patient patient)
 	{	
-		Record record = (Record)object;
-		String refNumber = (String)record.getAttribute(RecordTable.REF_NUM.toString());
-		String specimen = (String)record.getAttribute(RecordTable.SPECIMEN.toString());
-		String physician = (String)record.getAttribute(RecordTable.PHYSICIAN.toString());
-		String pathologist = (String)record.getAttribute(RecordTable.PATHOLOGIST.toString());
-		String room = (String)record.getAttribute(RecordTable.ROOM);
-		
-		if(refNumber != null)
-			refNumberValue.setText(refNumber);
-		if(specimen != null)
-			specimenValue.setText(specimen);
-		if(physician != null)
-			physicianValue.setText(physician);
-		if(pathologist != null)
-			pathologistValue.setText(pathologist);
-		if(room!= null)
-			roomValue.setText(room);
-		
-		CustomCalendar dateReceived = (CustomCalendar)record.getAttribute(RecordTable.DATE_RECEIVED);
-		if(dateReceived != null)
-			receivedDate.setDate(dateReceived);
-		
-		CustomCalendar dateCompleted = (CustomCalendar)record.getAttribute(RecordTable.DATE_COMPLETED);
-		if(dateCompleted != null)
-			completedDate.setDate(dateCompleted);
+		overviewPanel.setRecordFields(record);
+		overviewPanel.setPatientFields(patient);
 		
 		if(record.getAttribute(RecordTable.SPEC_TYPE) != null)
 		switch((String)record.getAttribute(RecordTable.SPEC_TYPE))
@@ -672,21 +540,16 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 				}
 			}
 		}
-		String remarks = (String)record.getAttribute(RecordTable.REMARKS.toString());
+		String remarks = (String)record.getAttribute(RecordTable.REMARKS);
 		if(remarks != null)
 		remarksValue.setText(remarks);
 		updateButtons();
 	}
-	
-	public void setEditable(boolean isEditable)
+	@Override
+	public void setRecordEditable(boolean isEditable)
 	{
-		receivedDate.setEnabled(isEditable);
-		completedDate.setEnabled(isEditable);
-		specimenValue.setEditable(isEditable);
-		physicianValue.setEditable(isEditable);
-		pathologistValue.setEditable(isEditable);
+		overviewPanel.setRecordEditable(isEditable);
 		remarksValue.setEditable(isEditable);
-		roomValue.setEditable(isEditable);
 		nilm.setEnabled(isEditable);
 		eca.setEnabled(isEditable);
 		omn.setEnabled(isEditable);
@@ -695,7 +558,14 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		conventionalSmear.setEnabled(isEditable);
 		liquidBased.setEnabled(isEditable);
 		others.setEnabled(isEditable);
+		grossDescValue.setEditable(isEditable);
+		microNoteValue.setEditable(isEditable);
 		updateButtons();
+	}
+	@Override
+	public void setPatientEditable(boolean isEditable)
+	{
+		overviewPanel.setPatientEditable(isEditable);
 	}
 	
 	public void updateButtons()
@@ -759,40 +629,10 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 	
 	public boolean areFieldsValid()
 	{
-		int dayReceived = receivedDate.getDay();
-		int monthReceived = receivedDate.getMonth();
-		int yearReceived = receivedDate.getYear();
-		int dayCompleted = completedDate.getDay();
-		int monthCompleted = completedDate.getMonth();
-		int yearCompleted = completedDate.getYear();
-
-		if(!(specimenValue.getText().replaceAll("\\s","").length() > 0) || 
-				specimenValue.getText().length() > RecordConstants.SPECIMEN_LENGTH)
+		if(!overviewPanel.areFieldsValid())
 			return false;
-		if(!(physicianValue.getText().replaceAll("\\s","").length() > 0) || 
-				physicianValue.getText().length() > RecordConstants.PHYSICIAN_LENGTH)
-			return false;
-		if(!(pathologistValue.getText().replaceAll("\\s","").length() > 0) ||
-				pathologistValue.getText().length() > RecordConstants.PATHOLOGIST_LENGTH)
-			return false;
-		if(!(remarksValue.getText().replaceAll("\\s","").length() > 0) ||
+		if(!(remarksValue.getText().length() > 0) ||
 				remarksValue.getText().length() > RecordConstants.REMARKS_LENGTH)
-			return false;
-		if((monthReceived == 3 || monthReceived == 5 || 
-				monthReceived == 8 || monthReceived == 10) && dayReceived > 29)
-			return false;
-		if((monthCompleted == 3 || monthCompleted == 5 || 
-				monthCompleted == 8 || monthCompleted == 10) && dayCompleted > 29)
-			return false;
-		if(monthCompleted == 1 && !(yearCompleted % 4 == 0 && yearCompleted % 100 != 0 || yearCompleted % 400 == 0) 
-				&& dayCompleted > 27)
-			return false;
-		if(monthReceived == 1 && !(yearReceived % 4 == 0 && yearReceived % 100 != 0 || yearReceived % 400 == 0) 
-				&& dayReceived > 27)
-			return false;
-		if(monthCompleted == 1 && dayCompleted > 28)
-			return false;
-		if(monthReceived == 1 && dayReceived > 28)
 			return false;
 		if(!conventionalSmear.isSelected() && !liquidBased.isSelected() && !others.isSelected())
 			return false;
@@ -846,112 +686,15 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		return true;
 	}
 	
-	public Object getObject()
-	{
-		String referenceNumber = refNumberValue.getText();
-		Record record = new GynecologyRecord();
-		record.putAttribute(RecordTable.REF_NUM.toString(), referenceNumber);
-		record.putAttribute(RecordTable.SPECIMEN.toString(), specimenValue.getText());
-		record.putAttribute(RecordTable.PATHOLOGIST.toString(), pathologistValue.getText());
-		record.putAttribute(RecordTable.PHYSICIAN.toString(), physicianValue.getText());
-		record.putAttribute(RecordTable.REMARKS.toString(), remarksValue.getText());
-		record.putAttribute(RecordTable.RECORD_TYPE.toString(), Constants.RecordConstants.GYNECOLOGY_RECORD);
-		if(roomValue.getText().replaceAll("\\s", "").length() > 0)
-			record.putAttribute(RecordTable.ROOM, roomValue.getText());
-		CustomCalendar dateReceived = new CustomCalendar();
-		int dayReceived = receivedDate.getDay();
-		int monthReceived = receivedDate.getMonth();
-		int yearReceived = receivedDate.getYear();
-		dateReceived.set(monthReceived, dayReceived, yearReceived);
-		
-		CustomCalendar dateCompleted = new CustomCalendar();
-		int dayCompleted = completedDate.getDay();
-		int monthCompleted = completedDate.getMonth();
-		int yearCompleted = completedDate.getYear();
-		dateCompleted.set(monthCompleted, dayCompleted, yearCompleted);
-		record.putAttribute(RecordTable.DATE_RECEIVED.toString(), dateReceived);
-		record.putAttribute(RecordTable.DATE_COMPLETED.toString(), dateCompleted);
-		
-		String specimenType = TitleConstants.OTHERS;
-		if(conventionalSmear.isSelected())
-			specimenType = TitleConstants.CONVENTIONAL;
-		else if(liquidBased.isSelected())
-			specimenType = TitleConstants.LIQUID_BASED;
-		record.putAttribute(RecordTable.SPEC_TYPE, specimenType);
-		
-		List<Diagnosis> diagnosisList = new Vector<Diagnosis>();
-		if(satisfactory.isSelected())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.SA, satisfactory.getText(), referenceNumber));
-		else if(unsatisfactory.isSelected())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.SA, 
-					unsatisfactory.getText() + " " + unsatisfactoryDueTo.getText(), referenceNumber));
-		
-		if(org1.isSelected() && org1.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org1.getText(), referenceNumber));
-		else if(org2.isSelected() && org2.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org2.getText(), referenceNumber));
-		else if(org3.isSelected() && org3.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org3.getText(), referenceNumber));
-		else if(org4.isSelected() && org4.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org4.getText(), referenceNumber));
-		else if(org5.isSelected() && org5.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org5.getText(), referenceNumber));
-		
-		if(onf1.isSelected() && onf1.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.ONF, 
-					onf1.getText() + " " + onf1Box.getSelectedItem(), referenceNumber));
-		else if(onf2.isSelected() && onf2.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.ONF, onf2.getText(), referenceNumber));
-		else if(onf3.isSelected() && onf3.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.ONF, onf3.getText(), referenceNumber));
-		
-		if(other1.isSelected() && other1.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.OTHER, other1.getText(), referenceNumber));
-		
-		if(squamous1.isSelected() && squamous1.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.SC, 
-					squamous1.getText() + " " + squamous1Box.getSelectedItem(), referenceNumber));
-		else if(squamous2.isSelected() && squamous2.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.SC, squamous2.getText(), referenceNumber));
-		else if(squamous3.isSelected() && squamous3.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.SC, 
-				squamous3.getText() + " " + squamous3Box.getSelectedItem(), referenceNumber));
-		else if(squamous4.isSelected() && squamous4.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.SC, squamous4.getText(), referenceNumber));
-		
-		if(glandular1.isSelected() && glandular1.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.GC, 
-					glandular1.getText() + " " + glandular1Box.getSelectedItem(), referenceNumber));
-		else if(glandular2.isSelected() && glandular2.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.GC, glandular2.getText(), referenceNumber));
-		if(glandular3.isSelected() && glandular3.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.GC, 
-					glandular3.getText() + " " + glandular3Box.getSelectedItem(), referenceNumber));
-		
-		if(omn.isSelected() && omn.isEnabled())
-			diagnosisList.add(new Diagnosis(CategoriesConstants.OMN, omnArea.getText(), referenceNumber));
-		record.putAttribute(RecordTable.DIAGNOSIS, diagnosisList);
-		return record;
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
-		if(e.getSource().equals(showDiagnosis))
-		{
-			diagnosisPanel.setVisible(!diagnosisPanel.isVisible());
-			revalidate();
-			if(diagnosisPanel.isVisible())
-				showDiagnosis.setIcon(uncollapse);
-			else showDiagnosis.setIcon(collapse);
-		}
-		else updateButtons();
+		updateButtons();
 	}
 
 	@Override
 	public void addListener(CustomListener listener) 
 	{
-		showDiagnosis.addMouseListener(listener);
 		nilm.addActionListener(this);
 		eca.addActionListener(this);
 		omn.addActionListener(this);
@@ -972,9 +715,9 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		glandular1.addActionListener(this);
 		glandular2.addActionListener(this);
 		glandular3.addActionListener(this);
-		showDiagnosis.addActionListener(this);
 		unsatisfactory.addActionListener(this);
-		satisfactory.addActionListener(this);
+		satisfactory.addActionListener(this);	
+		overviewPanel.addListener(listener);
 	}
 	
 	public void resetButtons()
@@ -995,5 +738,92 @@ public class GynecologyForm extends JPanel implements Form, ActionListener
 		omnArea.setText("");
 		saGroup.clearSelection();
 	}
+
+	@Override
+	public Record getRecord() 
+	{
+		Record record = (GynecologyRecord)overviewPanel.getRecord();
+		String referenceNumber = (String)record.getAttribute(RecordTable.REF_NUM);
+		String specimenType = TitleConstants.OTHERS;
+		if(conventionalSmear.isSelected())
+			specimenType = TitleConstants.CONVENTIONAL;
+		else if(liquidBased.isSelected())
+			specimenType = TitleConstants.LIQUID_BASED;
+		record.putAttribute(RecordTable.SPEC_TYPE, specimenType);
+		
+		List<Diagnosis> diagnosisList = new Vector<Diagnosis>();
+		if(satisfactory.isSelected())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.SA, satisfactory.getText()));
+		else if(unsatisfactory.isSelected())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.SA, 
+					unsatisfactory.getText() + " " + unsatisfactoryDueTo.getText()));
+		
+		if(org1.isSelected() && org1.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org1.getText()));
+		else if(org2.isSelected() && org2.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org2.getText()));
+		else if(org3.isSelected() && org3.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org3.getText()));
+		else if(org4.isSelected() && org4.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org4.getText()));
+		else if(org5.isSelected() && org5.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.ORGANISMS, org5.getText()));
+		
+		if(onf1.isSelected() && onf1.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.ONF, 
+					onf1.getText() + " " + onf1Box.getSelectedItem()));
+		else if(onf2.isSelected() && onf2.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.ONF, onf2.getText()));
+		else if(onf3.isSelected() && onf3.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.ONF, onf3.getText()));
+		
+		if(other1.isSelected() && other1.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.OTHER, other1.getText()));
+		
+		if(squamous1.isSelected() && squamous1.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.SC, 
+					squamous1.getText() + " " + squamous1Box.getSelectedItem()));
+		else if(squamous2.isSelected() && squamous2.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.SC, squamous2.getText()));
+		else if(squamous3.isSelected() && squamous3.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.SC, 
+				squamous3.getText() + " " + squamous3Box.getSelectedItem()));
+		else if(squamous4.isSelected() && squamous4.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.SC, squamous4.getText()));
+		
+		if(glandular1.isSelected() && glandular1.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.GC, 
+					glandular1.getText() + " " + glandular1Box.getSelectedItem()));
+		else if(glandular2.isSelected() && glandular2.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.GC, glandular2.getText()));
+		if(glandular3.isSelected() && glandular3.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.GC, 
+					glandular3.getText() + " " + glandular3Box.getSelectedItem()));
+		
+		if(omn.isSelected() && omn.isEnabled())
+			diagnosisList.add(new Diagnosis(CategoriesConstants.OMN, omnArea.getText()));
+		record.putAttribute(RecordTable.DIAGNOSIS, diagnosisList);
+		record.putAttribute(RecordTable.REMARKS, remarksValue.getText());
+		return record;
+	}
+
+	@Override
+	public Patient getPatient() 
+	{
+		return overviewPanel.getPatient();
+	}
+
+	@Override
+	public void setPatient(Patient patient) 
+	{
+		overviewPanel.setPatientFields(patient);
+	}
+	
+
+	@Override
+	public void setLoadPatientEnabled(boolean isEnabled) 
+	{
+		overviewPanel.getPatientForm().setLoadExisting(isEnabled);
+	} 
 	
 }

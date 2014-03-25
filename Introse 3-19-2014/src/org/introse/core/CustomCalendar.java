@@ -7,7 +7,8 @@ public class CustomCalendar
 	private int month;
 	private int day;
 	private int year;
-	
+	private final String[] months = {"January", "February","March","April","May","June","July","August",
+			"September","October","November","December"};
 	public CustomCalendar()
 	{
 		Calendar c = Calendar.getInstance();
@@ -51,5 +52,11 @@ public class CustomCalendar
 		this.day = day;
 		this.month = month;
 		this.year = year;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return months[month] + " " + day + ", " + year;
 	}
 }

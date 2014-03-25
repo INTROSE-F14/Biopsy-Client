@@ -130,7 +130,7 @@ import org.introse.gui.window.MainMenu;
 			itemPanel.add(Constants.TitleConstants.PHYSICIANS, physPanel);
 			itemPanel.add(Constants.TitleConstants.SPECIMENS, specPanel);
 			
-			detailsPanel = new JPanel();
+			detailsPanel = new JPanel(new GridBagLayout());
 			detailsPanel.setBackground(Color.white);
 
 			GridBagConstraints c = new GridBagConstraints();
@@ -336,9 +336,14 @@ import org.introse.gui.window.MainMenu;
 			detailsPanel.removeAll();
 			if(panel != null)
 			{
-				detailsPanel.add(((DetailPanel)panel).getScroller());
-				detailsPanel.revalidate();
+				GridBagConstraints c = new GridBagConstraints();
+				c.anchor = GridBagConstraints.NORTHWEST;
+				c.fill = GridBagConstraints.BOTH;
+				c.weightx = 1.0;
+				c.weighty = 1.0;
+				detailsPanel.add(((DetailPanel)panel).getScroller(), c);
 			}
+			detailsPanel.revalidate();
 			detailsPanel.repaint();
 		}
 	}

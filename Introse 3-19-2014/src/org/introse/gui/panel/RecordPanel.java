@@ -10,25 +10,23 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.introse.Constants;
-import org.introse.core.Patient;
-import org.introse.core.Record;
+import org.introse.Constants.ActionConstants;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.form.Form;
-import org.introse.gui.form.PatientForm;
+import org.introse.gui.form.RecordForm;
 
 public class RecordPanel extends DetailPanel
 {
+	private JPanel topPanel;
 	private JPanel recordForm;
-	private JPanel patientForm;
 	private JButton editOrSaveButton;
 	private JButton printOrCancelButton;
+	private JButton backButton;
 	
-	public RecordPanel(JPanel recordForm, JPanel patientForm, int mode)
+	public RecordPanel(JPanel recordForm, int mode)
 	{
 		super(new GridBagLayout(), mode);
 		setBackground(Color.white);
 		this.recordForm = recordForm;
-		this.patientForm = patientForm;
 		initializeComponents();
 		layoutComponents();
 		setMode(mode);
@@ -36,6 +34,17 @@ public class RecordPanel extends DetailPanel
 	
 	private void initializeComponents()
 	{
+		topPanel = new JPanel(new GridBagLayout());
+		topPanel.setBackground(Color.white);
+		backButton = new JButton("Back");
+		backButton.setBorderPainted(false);
+		backButton.setContentAreaFilled(false);
+		backButton.setOpaque(true);
+		backButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		backButton.setIconTextGap(7);
+		backButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/back.png")));
+		
+		
 		editOrSaveButton = new JButton();
 		printOrCancelButton = new JButton();
 		editOrSaveButton.setBorderPainted(false);
@@ -53,27 +62,31 @@ public class RecordPanel extends DetailPanel
 	private void layoutComponents()
 	{
 		GridBagConstraints c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_END;
-		c.gridx = 3;
-		c.gridy = 0;
-		c.weighty = 0.0;
-		c.weightx = 1.0;
-		c.insets = new Insets(0,0,0,2);
-		add(editOrSaveButton, c);
-		c.gridx = 4;
+		c.anchor = GridBagConstraints.SOUTHWEST;
+		c.gridx = 0;
 		c.gridy = 0;
 		c.weightx = 0.0;
-		c.weighty = 0.0;
+		c.weighty = 1.0;
+		topPanel.add(backButton, c);
+		c.gridx = 1;
+		c.anchor = GridBagConstraints.SOUTHEAST;
+		c.insets = new Insets(0,0,0,2);
+		c.weightx = 1.0;
+		topPanel.add(editOrSaveButton, c);
+		c.gridx = 2;
+		c.gridy = 0;
+		c.weightx = 0.0;
 		c.insets = new Insets(0,0,0,0);
-		add(printOrCancelButton, c);
-		c.anchor = GridBagConstraints.CENTER;
+		topPanel.add(printOrCancelButton, c);
+		
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.NORTHEAST;
 		c.fill = GridBagConstraints.BOTH;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 5;
-		c.gridheight = 1;
+		c.weightx = 1.0;
 		c.weighty = 0.0;
-		add(patientForm, c);
+		c.gridx = 0;
+		c.gridy = 0;
+		add(topPanel, c);
 		c.gridx = 0;
 		c.gridy = 2;
 		c.gridwidth = 5;
@@ -84,12 +97,13 @@ public class RecordPanel extends DetailPanel
 	
 	public void addListener(CustomListener listener)
 	{
-		((PatientForm)patientForm).addListener(listener);
 		editOrSaveButton.addActionListener(listener);
 		printOrCancelButton.addActionListener(listener);
 		editOrSaveButton.addMouseListener(listener);
 		printOrCancelButton.addMouseListener(listener);
-		((Form)recordForm).addListener(listener);
+		backButton.addActionListener(listener);
+		backButton.setActionCommand(ActionConstants.BACK);
+		((RecordForm)recordForm).addListener(listener);
 	}
 	
 	public void setMode(int mode)
@@ -102,19 +116,20 @@ public class RecordPanel extends DetailPanel
 			 		   printOrCancelButton.setActionCommand(Constants.ActionConstants.PRINT);
 			 		   editOrSaveButton.setText("Edit");
 			 		   printOrCancelButton.setText("Print");
-			 		   ((Form)recordForm).setEditable(false);
-			 		   ((Form)patientForm).setEditable(false);
-			 		  editOrSaveButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/edit.png")));
-			 			printOrCancelButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/print.png")));
+			 		   ((RecordForm)recordForm).setRecordEditable(false);
+			 		   ((RecordForm)recordForm).setPatientEditable(false);
+			 		   ((RecordForm)recordForm).setLoadPatientEnabled(false);
+			 		   editOrSaveButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/edit.png")));
+			 		   printOrCancelButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/print.png")));
 			 		   break;
 			case Constants.ActionConstants.EDIT: 
 					   editOrSaveButton.setActionCommand(Constants.ActionConstants.SAVE);
 					   printOrCancelButton.setActionCommand(Constants.ActionConstants.CANCEL);
 					   editOrSaveButton.setText("Save");
 					   printOrCancelButton.setText("Cancel");
-					   ((Form)recordForm).setEditable(true);
-					   ((Form)patientForm).setEditable(false);
-					   ((PatientForm)patientForm).setLoadExisting(false);
+					   ((RecordForm)recordForm).setRecordEditable(true);
+					   ((RecordForm)recordForm).setPatientEditable(false);
+					   ((RecordForm)recordForm).setLoadPatientEnabled(false);
 					   editOrSaveButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/save.png")));
 						printOrCancelButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/cancel.png")));
 					   break;
@@ -123,43 +138,30 @@ public class RecordPanel extends DetailPanel
 			   		   printOrCancelButton.setActionCommand(Constants.ActionConstants.CANCEL);
 			   		   editOrSaveButton.setText("Save");
 			   		   printOrCancelButton.setText("Cancel");
-			   		   ((Form)recordForm).setEditable(true);
-			   		   ((Form)patientForm).setEditable(true);
-			   		   ((PatientForm)patientForm).setLoadExisting(true);
-			   		  editOrSaveButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/save.png")));
-						printOrCancelButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/cancel.png")));
+			   		   ((RecordForm)recordForm).setRecordEditable(true);
+			   		   ((RecordForm)recordForm).setPatientEditable(true);
+			   		   ((RecordForm)recordForm).setLoadPatientEnabled(true);
+			   		   editOrSaveButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/save.png")));
+			   		   printOrCancelButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/cancel.png")));
 			   		   break;
 		}
 	}
 
 	@Override
-	public Record getRecord() 
+	public Object getObject() 
 	{
-		return (Record)((Form)recordForm).getObject();
+		return ((RecordForm)recordForm).getRecord();
 	}
 
-	@Override
-	public Patient getPatient() 
-	{
-		return (Patient)((Form)patientForm).getObject();
-	}
-	
 	public boolean areFieldsValid()
 	{
-		if(!((Form)patientForm).areFieldsValid())
-			return false;
-		if(!((Form)recordForm).areFieldsValid())
+		if(!((RecordForm)recordForm).areFieldsValid())
 			return false;
 		return true;
 	}
 	
-	public Form getRecordForm()
+	public RecordForm getRecordForm()
 	{
-		return (Form)recordForm;
-	}
-	
-	public Form getPatientForm()
-	{
-		return (Form)patientForm;
+		return (RecordForm)recordForm;
 	}
 }

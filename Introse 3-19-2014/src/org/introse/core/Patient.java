@@ -102,26 +102,37 @@ public class Patient extends ListItem
 	@Override
 	public void initializePanel() 
 	{
+		setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.35), 
+				(int)(Preferences.getScreenHeight() * 0.17)));
 		String label1 = getAttribute(PatientTable.LAST_NAME) + ", " + getAttribute(PatientTable.FIRST_NAME) + 
 				" " + getAttribute(PatientTable.MIDDLE_NAME);
-		String label2 = (String)getAttribute(PatientTable.GENDER);
+		String label2 = "";
+		CustomCalendar birthday =  (CustomCalendar)getAttribute(PatientTable.BIRTHDAY);
+		String label3 = birthday.toString();
 		setBackground(Color.decode(Constants.StyleConstants.NORMAL));
 		setBorder(new EmptyBorder(20,20,20,20));
-		setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.3), 
-				(int)(Preferences.getScreenHeight() * 0.1)));;
+		
+		if(((String)getAttribute(PatientTable.GENDER)).charAt(0) == 'M')
+			label2 = "Male";
+		else label2 = "Female";
 		
 		this.labels.add(label1);
 		this.labels.add(label2);
+		this.labels.add(label3);
 		
 		JLabel nameLabel = new JLabel("Name");
 		JLabel genderLabel = new JLabel("Gender");
+		JLabel birthdayLabel = new JLabel("Birthday");
 		JLabel nameValue = new JLabel(label1);
 		JLabel genderValue = new JLabel(label2);
+		JLabel birthdayValue = new JLabel(label3);
 		nameValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Font.BOLD, Constants.StyleConstants.SUBHEADER));
-		setPreferredSize(new Dimension(350,100));
+		
 		nameLabel.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		genderLabel.setFont(nameLabel.getFont());
 		genderValue.setFont(nameLabel.getFont());
+		birthdayLabel.setFont(nameLabel.getFont());
+		birthdayValue.setFont(nameLabel.getFont());
 		
 		int y = 0;
 		GridBagConstraints c = new GridBagConstraints();
@@ -154,5 +165,21 @@ public class Patient extends ListItem
 		c.gridx = 1;
 		c.gridy = y++;
 		add(genderValue, c);
+		
+		c.anchor = GridBagConstraints.WEST;
+		c.fill = GridBagConstraints.NONE;
+		c.insets = new Insets(0,20,0,20);
+		c.weightx = 0.0;
+		c.gridx = 0;
+		c.gridy = y;
+		add(birthdayLabel, c);
+		c.anchor = GridBagConstraints.CENTER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+		c.insets = new Insets(0,0,0,0);
+		c.gridx = 1;
+		c.gridy = y++;
+		add(birthdayValue, c);
+		
 	}
 }

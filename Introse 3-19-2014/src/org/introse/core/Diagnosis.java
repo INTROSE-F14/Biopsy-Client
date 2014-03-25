@@ -13,6 +13,13 @@ public class Diagnosis
 		this.referenceNumber = referenceNumber;
 	}
 	
+
+	public Diagnosis(int categoryID, String value)
+	{
+		this.categoryID = categoryID;
+		this.value = value;
+	}
+	
 	public int getCategory()
 	{
 		return categoryID;
@@ -26,5 +33,10 @@ public class Diagnosis
 	public String getReferenceNumber()
 	{
 		return referenceNumber;
+	}
+	
+	public void setReferenceNumber(String referenceNumber)
+	{
+		this.referenceNumber = referenceNumber;
 	}
 }

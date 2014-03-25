@@ -1,12 +1,12 @@
 package org.introse.gui.form;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Calendar;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.introse.Constants;
+import org.introse.Constants.ActionConstants;
 import org.introse.Constants.PatientConstants;
 import org.introse.Constants.PatientTable;
 import org.introse.core.CustomCalendar;
@@ -25,29 +26,28 @@ import org.introse.gui.window.MainMenu;
 
 public class PatientForm extends JPanel implements Form
 {
-	private JTextField lastNameValue;
-	private JTextField firstNameValue;
-	private JTextField middleNameValue;
+	private JTextField lastNameValue, firstNameValue, middleNameValue;
 	private JComboBox<String> genderValue;
+	private JLabel _lastNameValue, _firstNameValue,_middleNameValue, _genderValue, _birthdayValue;
 	private JButton loadExisting;
 	
-	private JLabel lastNameLabel;
-	private JLabel firstNameLabel;
-	private JLabel middleNameLabel;
-	private JLabel genderLabel;
-	private JLabel birthdayLabel;
+	private JLabel lastNameLabel, firstNameLabel, middleNameLabel, genderLabel, birthdayLabel;
+	private JLabel _lastNameLabel, _firstNameLabel, _middleNameLabel, _genderLabel, _birthdayLabel;
+	
 	private DatePicker birthday;
-	private JPanel insidePanel;
+	private JPanel viewOnlyPanel, editablePanel;
+
 	private int patientID;
 	
 	public PatientForm()
 	{
-		super(new GridBagLayout());
+		super(new CardLayout());
 		setBackground(Color.white);
-		setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1),
-				"Patient Information"));
 		initializeComponents();
 		layoutComponents();
+		setBorder(null);
+		add("VIEW", viewOnlyPanel);
+		add("EDIT", editablePanel);
 	}
 	
 	public void setLoadExisting(boolean isLoadable)
@@ -63,13 +63,27 @@ public class PatientForm extends JPanel implements Form
 	
 	private void initializeComponents()
 	{
-		insidePanel = new JPanel(new GridBagLayout());
-		insidePanel.setBackground(Color.white);
+		viewOnlyPanel = new JPanel(new GridBagLayout());
+		viewOnlyPanel.setBackground(Color.white);
+		_lastNameValue = new JLabel();
+		_firstNameValue = new JLabel();
+		_middleNameValue = new JLabel();
+		_genderValue = new JLabel();
+		_birthdayValue = new JLabel();
+		
+		editablePanel = new JPanel(new GridBagLayout());
+		editablePanel.setBackground(Color.white);
 		lastNameLabel = new JLabel("Last name");
 		firstNameLabel = new JLabel("First name");
 		middleNameLabel = new JLabel("Middle name");
 		genderLabel = new JLabel("Gender");
 		birthdayLabel = new JLabel("Birthday");
+		
+		_lastNameLabel = new JLabel("Last name");
+		_firstNameLabel = new JLabel("First name");
+		_middleNameLabel = new JLabel("Middle name");
+		_genderLabel = new JLabel("Gender");
+		_birthdayLabel = new JLabel("Birthday");
 		
 		lastNameValue = new JTextField(10);
 		firstNameValue = new JTextField(10);
@@ -91,6 +105,17 @@ public class PatientForm extends JPanel implements Form
 		birthday.setPickerFont(lastNameValue.getFont());
 		loadExisting = new JButton("Load Existing");
 		loadExisting.setVisible(false);
+		
+		_lastNameValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		_lastNameValue.setHorizontalAlignment(JLabel.CENTER);
+		_firstNameValue.setFont(_lastNameValue.getFont());
+		_firstNameValue.setHorizontalAlignment(JLabel.CENTER);
+		_middleNameValue.setFont(_lastNameValue.getFont());
+		_middleNameValue.setHorizontalAlignment(JLabel.CENTER);
+		_genderValue.setFont(_lastNameValue.getFont());
+		_genderValue.setHorizontalAlignment(JLabel.CENTER);
+		_birthdayValue.setFont(_lastNameValue.getFont());
+		_birthdayValue.setHorizontalAlignment(JLabel.CENTER);
 	}
 	
 	private void layoutComponents()
@@ -101,50 +126,90 @@ public class PatientForm extends JPanel implements Form
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 1;
-		c.insets = new Insets(5, 10, 1, 10);
-		insidePanel.add(lastNameValue, c);
+		c.insets = new Insets(5, 0, 1, 10);
+		editablePanel.add(lastNameValue, c);
 		c.gridx = 1;
 		c.insets = new Insets(5, 0, 1, 10);
-		insidePanel.add(firstNameValue, c);
+		editablePanel.add(firstNameValue, c);
 		c.gridx = 2;
-		c.insets = new Insets(5, 0, 1, 10);
-		insidePanel.add(middleNameValue, c);
+		c.insets = new Insets(5, 0, 1, 0);
+		editablePanel.add(middleNameValue, c);
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = 1;
-		c.insets = new Insets(0, 10, 10, 10);
-		insidePanel.add(lastNameLabel, c);
+		c.insets = new Insets(0, 0, 10, 10);
+		editablePanel.add(lastNameLabel, c);
 		c.gridx = 1;
 		c.insets = new Insets(0, 0, 10,10);
-		insidePanel.add(firstNameLabel, c);
+		editablePanel.add(firstNameLabel, c);
 		c.gridx = 2;
-		c.insets = new Insets(0,0,10,10);
-		insidePanel.add(middleNameLabel, c);
+		c.insets = new Insets(0,0,10,0);
+		editablePanel.add(middleNameLabel, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = 2;
-		c.insets = new Insets(0,10,1,10);
-		insidePanel.add(genderValue, c);
+		c.insets = new Insets(0,0,1,10);
+		editablePanel.add(genderValue, c);
 		c.gridx = 1;
 		c.insets = new Insets(0,0,1,10);
-		insidePanel.add(birthday, c);
+		editablePanel.add(birthday, c);
 		c.gridx = 2;
-		c.insets = new Insets(0,0,1,10);
-		insidePanel.add(loadExisting, c);
+		c.insets = new Insets(0,0,1,0);
+		editablePanel.add(loadExisting, c);
 		c.gridx = 0;
 		c.gridy = 3;
 		c.fill = GridBagConstraints.NONE;
-		c.insets = new Insets(0,10,5,10);
-		insidePanel.add(genderLabel, c);
+		c.insets = new Insets(0,0,5,10);
+		editablePanel.add(genderLabel, c);
 		c.gridx = 1;
 		c.gridwidth = 1;
-		c.insets = new Insets(0,0,5,10);
-		insidePanel.add(birthdayLabel, c);
+		c.insets = new Insets(0,0,5,0);
+		editablePanel.add(birthdayLabel, c);
 		
+		
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.CENTER;
+		c.weightx = 1.0;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.insets = new Insets(20,20,20,20);
-		add(insidePanel, c);
+		c.gridwidth = 1;
+		c.insets = new Insets(5, 0, 1, 10);
+		viewOnlyPanel.add(_lastNameValue, c);
+		c.gridx = 1;
+		c.insets = new Insets(5, 0, 1, 10);
+		viewOnlyPanel.add(_firstNameValue, c);
+		c.gridx = 2;
+		c.insets = new Insets(5, 0, 1, 0);
+		viewOnlyPanel.add(_middleNameValue, c);
+		c.fill = GridBagConstraints.NONE;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.insets = new Insets(0, 0, 10, 10);
+		viewOnlyPanel.add(_lastNameLabel, c);
+		c.gridx = 1;
+		c.insets = new Insets(0, 0, 10,10);
+		viewOnlyPanel.add(_firstNameLabel, c);
+		c.gridx = 2;
+		c.insets = new Insets(0,0,10,0);
+		viewOnlyPanel.add(_middleNameLabel, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 2;
+		c.insets = new Insets(0,0,1,10);
+		viewOnlyPanel.add(_genderValue, c);
+		c.gridx = 1;
+		c.insets = new Insets(0,0,1,10);
+		viewOnlyPanel.add(_birthdayValue, c);
+		c.gridx = 0;
+		c.gridy = 3;
+		c.fill = GridBagConstraints.NONE;
+		c.insets = new Insets(0,0,5,10);
+		viewOnlyPanel.add(_genderLabel, c);
+		c.gridx = 1;
+		c.gridwidth = 1;
+		c.insets = new Insets(0,0,5,0);
+		viewOnlyPanel.add(_birthdayLabel, c);
 	}
 	
 	public void setFields(Object object)
@@ -158,16 +223,39 @@ public class PatientForm extends JPanel implements Form
 		String gender = (String)patient.getAttribute(PatientTable.GENDER.toString());
 		
 		if(lastName != null)
-		lastNameValue.setText(lastName);
+		{
+			lastNameValue.setText(lastName);
+			_lastNameValue.setText(lastName);
+		}
 		if(firstName != null)
-		firstNameValue.setText(firstName);
+		{
+			firstNameValue.setText(firstName);
+			_firstNameValue.setText(firstName);
+		}
 		if(middleName != null)
-		middleNameValue.setText(middleName);
+		{
+			middleNameValue.setText(middleName);
+			_middleNameValue.setText(middleName);
+		}
 		if(gender != null)
-		genderValue.setSelectedItem(gender);
+		{
+			genderValue.setSelectedItem(gender);
+			_genderValue.setText(gender);
+		}
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY.toString());
 		if(birthday!= null)
+		{
 			this.birthday.setDate(birthday);
+			_birthdayValue.setText(birthday.toString());
+		}
+	}
+	
+	public void setViewOnly(boolean isViewOnly)
+	{
+		CardLayout layout = (CardLayout)getLayout();
+		if(isViewOnly)
+			layout.show(this, "VIEW");
+		else layout.show(this, "EDIT");
 	}
 	
 	public void setEditable(boolean isEditable)
@@ -202,13 +290,13 @@ public class PatientForm extends JPanel implements Form
 		int day= birthday.getDay();
 		int month= birthday.getMonth();
 		int year= birthday.getYear();		
-		if(!(lastNameValue.getText().replaceAll("\\s", "").length() > 0) || 
+		if(!(lastNameValue.getText().length() > 0) || 
 				lastNameValue.getText().length() > PatientConstants.LAST_NAME_LENGTH)
 			return false;
-		if(!(firstNameValue.getText().replaceAll("\\s", "").length() > 0) ||
+		if(!(firstNameValue.getText().length() > 0) ||
 				firstNameValue.getText().length() > PatientConstants.FIRST_NAME_LENGTH)
 			return false;
-		if(!(middleNameValue.getText().replaceAll("\\s", "").length() > 0) ||
+		if(!(middleNameValue.getText().length() > 0) ||
 				middleNameValue.getText().length() > PatientConstants.MIDDLE_NAME_LENGTH)
 			return false;
 		if((month== 3 || month== 5 || 
