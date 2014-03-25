@@ -65,7 +65,7 @@ public class NavigationPanel extends JPanel
 				Constants.StyleConstants.PRESSED,Constants.StyleConstants.SELECTED,"physician", false);
 		specButton = new NavButton(Constants.StyleConstants.NORMAL,Constants.StyleConstants.HOVER,
 				Constants.StyleConstants.PRESSED,Constants.StyleConstants.SELECTED,"specimen", false);
-		JLabel maintenanceHeader = new JLabel("Maintenance");
+		JLabel maintenanceHeader = new JLabel("Dictionary");
 		maintenanceHeader.setFont(recordsPanelHeader.getFont());
 		maintenancePanel.add(maintenanceHeader);
 		maintenancePanel.add(pathButton);
