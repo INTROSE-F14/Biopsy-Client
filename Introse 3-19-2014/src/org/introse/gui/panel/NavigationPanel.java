@@ -81,10 +81,10 @@ public class NavigationPanel extends JPanel
 		JPanel othersPanel = new JPanel(new GridLayout(0,1,0,0));
 		othersPanel.setBackground(Color.white);
 		prefButton = new NavButton(Constants.StyleConstants.NORMAL,Constants.StyleConstants.HOVER,
-				Constants.StyleConstants.PRESSED,Constants.StyleConstants.SELECTED,"preferences", false);
+				Constants.StyleConstants.PRESSED,Constants.StyleConstants.SELECTED,"backup & restore", false);
 		logoutButton = new NavButton(Constants.StyleConstants.NORMAL,Constants.StyleConstants.HOVER,
 				Constants.StyleConstants.PRESSED,Constants.StyleConstants.SELECTED,"log out", false);
-		JLabel othersHeader = new JLabel("Others");
+		JLabel othersHeader = new JLabel("Tools");
 		othersHeader.setFont(recordsPanelHeader.getFont());
 		othersPanel.add(othersHeader);
 		othersPanel.add(prefButton);
