@@ -10,10 +10,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.introse.Constants;
-import org.introse.core.Patient;
-import org.introse.core.Record;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.form.Form;
+import org.introse.gui.form.PatientForm;
 
 public class PatientPanel extends DetailPanel 
 {
@@ -29,6 +28,7 @@ public class PatientPanel extends DetailPanel
 		initializeComponents();
 		layoutComponents();
 		setMode(mode);
+		((PatientForm)patientForm).setViewOnly(false);
 	}
 	
 	private void initializeComponents()
@@ -108,22 +108,18 @@ public class PatientPanel extends DetailPanel
 	}
 
 	@Override
-	public Record getRecord() {
-		return null;
-	}
-
-	@Override
-	public Patient getPatient() 
-	{
-		return (Patient)((Form)patientForm).getObject();
-	}
-
-	@Override
 	public boolean areFieldsValid() 
 	{
 		return ((Form)patientForm).areFieldsValid();
 	}
 
+
+	@Override
+	public Object getObject() 
+	{
+		return ((Form)patientForm).getObject();
+	}
+	
 	public Form getPatientForm()
 	{
 		return (Form)patientForm;

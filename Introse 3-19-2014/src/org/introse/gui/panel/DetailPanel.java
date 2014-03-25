@@ -6,7 +6,6 @@ import java.awt.LayoutManager;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.introse.core.Patient;
 import org.introse.core.Preferences;
 import org.introse.core.Record;
 import org.introse.gui.event.CustomListener;
@@ -27,8 +26,7 @@ public abstract class DetailPanel extends JPanel
 		scroller.setBorder(null);
 	}
 	public abstract void setMode(int mode);
-	public abstract Record getRecord();
-	public abstract Patient getPatient();
+	public abstract Object getObject();
 	public abstract void addListener(CustomListener listener);
 	public abstract boolean areFieldsValid();
 	public int getMode()

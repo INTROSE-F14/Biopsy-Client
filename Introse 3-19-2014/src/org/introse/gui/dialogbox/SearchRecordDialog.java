@@ -9,7 +9,6 @@ import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -28,7 +27,7 @@ import org.introse.core.Record;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.MainMenu;
 
-public class SearchRecordDialog extends JDialog implements SearchDialog
+public class SearchRecordDialog extends SearchDialog
 {
     private JTextField tf_refNum, tf_specimen, tf_pathologist, tf_physician, tf_room;
     private JLabel lbl_refNum, lbl_specimen, lbl_dReceived, lbl_dCompleted, lbl_pathologist, lbl_physician, lbl_room, lbl_filler;
@@ -40,7 +39,7 @@ public class SearchRecordDialog extends JDialog implements SearchDialog
 	
    public SearchRecordDialog()
    {
-		super(null, "Search Record", ModalityType.APPLICATION_MODAL);
+		super("Search Record");
 		this.p_overall = new JPanel();
 		this.p_buttonHolder = new JPanel();
 		this.p_container = new JPanel();

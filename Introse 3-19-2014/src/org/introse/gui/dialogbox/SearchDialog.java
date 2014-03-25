@@ -1,12 +1,20 @@
 package org.introse.gui.dialogbox;
 
+import java.awt.Dialog.ModalityType;
+
+import javax.swing.JDialog;
+
 import org.introse.gui.event.CustomListener;
 
-public interface SearchDialog
+public abstract class SearchDialog extends JDialog
 {
-	public void addListener(CustomListener listener);
-	public Object getSearchCriteria();
-	public void showGUI();
+	public SearchDialog(String title)
+	{
+		super(null, "Search Patient", ModalityType.APPLICATION_MODAL);
+	}
+	public abstract void addListener(CustomListener listener);
+	public abstract Object getSearchCriteria();
+	public abstract void showGUI();
     public abstract void clear();
 }
 

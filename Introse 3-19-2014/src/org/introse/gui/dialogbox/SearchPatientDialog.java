@@ -9,7 +9,6 @@ import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -23,7 +22,7 @@ import org.introse.core.Patient;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.MainMenu;
 
-public class SearchPatientDialog extends JDialog implements SearchDialog
+public class SearchPatientDialog extends SearchDialog
 {
    
    private JTextField tf_fname,tf_mname, tf_lname;
@@ -34,7 +33,7 @@ public class SearchPatientDialog extends JDialog implements SearchDialog
    
    public SearchPatientDialog()
    {
-	    super(null, "Search Patient", ModalityType.APPLICATION_MODAL);
+	    super("Search Patient");
 	    
         this.p_overall = new JPanel();
 	    this.p_buttonHolder = new JPanel();

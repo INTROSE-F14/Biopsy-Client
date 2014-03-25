@@ -48,6 +48,9 @@ public abstract class Constants
 
 	public abstract class TitleConstants
 	{
+		public static final String ALL="ALL";
+		public static final String RECORD_OVERVIEW = "Record Overview";
+		public static final String RESULTS = "Interpretation and Results";
 		public static final String HISTOPATHOLOGY = "Histopathology";
 		public static final String GYNECOLOGY = "Gynecology";
 		public static final String CYTOLOGY = "Cytology";
@@ -114,6 +117,7 @@ public abstract class Constants
 	
 	public abstract class ActionConstants
 	{
+		public static final String BACK = "Back";
 		public static final String NEW_HISTOPATHOLOGY = "New Histopathology";
 		public static final String NEW_GYNENECOLOGY = "New Gynecology";
 		public static final String NEW_CYTOTOLOGY = "New Cytology";
@@ -140,6 +144,7 @@ public abstract class Constants
 	
 	public abstract class RecordTable
 	{
+		public static final String PATIENT = "Patient";
 		public static final String REF_NUM = "internalreferencenumber";
 		public static final String RECORD_TYPE = "recordtype";
 		public static final String PATIENT_ID = "patientid";
