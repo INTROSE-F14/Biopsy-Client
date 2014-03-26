@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
@@ -23,8 +24,8 @@ import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.MainMenu;
 	
 	
-	public class ContentPanel extends JPanel 
-	{	
+public class ContentPanel extends JPanel 
+{	
 		private String currentView;
 		private String previousView;
 		private JPanel topPanel;
@@ -317,8 +318,12 @@ import org.introse.gui.window.MainMenu;
 				}
 				filterField.setText(TitleConstants.QUICK_FILTER);
 				filterField.setForeground(Color.GRAY);
-				previousView = currentView;
+				
+				if(!(currentView.equals(TitleConstants.DETAIL_PANEL) && view.equals(currentView)))
+					previousView = currentView;
 				currentView = view;
+				System.out.println("PREVIOUS: " + previousView);
+				System.out.println("CURRENT: " + currentView);
 		}
 	
 		public String getCurrentView()
@@ -341,7 +346,7 @@ import org.introse.gui.window.MainMenu;
 			switch(view)
 			{
 			case Constants.TitleConstants.HISTOPATHOLOGY: 
-				 histopathologyList.updateList(list);
+					 histopathologyList.updateList(list);
 				 countLabel.setText(list.size()+"");
 				 break;
 			case Constants.TitleConstants.GYNECOLOGY:  

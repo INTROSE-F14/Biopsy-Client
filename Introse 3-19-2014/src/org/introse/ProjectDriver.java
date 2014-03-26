@@ -66,6 +66,7 @@ public class ProjectDriver
 	private DetailPanel panel;
 	private SearchDialog searchDialog;
 	private PatientLoader loader;
+	private Object lastSearch;
 	
 	public static void main(String[] args) 
 	{
@@ -92,34 +93,43 @@ public class ProjectDriver
 		loginForm.showGUI();
 	}
 	
-	
 	public void login()
 	{
-		String password = new String(loginForm.getPassword());
-		int loginStatus = client.connectToServer(password);
-		switch(loginStatus)
-		{
-			case Constants.NetworkConstants.AUTHENTICATION_SUCCESSFUL: 
-				String[] serverInfo = client.getServerInfo().split(":");
-				String dbUsername = serverInfo[0];
-				String dbPassword = serverInfo[1];
-				String dbName = serverInfo[2];
-				int port = Integer.parseInt(serverInfo[3]);
-				String ip = serverInfo[4];
-				Preferences.setDatabaseName(dbName);
-				Preferences.setDatabaseAddress(ip, port);
-				Preferences.setDatabaseUsername(dbUsername);
-				Preferences.setDatabasePassword(dbPassword);
-				loginForm.exit();
-				startMainMenu();
-				break;
-			case Constants.NetworkConstants.AUTHENTICATION_FAILED:
-				new ErrorDialog("Login Failed", "You entered an invalid password").showGui();
-				break;
-			case Constants.NetworkConstants.SERVER_ERROR:
-				new ErrorDialog("Server Error", "An error occured while trying to connect to the server").showGui();
-				break;
-		}
+		Thread thread = new Thread(
+				new Runnable()
+				{
+					public void run()
+					{
+						loginForm.setLoadingVisible(true);
+						String password = new String(loginForm.getPassword());
+						int loginStatus = client.connectToServer(password);
+						loginForm.setLoadingVisible(false);
+						switch(loginStatus)
+						{
+							case Constants.NetworkConstants.AUTHENTICATION_SUCCESSFUL: 
+								String[] serverInfo = client.getServerInfo().split(":");
+								String dbUsername = serverInfo[0];
+								String dbPassword = serverInfo[1];
+								String dbName = serverInfo[2];
+								int port = Integer.parseInt(serverInfo[3]);
+								String ip = serverInfo[4];
+								Preferences.setDatabaseName(dbName);
+								Preferences.setDatabaseAddress(ip, port);
+								Preferences.setDatabaseUsername(dbUsername);
+								Preferences.setDatabasePassword(dbPassword);
+								loginForm.exit();
+								startMainMenu();
+								break;
+							case Constants.NetworkConstants.AUTHENTICATION_FAILED:
+								new ErrorDialog("Login Failed", "You entered an invalid password").showGui();
+								break;
+							case Constants.NetworkConstants.SERVER_ERROR:
+								new ErrorDialog("Server Error", "An error occured while trying to connect to the server").showGui();
+								break;
+						}
+					}
+				});
+		thread.start();
 	}
 	
 	private void startMainMenu()
@@ -148,6 +158,11 @@ public class ProjectDriver
 	public String getPreviousView()
 	{
 		return mainMenu.getContentPanel().getPreviousView();
+	}
+	
+	public String getCurrentView()
+	{
+		return mainMenu.getContentPanel().getCurrentView();
 	}
 	
 	public void setSelectedButton(Object button)
@@ -198,9 +213,6 @@ public class ProjectDriver
 	public void refresh(String view)
 	{
 		Record record = null;
-		if(view == null)
-			view = mainMenu.getContentPanel().getCurrentView();
-		System.out.println(view);
 		switch(view)
 		{
 			case Constants.TitleConstants.HISTOPATHOLOGY: 
@@ -235,6 +247,9 @@ public class ProjectDriver
 							
 							  break;
 			case Constants.TitleConstants.SEARCH_RESULT:
+				if(lastSearch instanceof Record)
+					searchList = generateRecordList(recordDao.search((Record)lastSearch));
+				else searchList = generatePatientList(patientDao.search((Patient)lastSearch));
 							  break;
 			case "ALL":
 				record = new HistopathologyRecord();
@@ -261,8 +276,6 @@ public class ProjectDriver
 	public void applyFilter(String view)
 	{
 		ContentPanel panel = mainMenu.getContentPanel();
-		if(view == null)
-			view = panel.getPreviousView();
 		if(view.equals(TitleConstants.ALL))
 			view = panel.getCurrentView();
 		List<ListItem> list = null;
@@ -605,12 +618,14 @@ public class ProjectDriver
 		if(searchDialog instanceof SearchRecordDialog)
 		{
 			Record record = (Record)searchDialog.getSearchCriteria();
+			lastSearch = record;
 			List<Record> matches = recordDao.search(record);
 			searchList = generateRecordList(matches);
 		}
 		else
 		{
 			Patient patient = (Patient)searchDialog.getSearchCriteria();
+			lastSearch = patient;
 			List<Patient> matches = patientDao.search(patient);
 			searchList = generatePatientList(matches);
 		}

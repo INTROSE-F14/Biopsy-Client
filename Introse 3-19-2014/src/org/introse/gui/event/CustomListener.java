@@ -43,7 +43,7 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			projectDriver.setSelectedButton(e.getSource());
 			projectDriver.applyFilter(actionCommand);
 			break;
-		case Constants.ActionConstants.REFRESH: projectDriver.refresh(null);
+		case Constants.ActionConstants.REFRESH: projectDriver.refresh(projectDriver.getCurrentView());
 												projectDriver.removeDetailsPanel();
 			break;
 		case Constants.ActionConstants.LOG_OUT: projectDriver.logout();
@@ -64,10 +64,7 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			break;
 		case Constants.ActionConstants.NEW_PATIENT:	projectDriver.createNew(Constants.RecordConstants.PATIENT);
 			break;
-		case Constants.ActionConstants.LOAD_PATIENT:/* projectDriver.changeView(Constants.TitleConstants.PATIENTS, false);
-									  projectDriver.setSelectedButton(Constants.TitleConstants.PATIENTS);
-									  projectDriver.applyFilter(TitleConstants.PATIENTS);*/
-										projectDriver.openPatientLoad();
+		case Constants.ActionConstants.LOAD_PATIENT: projectDriver.openPatientLoad();
 									  break;
 		case Constants.ActionConstants.SEARCH_PATIENT: projectDriver.openPatientSearch();
 			break;
@@ -124,7 +121,7 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 	@Override
 	public void keyReleased(KeyEvent e) 
 	{
-		projectDriver.applyFilter(null);	
+		projectDriver.applyFilter(projectDriver.getCurrentView());
 	}
 
 	@Override
