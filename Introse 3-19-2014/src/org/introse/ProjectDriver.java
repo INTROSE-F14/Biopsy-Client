@@ -46,13 +46,12 @@ import org.introse.gui.panel.ListItem;
 import org.introse.gui.panel.PatientPanel;
 import org.introse.gui.panel.RecordPanel;
 import org.introse.gui.window.LoginWindow;
-import org.introse.gui.window.Login;
 import org.introse.gui.window.MainMenu;
 
 
 public class ProjectDriver 
 {
-	private static Login loginForm;
+	private static LoginWindow loginForm;
 	private final Client client = new Client();
 	private static final CustomListener listener =  new CustomListener(new ProjectDriver());
 	private MainMenu mainMenu;
@@ -88,7 +87,7 @@ public class ProjectDriver
 	
 	public static void createAndShowGui()
 	{
-		loginForm = new Login();
+		loginForm = new LoginWindow();
 		loginForm.addListener(listener);
 		loginForm.showGUI();
 	}

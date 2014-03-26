@@ -22,13 +22,11 @@ import org.introse.core.Diagnosis;
 import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.panel.PageViewer;
 import org.introse.gui.panel.RecordOverview;
 import org.introse.gui.window.MainMenu;
 
 public class CytologyForm extends JPanel implements RecordForm
 {
-	private PageViewer pv;
 	private JPanel findingsPanel;
 	private JTextArea diagnosisValue, remarksValue, grossDescValue, microNoteValue;
 	private JScrollPane diagnosisScroller, remarksScroller, grossDescScroller, 
@@ -51,11 +49,17 @@ public class CytologyForm extends JPanel implements RecordForm
 		
 		y = 0;
 		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.gridx = 0;
+		c.gridy = y++;
+		add(overviewPanel, c);
 		c.anchor = GridBagConstraints.LINE_START;
 		c.gridx = 0;
 		c.gridy = y;
 		c.insets = new Insets(0,0,0,0);
 		findingsPanel.add(diagnosisLabel, c);
+		c.fill = GridBagConstraints.NONE;
 		c.gridy = y++;
 		c.gridx = 1;
 		c.insets = new Insets(0,0,0,0);
@@ -86,16 +90,10 @@ public class CytologyForm extends JPanel implements RecordForm
 		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
 		findingsPanel.add(microNoteScroller, c);
-
-		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.anchor = GridBagConstraints.NORTHWEST;
+		
 		c.gridx = 0;
-		c.gridy = 0;
-		c.gridheight = 2;
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		add(pv, c);
+		c.gridy = 1;
+		add(findingsPanel, c);
 	}
 	
 	private void initializeComponents()
@@ -105,13 +103,6 @@ public class CytologyForm extends JPanel implements RecordForm
 		
 		overviewPanel.setBackground(Color.white);
 		findingsPanel.setBackground(Color.white);
-		List<JPanel> pages = new Vector<JPanel>();
-		List<String> titles = new Vector<String>();
-		pages.add(overviewPanel);
-		pages.add(findingsPanel);
-		titles.add(TitleConstants.RECORD_OVERVIEW);
-		titles.add(TitleConstants.RESULTS);
-		pv = new PageViewer(pages, titles, 0);
 		
 		diagnosisLabel = new JLabel("Diagnosis");
 		remarksLabel = new JLabel("Remarks");
@@ -146,9 +137,9 @@ public class CytologyForm extends JPanel implements RecordForm
 		if(diagnosis != null && diagnosis.size() > 0)
 			diagnosisValue.setText(diagnosis.get(0).getValue());
 		
-		String remarks = (String)record.getAttribute(RecordTable.REMARKS.toString());
+		String remarks = (String)record.getAttribute(RecordTable.REMARKS);
 		if(remarks != null)
-		remarksValue.setText(remarks);
+			remarksValue.setText(remarks);
 	}
 	
 	public boolean areFieldsValid()
@@ -194,7 +185,7 @@ public class CytologyForm extends JPanel implements RecordForm
 	{
 		overviewPanel.addListener(listener);
 	}
-	
+
 	@Override
 	public void setRecordEditable(boolean isEditable) 
 	{
@@ -209,7 +200,7 @@ public class CytologyForm extends JPanel implements RecordForm
 	public void setPatientEditable(boolean isEditable) 
 	{
 		overviewPanel.setPatientEditable(isEditable);
-	}
+	} 
 
 	@Override
 	public void setLoadPatientEnabled(boolean isEnabled) 

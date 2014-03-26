@@ -1,5 +1,5 @@
-	package org.introse.gui.panel;
-	import java.awt.CardLayout;
+package org.introse.gui.panel;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -228,6 +228,10 @@ import org.introse.gui.window.MainMenu;
 									  countLabel.setText(histopathologyList.getList().size()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_HISTOPATHOLOGY);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
+									  newButton.setVisible(true);
+									  refreshButton.setVisible(true);
+									  searchButton.setVisible(true);
+									  filterField.setVisible(true);
 									  break;
 					case Constants.TitleConstants.GYNECOLOGY:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
@@ -236,6 +240,10 @@ import org.introse.gui.window.MainMenu;
 									  countLabel.setText(gynecologyList.getList().size()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_GYNENECOLOGY);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
+									  newButton.setVisible(true);
+									  refreshButton.setVisible(true);
+									  searchButton.setVisible(true);
+									  filterField.setVisible(true);
 									  break;
 					case Constants.TitleConstants.CYTOLOGY:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
@@ -244,12 +252,19 @@ import org.introse.gui.window.MainMenu;
 									  countLabel.setText(cytologyList.getList().size()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_CYTOTOLOGY);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
+									  newButton.setVisible(true);
+									  refreshButton.setVisible(true);
+									  searchButton.setVisible(true);
+									  filterField.setVisible(true);
 									  break;
 					case Constants.TitleConstants.PATHOLOGISTS:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  newButton.setActionCommand(ActionConstants.NEW_PATHOLOGIST);
+									  newButton.setVisible(false);
+									  refreshButton.setVisible(false);
+									  searchButton.setVisible(false);
+									  filterField.setVisible(false);
 									  break;
 					case Constants.TitleConstants.PATIENTS: 
 										mainLayout.show(this, Constants.TitleConstants.RECORDS);
@@ -258,18 +273,30 @@ import org.introse.gui.window.MainMenu;
 										countLabel.setText(patientList.getList().size()+"");
 										newButton.setActionCommand(ActionConstants.NEW_PATIENT);
 										searchButton.setActionCommand(ActionConstants.SEARCH_PATIENT);
+										newButton.setVisible(true);
+										refreshButton.setVisible(true);
+										searchButton.setVisible(true);
+										filterField.setVisible(true);
 										break;
 					case Constants.TitleConstants.PHYSICIANS:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
 									  newButton.setActionCommand(ActionConstants.NEW_PHYSICIAN);
+									  newButton.setVisible(false);
+									  refreshButton.setVisible(false);
+									  searchButton.setVisible(false);
+									  filterField.setVisible(false);
 									  break;
 					case Constants.TitleConstants.SPECIMENS:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
 									  newButton.setActionCommand(ActionConstants.NEW_SPECIMEN);
+									  newButton.setVisible(false);
+									  refreshButton.setVisible(false);
+									  searchButton.setVisible(false);
+									  filterField.setVisible(false);
 									  break;
 					case Constants.TitleConstants.PREFERENCES: 
 									  mainLayout.show(this, view);
@@ -279,6 +306,10 @@ import org.introse.gui.window.MainMenu;
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
 									  countLabel.setText(searchList.getList().size()+"");
+									  newButton.setVisible(true);
+									  refreshButton.setVisible(true);
+									  searchButton.setVisible(true);
+									  filterField.setVisible(true);
 									  break;
 					case Constants.TitleConstants.DETAIL_PANEL:
 						  				mainLayout.show(this, Constants.TitleConstants.DETAIL_PANEL);

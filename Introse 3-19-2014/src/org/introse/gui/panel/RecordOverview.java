@@ -1,5 +1,6 @@
 package org.introse.gui.panel;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -33,6 +34,7 @@ public class RecordOverview extends JPanel
 	private DatePicker receivedDate, completedDate;
 	private int recordType;
 	private PatientForm patientForm;
+	private JPanel recordForm;
 	
 	public RecordOverview(int recordType)
 	{
@@ -45,6 +47,8 @@ public class RecordOverview extends JPanel
 	private void initializeComponents()
 	{	
 		patientForm = new PatientForm();
+		recordForm = new JPanel(new GridBagLayout());
+		recordForm.setBackground(Color.white);
 		refNumberLabel = new JLabel("Internal Reference Number");
 		specimenLabel = new JLabel("Specimen(s)");
 		physicianLabel = new JLabel("Physician");
@@ -82,8 +86,65 @@ public class RecordOverview extends JPanel
 	private void layoutComponents()
 	{
 		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
 		int y = 0;
-		c.anchor = GridBagConstraints.CENTER;
+		c.gridwidth = 1;
+		c.gridy = y;
+		c.insets = new Insets(0,0,0,10);
+		recordForm.add(roomValue, c);
+		c.gridx = 1;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,0,0);
+		recordForm.add(specimenValue, c);
+		c.fill = GridBagConstraints.NONE;
+		c.gridx = 0;
+		c.gridy = y;
+		c.insets = new Insets(0,0,10,10);
+		recordForm.add(roomLabel, c);
+		c.gridx = 1;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,10,0);
+		recordForm.add(specimenLabel, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = y;
+		c.insets = new Insets(0,0,0,10);
+		recordForm.add(pathologistValue, c);
+		c.gridx = 1;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,0,0);
+		recordForm.add(physicianValue, c);
+		c.fill = GridBagConstraints.NONE;
+		c.gridx = 0;
+		c.gridy = y;
+		c.insets = new Insets(0,0,10,10);
+		recordForm.add(pathologistLabel, c);
+		c.gridx = 1;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,10,0);
+		recordForm.add(physicianLabel, c);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridy = y;
+		c.gridx = 0;
+		c.insets = new Insets(0,0,0,10);
+		recordForm.add(receivedDate, c);
+		c.gridx = 1;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,0,0);
+		recordForm.add(completedDate, c);
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = y;
+		c.gridx = 0;
+		c.insets = new Insets(0,0,10,10);
+		recordForm.add(dateReceivedLabel, c);
+		c.gridx = 1;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,10,0);
+		recordForm.add(dateCompletedLabel, c);
+		
+		c = new GridBagConstraints();
+		y = 0;
+		c.anchor = GridBagConstraints.NORTH;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = y++;
@@ -93,64 +154,18 @@ public class RecordOverview extends JPanel
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = y++;
-		c.insets = new Insets(0,0,10,0);
+		c.insets = new Insets(0,0,20,0);
 		add(refNumberLabel, c);
+		c.anchor = GridBagConstraints.NORTHWEST;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridy = y++;
-		add(patientForm, c);
 		c.gridwidth = 1;
-		c.gridy = y;
-		c.insets = new Insets(0,0,0,10);
-		add(roomValue, c);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.insets = new Insets(0,0,0,0);
-		add(specimenValue, c);
-		c.fill = GridBagConstraints.NONE;
-		c.gridx = 0;
-		c.gridy = y;
-		c.insets = new Insets(0,0,10,10);
-		add(roomLabel, c);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.insets = new Insets(0,0,10,0);
-		add(specimenLabel, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = y;
 		c.insets = new Insets(0,0,0,10);
-		add(pathologistValue, c);
+		add(patientForm, c);
+		c.anchor = GridBagConstraints.NORTHEAST;
 		c.gridx = 1;
-		c.gridy = y++;
-		c.insets = new Insets(0,0,0,0);
-		add(physicianValue, c);
-		c.fill = GridBagConstraints.NONE;
-		c.gridx = 0;
-		c.gridy = y;
-		c.insets = new Insets(0,0,10,10);
-		add(pathologistLabel, c);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.insets = new Insets(0,0,10,0);
-		add(physicianLabel, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridy = y;
-		c.gridx = 0;
-		c.insets = new Insets(0,0,0,10);
-		add(receivedDate, c);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.insets = new Insets(0,0,0,0);
-		add(completedDate, c);
-		c.fill = GridBagConstraints.NONE;
-		c.gridy = y;
-		c.gridx = 0;
-		c.insets = new Insets(0,0,10,10);
-		add(dateReceivedLabel, c);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.insets = new Insets(0,0,10,0);
-		add(dateCompletedLabel, c);
+		add(recordForm, c);
 	}
 	
 	public void setRecordFields(Object object)

@@ -1,82 +1,85 @@
 package org.introse.gui.window;
 
-
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.border.EmptyBorder;
+import javax.swing.SwingConstants;
 
 import org.introse.Constants;
 
+public class LoginWindow extends JFrame {
 
-public class LoginWindow
-{
-
-	private JFrame mainFrame;
-	private JButton actionButton;
+	private JPanel contentPane;
 	private JPasswordField passwordField;
-	
-	public LoginWindow() 
-	{
+	private JButton actionButton;
+
+	public LoginWindow() {
 		initUI();
 	}
-
-	private void initUI()
-	{
-		mainFrame = new JFrame("Client Module");
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		JPanel panel = new JPanel(new GridBagLayout());
-		panel.setBackground(Color.white);
-		panel.setBorder(new EmptyBorder(20,20,20,20));
-		actionButton = new JButton("Login");
-		passwordField = new JPasswordField(20);
-		
-		GridBagConstraints gc = new GridBagConstraints();
-		gc.gridx = 0;
-		gc.gridy = 0;
-		gc.gridwidth = 1;
-		panel.add(new JLabel("Password"), gc);
-		
-		gc.gridx = 0;
-		gc.gridy = 1;
-		gc.gridwidth = 3;
-		panel.add(passwordField, gc);
-		
-		gc.gridx = 0;
-		gc.gridy = 2;
-		gc.fill = GridBagConstraints.HORIZONTAL;
-		panel.add(actionButton, gc);
-		
-		mainFrame.setContentPane(panel);
-		mainFrame.pack();
-		
-	}
 	
+	public void initUI()
+	{ 
+		setTitle("Login - Biopsy Client");
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 800, 600);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.WHITE);
+		contentPane.setBorder(null);
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		JLabel label = new JLabel("");
+		label.setBounds(5, 128, 784, 63);
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		label.setIcon(new ImageIcon(LoginWindow.class.getResource("/res/icons/title.png")));
+		contentPane.add(label);
+		
+		passwordField = new JPasswordField();
+		passwordField.setForeground(Color.decode("#3498db"));
+		passwordField.setBorder(null);
+		passwordField.setFont(new Font("/res/fonts/calibri.ttf", Font.PLAIN, 17));
+		passwordField.setHorizontalAlignment(SwingConstants.CENTER);
+		passwordField.setBackground(Color.decode("#ecf0f1"));
+		
+		passwordField.setBounds(new Rectangle(0, 0, 273, 47));
+		passwordField.setBounds(213, 243, 273, 47);
+		contentPane.add(passwordField);
+		passwordField.setColumns(10);
+		
+		actionButton = new JButton("");
+		actionButton.setBorder(null);
+		actionButton.setRequestFocusEnabled(false);
+		actionButton.setRolloverIcon(new ImageIcon(LoginWindow.class.getResource("/res/icons/btnLoginHover.png")));
+		actionButton.setIcon(new ImageIcon(LoginWindow.class.getResource("/res/icons/btnLogin.png")));
+		actionButton.setBounds(485, 243, 97, 47);
+		contentPane.add(actionButton);
+	}
 	
 	public void showGUI()
 	{
-		mainFrame.setVisible(true);
+		setVisible(true);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		mainFrame.setLocation(dim.width/2-mainFrame.getSize().width/2, dim.height/2-mainFrame.getSize().height/2);
+		setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
 	}
 	
 	public void hideGUI()
 	{
-		mainFrame.setVisible(false);
+		setVisible(false);
 	}
 	
 	public void exit()
 	{
-		mainFrame.dispose();
+		dispose();
 	}
 	
 	public void addListener(ActionListener listener)

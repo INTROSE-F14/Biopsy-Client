@@ -126,13 +126,13 @@ public class PatientForm extends JPanel implements Form
 		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 1;
-		c.insets = new Insets(5, 0, 1, 10);
+		c.insets = new Insets(0, 0, 1, 10);
 		editablePanel.add(lastNameValue, c);
 		c.gridx = 1;
-		c.insets = new Insets(5, 0, 1, 10);
+		c.insets = new Insets(0, 0, 1, 10);
 		editablePanel.add(firstNameValue, c);
 		c.gridx = 2;
-		c.insets = new Insets(5, 0, 1, 0);
+		c.insets = new Insets(0, 0, 1, 0);
 		editablePanel.add(middleNameValue, c);
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;

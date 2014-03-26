@@ -38,6 +38,7 @@ import org.introse.gui.window.MainMenu;
 
 public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 {
+	private JPanel firstPanel;
 	private PageViewer pv;
 	private JPanel findingsPanel;
 	private JTextArea remarksValue, grossDescValue, microNoteValue;
@@ -243,12 +244,25 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		add(pv, c);
+		
+		y = 0;
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.gridx = 0;
+		c.gridy = y++;
+		firstPanel.add(overviewPanel, c);
+		c.gridx = 0;
+		c.gridy = 1;
+		firstPanel.add(findingsPanel, c);
 	}
 	
 	private void initializeComponents()
 	{	
 		overviewPanel = new RecordOverview(RecordConstants.GYNECOLOGY_RECORD);
 		overviewPanel.setBackground(Color.white);
+		firstPanel = new JPanel(new GridBagLayout());
+		firstPanel.setBackground(Color.white);
 		findingsPanel = new JPanel(new GridBagLayout());
 		findingsPanel.setBackground(Color.white);
 		diagnosisPanel = new JPanel(new GridBagLayout());
@@ -256,11 +270,9 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		diagnosisPanel.setBorder(null);
 		List<JPanel> pages = new Vector<JPanel>();
 		List<String> titles = new Vector<String>();
-		pages.add(overviewPanel);
-		pages.add(findingsPanel);
+		pages.add(firstPanel);
 		pages.add(diagnosisPanel);
-		titles.add(TitleConstants.RECORD_OVERVIEW);
-		titles.add(TitleConstants.RESULTS);
+		titles.add("");
 		titles.add(TitleConstants.RESULTS);
 		pv = new PageViewer(pages, titles, 0);
 		remarksLabel = new JLabel("Remarks");
