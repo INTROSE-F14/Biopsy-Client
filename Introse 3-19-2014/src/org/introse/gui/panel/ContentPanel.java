@@ -122,6 +122,12 @@ public class ContentPanel extends JPanel
 			JPanel pathPanel = new JPanel(new GridLayout(0, 1)); //list for pathologists
 			JPanel physPanel = new JPanel(new GridLayout(0, 1)); //list for physicians
 			JPanel specPanel = new JPanel(new GridLayout(0, 1)); //list for specimens
+			pathPanel = new DictionaryPanel();
+			physPanel = new DictionaryPanel();
+			specPanel = new DictionaryPanel();
+			pathPanel.setBackground(Color.white);
+			physPanel.setBackground(Color.white);
+			specPanel.setBackground(Color.white);
 			itemPanel.add(Constants.TitleConstants.HISTOPATHOLOGY, histopathologyList.getPanel());
 			itemPanel.add(Constants.TitleConstants.GYNECOLOGY, gynecologyList.getPanel());
 			itemPanel.add(Constants.TitleConstants.CYTOLOGY, cytologyList.getPanel());
