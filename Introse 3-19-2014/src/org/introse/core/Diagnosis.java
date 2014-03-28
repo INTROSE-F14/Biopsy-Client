@@ -5,12 +5,17 @@ public class Diagnosis
 	private int categoryID;
 	private String value;
 	private String referenceNumber;
+	private char recordType;
+	private int recordYear;
+	private int recordNumber;
 	
-	public Diagnosis(int categoryID, String value, String referenceNumber)
+	public Diagnosis(int categoryID, String value, char recordType, int recordYear, int recordNumber)
 	{
 		this.categoryID = categoryID;
 		this.value = value;
-		this.referenceNumber = referenceNumber;
+		this.recordType = recordType;
+		this.recordYear = recordYear;
+		this.recordNumber = recordNumber;
 	}
 	
 
@@ -30,13 +35,25 @@ public class Diagnosis
 		return value;
 	}
 	
-	public String getReferenceNumber()
+	public char getRecordType()
 	{
-		return referenceNumber;
+		return recordType;
 	}
 	
-	public void setReferenceNumber(String referenceNumber)
+	public int getRecordYear()
 	{
-		this.referenceNumber = referenceNumber;
+		return recordYear;
+	}
+	
+	public int getRecordNumber()
+	{
+		return recordNumber;
+	}
+	
+	public void setReferenceNumber(char recordType, int recordYear, int recordNumber)
+	{
+		this.recordType = recordType;
+		this.recordYear = recordYear;
+		this.recordNumber = recordNumber;
 	}
 }

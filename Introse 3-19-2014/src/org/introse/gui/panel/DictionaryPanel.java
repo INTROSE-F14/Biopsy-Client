@@ -1,28 +1,23 @@
 package org.introse.gui.panel;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
-
-import java.awt.Dimension;
-
 import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import java.awt.Insets;
-import java.awt.Rectangle;
-
-import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JTable;
-import java.awt.Font;
+import javax.swing.JTextField;
 
 public class DictionaryPanel extends JPanel{
 	private JTextField textField;
 	private JTable table;
 	public DictionaryPanel() {
+		super();
+		setBackground(Color.white);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0};

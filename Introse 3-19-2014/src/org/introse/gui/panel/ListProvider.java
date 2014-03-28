@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants.StyleConstants;
@@ -26,10 +27,10 @@ import org.introse.gui.window.MainMenu;
 
 public class ListProvider 
 {
-	private JPanel listPanel;
-	private JPanel container;
-	private JPanel emptyPanel;
-	private JScrollPane listScroller;
+	private final JPanel listPanel;
+	private final JPanel container;
+	private final JPanel emptyPanel;
+	private final JScrollPane listScroller;
 	private MouseListener listener;
 	private List<ListItem> list;
 	private int orientation;
@@ -101,7 +102,7 @@ public class ListProvider
 			generateVerticalList(list);
 		else if(orientation == SwingConstants.HORIZONTAL)
 			generateHorizontalList(list);
-		
+
 		listPanel.revalidate();
 		listScroller.revalidate();
 		container.revalidate();
@@ -110,14 +111,14 @@ public class ListProvider
 	private void generateVerticalList(List<ListItem> items)
 	{
 		Iterator<ListItem> i = items.iterator();
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.weighty = 0.0;
 		c.weightx = 1.0;
 		int y = 0;
 		while(i.hasNext())
 		{
-			ListItem listItem = i.next();
+			final ListItem listItem = i.next();
 			listItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 			listItem.addListener(listener);
 			c.gridy = y++;
@@ -131,14 +132,14 @@ public class ListProvider
 	private void generateHorizontalList(List<ListItem> items)
 	{
 		Iterator<ListItem> i = items.iterator();
-		GridBagConstraints c = new GridBagConstraints();
+		final GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.weightx = 0.0;
 		int y = 0;
 		int x = 0;
 		while(i.hasNext())
 		{
-			ListItem listItem = i.next();
+			final ListItem listItem = i.next();
 			listItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 			listItem.addListener(listener);
 			c.gridy = y;

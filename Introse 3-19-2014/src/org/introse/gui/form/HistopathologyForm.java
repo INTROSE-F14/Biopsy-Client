@@ -1,17 +1,18 @@
 package org.introse.gui.form;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import org.introse.Constants;
 import org.introse.Constants.CategoriesConstants;
@@ -21,10 +22,8 @@ import org.introse.Constants.TitleConstants;
 import org.introse.core.Diagnosis;
 import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
-import org.introse.core.Preferences;
 import org.introse.core.Record;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.panel.PageViewer;
 import org.introse.gui.panel.RecordOverview;
 import org.introse.gui.window.MainMenu;
 
@@ -143,31 +142,39 @@ public class HistopathologyForm extends JPanel implements RecordForm
 		String remarks = (String)record.getAttribute(RecordTable.REMARKS);
 		if(remarks != null)
 			remarksValue.setText(remarks);
+		
+		String microNote = (String)record.getAttribute(RecordTable.MICRO_NOTE);
+		if(microNote != null)
+			microNoteValue.setText(microNote);
+		
+		String grossdesc = (String)record.getAttribute(RecordTable.GROSS_DESC);
+		if(grossdesc != null)
+			grossDescValue.setText(grossdesc);
 	}
 	
 	public boolean areFieldsValid()
 	{
+		boolean isValid = true;
 		if(!overviewPanel.areFieldsValid())
-			return false;
-		if(!(diagnosisValue.getText().length() > 0) ||
-				diagnosisValue.getText().length() > RecordConstants.DIAGNOSIS_LENGTH)
-			return false;
-		if(!(remarksValue.getText().length() > 0) ||
-				remarksValue.getText().length() > RecordConstants.REMARKS_LENGTH)
-			return false;
-		return true;
+			isValid = false;
+		return isValid;
 	}
 
 	@Override
 	public Record getRecord() 
 	{
 		Record record = (HistopathologyRecord)overviewPanel.getRecord();
-		Diagnosis diagnosis = new Diagnosis(CategoriesConstants.OTHERS, diagnosisValue.getText());
-		List<Diagnosis> newDiagnosis = new Vector<Diagnosis>();
-		newDiagnosis.add(diagnosis);
-		record.putAttribute(RecordTable.DIAGNOSIS, newDiagnosis);
+		if(diagnosisValue.getText().length() > 0)
+		{
+			Diagnosis diagnosis = new Diagnosis(CategoriesConstants.OTHERS, diagnosisValue.getText());
+			List<Diagnosis> newDiagnosis = new Vector<Diagnosis>();
+			newDiagnosis.add(diagnosis);
+			record.putAttribute(RecordTable.DIAGNOSIS, newDiagnosis);
+		}
 		record.putAttribute(RecordTable.SPEC_TYPE, TitleConstants.OTHERS);
 		record.putAttribute(RecordTable.REMARKS, remarksValue.getText());
+		record.putAttribute(RecordTable.GROSS_DESC, grossDescValue.getText());
+		record.putAttribute(RecordTable.MICRO_NOTE, microNoteValue.getText());
 		return record;
 	}
 

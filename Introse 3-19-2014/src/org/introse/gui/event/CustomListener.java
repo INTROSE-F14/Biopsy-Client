@@ -72,9 +72,8 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			break;
 		case ActionConstants.SEARCH: projectDriver.displaySearchResult();
 			break;
-        case Constants.ActionConstants.CLEAR: projectDriver.clearSearchFields();
-        break;
-        case ActionConstants.BACK: projectDriver.changeView(projectDriver.getPreviousView());
+       case ActionConstants.BACK: projectDriver.changeView(projectDriver.getPreviousView());
+        						   projectDriver.removeDetailsPanel();
 		}
 	}
 

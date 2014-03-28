@@ -13,4 +13,5 @@ public interface RecordDao
 	public List<Record> search(Record record);
 	public Record get(Record record);
 	public List<Record> getAll();
+	public void assignReferenceNumber(Record record);
 }

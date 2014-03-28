@@ -16,9 +16,16 @@ import org.introse.core.CustomCalendar;
 
 public class DatePicker extends JPanel implements ItemListener{
 
+	private static String[] monthWithWildcard =  {"Month", "January", "February", 
+		 "March", "April", "May", "June", "July", "August", 
+		 "September", "October", "November", "December"};
 	private static String[]  monthNames = {"January", "February", 
 		 "March", "April", "May", "June", "July", "August", 
 		 "September", "October", "November", "December"};
+	
+	private static String[] dayWithWildcard = {"Day", "1","2", "3","4","5","6","7","8",
+		"9","10","11","12","13","14","15","16","17","18","19","20",
+		"21","22","23","24","25","26","27","28","29","30","31"};
 	private static String[] monthDays = {"1","2", "3","4","5","6","7","8",
 		"9","10","11","12","13","14","15","16","17","18","19","20",
 		"21","22","23","24","25","26","27","28","29","30","31"};
@@ -26,21 +33,38 @@ public class DatePicker extends JPanel implements ItemListener{
 	private JComboBox<String> day;
 	private JComboBox<String> month;
 	private JComboBox<String> year;
+	private boolean hasWildcard;
 	
-	public DatePicker(int lowerLimit)
+	public DatePicker(int lowerLimit, boolean hasWildcard)
 	{
 		super(new GridBagLayout());
 		setBackground(Color.white);
+		this.hasWildcard = hasWildcard;
+		
+		
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-		String[] years = new String[lowerLimit + 1];
-		int j = 0;
+		int j;
+		String[] years;
+		if(hasWildcard)
+		{
+			years = new String[lowerLimit + 2];
+			j = 1;
+			years[0] = "Year";
+			day= new JComboBox<String>(dayWithWildcard);
+			month= new JComboBox<String>(monthWithWildcard);
+		}
+		else
+		{
+			years = new String[lowerLimit + 1];
+			j = 0;
+			day= new JComboBox<String>(monthDays);
+			month= new JComboBox<String>(monthNames);
+		}
 		for(int i = currentYear; i >= currentYear - lowerLimit; i--)
 		{
 			years[j] = "" + i;
 			j++;
 		}
-		day= new JComboBox<String>(monthDays);
-		month= new JComboBox<String>(monthNames);
 		year= new JComboBox<String>(years);
 		month.addItemListener(this);
 		year.addItemListener(this);
@@ -48,8 +72,10 @@ public class DatePicker extends JPanel implements ItemListener{
 		month.setBorder(null);
 		year.setBorder(null);
 		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
 		c.insets = new Insets(0,0,0,5);
 		c.gridx = 0;
+		c.weightx = 1.0;
 		add(day, c);
 		c.gridx = 1;
 		add(month, c);
@@ -80,17 +106,29 @@ public class DatePicker extends JPanel implements ItemListener{
 	
 	public int getDay()
 	{
-		return day.getSelectedIndex() + 1;
+		if(!hasWildcard)
+			return day.getSelectedIndex() + 1;
+		else 
+		{
+			if(day.getSelectedIndex() == 0)
+				return -1;
+		}
+		return day.getSelectedIndex();
 	}
 	
 	public int getMonth()
 	{
+		if(hasWildcard && month.getSelectedIndex() == 0)
+			return -1;
 		return month.getSelectedIndex();
 	}
 	
 	public int getYear()
 	{
-		return Integer.parseInt((String)year.getSelectedItem());
+		if(!hasWildcard || (hasWildcard && year.getSelectedIndex() != 0))
+			return Integer.parseInt((String)year.getSelectedItem());
+		return -1;
+		
 	}
 	
 	public void setPickerFont(Font font)
@@ -118,31 +156,41 @@ public class DatePicker extends JPanel implements ItemListener{
 		{
 			if(source == month)
 			{
-				int selectedMonth = month.getSelectedIndex();
-				
-				if(selectedMonth == 0 || selectedMonth == 2 || selectedMonth == 4 || 
-						selectedMonth == 6 || selectedMonth == 7 || selectedMonth == 9 ||
-						selectedMonth == 0 || selectedMonth == 11)
+				String selectedMonth = (String)month.getSelectedItem();
+				if(selectedMonth.equals("January") || selectedMonth.equals("March")|| selectedMonth.equals("May")|| 
+						selectedMonth.equals("July") || selectedMonth.equals("August")|| selectedMonth.equals("October")||
+						selectedMonth.equals("December"))
 				{
-					int i = day.getItemCount() + 1;
+					int max = 32;
+					int i = 0;
+					if(!hasWildcard)
+					{
+						max = 31;
+						i = day.getItemCount() + 1;
+					}
+					else i = day.getItemCount();
 					String d = "" + i;
-					while(day.getItemCount() < 31)
+					while(day.getItemCount() < max)
 					{
 						day.addItem(d);
 						i++;
 						d = "" + i;
 					}
 				}
-				else if(selectedMonth == 3 || selectedMonth == 5 || 
-						selectedMonth == 8 || selectedMonth == 10)
+				else if(selectedMonth.equals("April")|| selectedMonth.equals("June") || 
+						selectedMonth.equals("September") || selectedMonth.equals("November"))
 				{
-					if(day.getItemCount() == 31)
-						day.removeItemAt(30);
+					int max = 31;
+					if(!hasWildcard)
+						max = 30;
+					
+					if(day.getItemCount() == max + 1)
+						day.removeItemAt(max);
 					else
 					{
 						int i = day.getItemCount() + 1;
 						String d = "" + i;
-						while(day.getItemCount() < 30)
+						while(day.getItemCount() < max)
 						{
 							day.addItem(d);
 							i++;
@@ -150,35 +198,81 @@ public class DatePicker extends JPanel implements ItemListener{
 						}
 					}
 				}
-				else if(selectedMonth == 1)
+				else if(selectedMonth.equals("February"))
 				{
-					int selectedYear = Integer.parseInt((String)year.getSelectedItem());
-					if(selectedYear % 4 == 0 || (selectedYear % 100 == 0 && selectedYear % 400 == 0))
+					if(!hasWildcard)
 					{
-						if(day.getItemCount() == 31)
-							day.removeItemAt(30);
-						if(day.getItemCount() == 30)
-							day.removeItemAt(29);
-						if(day.getItemCount() == 29)
-							return;
-						
-						int i = day.getItemCount() + 1;
-						String d = "" + i;
-						while(day.getItemCount() < 29)
+						int selectedYear = Integer.parseInt((String)year.getSelectedItem());
+						if(selectedYear % 4 == 0 || (selectedYear % 100 == 0 && selectedYear % 400 == 0))
 						{
-							day.addItem(d);
-							i++;
-							d = "" + i;
+							if(day.getItemCount() == 31)
+								day.removeItemAt(30);
+							if(day.getItemCount() == 30)
+								day.removeItemAt(29);
+							if(day.getItemCount() == 29)
+								return;
+							
+							int i = day.getItemCount() + 1;
+							String d = "" + i;
+							while(day.getItemCount() < 29)
+							{
+								day.addItem(d);
+								i++;
+								d = "" + i;
+							}
+						}
+						else
+						{
+							if(day.getItemCount() == 31)
+								day.removeItemAt(30);
+							if(day.getItemCount() == 30)
+								day.removeItemAt(29);
+							if(day.getItemCount() == 29)
+								day.removeItemAt(28);
 						}
 					}
 					else
 					{
-						if(day.getItemCount() == 31)
-							day.removeItemAt(30);
-						if(day.getItemCount() == 30)
-							day.removeItemAt(29);
-						if(day.getItemCount() == 29)
-							day.removeItemAt(28);
+						if(year.getSelectedIndex() != 0)
+						{
+							int selectedYear = Integer.parseInt((String)year.getSelectedItem());
+							if(selectedYear % 4 == 0 || (selectedYear % 100 == 0 && selectedYear % 400 == 0))
+							{
+								if(day.getItemCount() == 32)
+									day.removeItemAt(31);
+								if(day.getItemCount() == 31)
+									day.removeItemAt(30);
+								if(day.getItemCount() == 30)
+									return;
+								
+								int i = day.getItemCount() + 1;
+								String d = "" + i;
+								while(day.getItemCount() < 30)
+								{
+									day.addItem(d);
+									i++;
+									d = "" + i;
+								}
+							}
+							else
+							{
+								if(day.getItemCount() == 32)
+									day.removeItemAt(31);
+								if(day.getItemCount() == 31)
+									day.removeItemAt(30);
+								if(day.getItemCount() == 30)
+									day.removeItemAt(29);
+							}
+						}
+						else
+						{
+							if(day.getItemCount() == 32)
+								day.removeItemAt(31);
+							if(day.getItemCount() == 31)
+								day.removeItemAt(30);
+							if(day.getItemCount() == 30)
+								day.removeItemAt(29);
+						}
 					}
 				}
 			}
@@ -218,5 +312,12 @@ public class DatePicker extends JPanel implements ItemListener{
 			}
 		}
 		
+	}
+	
+	public void reset()
+	{
+		day.setSelectedIndex(0);
+		month.setSelectedIndex(0);
+		year.setSelectedIndex(0);
 	}
 }

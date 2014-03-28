@@ -33,6 +33,9 @@ public class ContentPanel extends JPanel
 		private JPanel listPanel;
 		private JPanel settingsPanel;
 		private JPanel detailsPanel;
+		private DictionaryPanel pathPanel;
+		private DictionaryPanel physPanel;
+		private DictionaryPanel specPanel;
 		private JButton newButton;
 		private JButton searchButton;
 		private JButton refreshButton;
@@ -118,16 +121,9 @@ public class ContentPanel extends JPanel
 			
 			itemPanel = new JPanel(new CardLayout());
 			itemPanel.setBackground(Color.white);
-			
-			JPanel pathPanel = new JPanel(new GridLayout(0, 1)); //list for pathologists
-			JPanel physPanel = new JPanel(new GridLayout(0, 1)); //list for physicians
-			JPanel specPanel = new JPanel(new GridLayout(0, 1)); //list for specimens
 			pathPanel = new DictionaryPanel();
 			physPanel = new DictionaryPanel();
 			specPanel = new DictionaryPanel();
-			pathPanel.setBackground(Color.white);
-			physPanel.setBackground(Color.white);
-			specPanel.setBackground(Color.white);
 			itemPanel.add(Constants.TitleConstants.HISTOPATHOLOGY, histopathologyList.getPanel());
 			itemPanel.add(Constants.TitleConstants.GYNECOLOGY, gynecologyList.getPanel());
 			itemPanel.add(Constants.TitleConstants.CYTOLOGY, cytologyList.getPanel());

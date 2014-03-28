@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -140,31 +141,68 @@ public class CytologyForm extends JPanel implements RecordForm
 		String remarks = (String)record.getAttribute(RecordTable.REMARKS);
 		if(remarks != null)
 			remarksValue.setText(remarks);
+		
+		String microNote = (String)record.getAttribute(RecordTable.MICRO_NOTE);
+		if(microNote != null)
+			microNoteValue.setText(microNote);
+		
+		String grossdesc = (String)record.getAttribute(RecordTable.GROSS_DESC);
+		if(grossdesc != null)
+			grossDescValue.setText(grossdesc);
 	}
 	
 	public boolean areFieldsValid()
 	{
+		boolean isValid = true;
 		if(!overviewPanel.areFieldsValid())
-			return false;
+			isValid = false;
+		/*
 		if(!(diagnosisValue.getText().length() > 0) ||
 				diagnosisValue.getText().length() > RecordConstants.DIAGNOSIS_LENGTH)
-			return false;
+		{
+			isValid = false;
+			diagnosisScroller.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
+		else diagnosisScroller.setBorder(defaultTextField.getBorder());
 		if(!(remarksValue.getText().length() > 0) ||
 				remarksValue.getText().length() > RecordConstants.REMARKS_LENGTH)
-			return false;
-		return true;
+		{
+			isValid = false;
+			remarksScroller.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
+		else remarksScroller.setBorder(defaultTextField.getBorder());
+		if(!(grossDescValue.getText().length() > 0) ||
+				grossDescValue.getText().length() > RecordConstants.REMARKS_LENGTH)
+		{
+			isValid = false;
+			grossDescScroller.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
+		else grossDescScroller.setBorder(defaultTextField.getBorder());
+		if(!(microNoteValue.getText().length() > 0) ||
+				microNoteValue.getText().length() > RecordConstants.REMARKS_LENGTH)
+		{
+			isValid = false;
+			microNoteScroller.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
+		else microNoteScroller.setBorder(defaultTextField.getBorder());*/
+		return isValid;
 	}
 
 	@Override
 	public Record getRecord() 
 	{
 		Record record = (CytologyRecord)overviewPanel.getRecord();
-		Diagnosis diagnosis = new Diagnosis(CategoriesConstants.OTHERS, diagnosisValue.getText());
-		List<Diagnosis> newDiagnosis = new Vector<Diagnosis>();
-		newDiagnosis.add(diagnosis);
-		record.putAttribute(RecordTable.DIAGNOSIS, newDiagnosis);
+		if(diagnosisValue.getText().length() > 0)
+		{
+			Diagnosis diagnosis = new Diagnosis(CategoriesConstants.OTHERS, diagnosisValue.getText());
+			List<Diagnosis> newDiagnosis = new Vector<Diagnosis>();
+			newDiagnosis.add(diagnosis);
+			record.putAttribute(RecordTable.DIAGNOSIS, newDiagnosis);
+		}
 		record.putAttribute(RecordTable.SPEC_TYPE, TitleConstants.OTHERS);
 		record.putAttribute(RecordTable.REMARKS, remarksValue.getText());
+		record.putAttribute(RecordTable.GROSS_DESC, grossDescValue.getText());
+		record.putAttribute(RecordTable.MICRO_NOTE, microNoteValue.getText());
 		return record;
 	}
 

@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Calendar;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -99,7 +100,7 @@ public class PatientForm extends JPanel implements Form
 		middleNameValue.setFont(lastNameValue.getFont());
 		middleNameValue.setHorizontalAlignment(JTextField.CENTER);
 		genderValue.setFont(lastNameValue.getFont());
-		birthday = new DatePicker(100);
+		birthday = new DatePicker(100, false);
 		Calendar c = Calendar.getInstance();
 		birthday.setDate(c);
 		birthday.setPickerFont(lastNameValue.getFont());
@@ -248,6 +249,11 @@ public class PatientForm extends JPanel implements Form
 			this.birthday.setDate(birthday);
 			_birthdayValue.setText(birthday.toString());
 		}
+		
+		JTextField defaultTextField = new JTextField();
+		lastNameValue.setBorder(defaultTextField.getBorder());
+		firstNameValue.setBorder(defaultTextField.getBorder());
+		middleNameValue.setBorder(defaultTextField.getBorder());
 	}
 	
 	public void setViewOnly(boolean isViewOnly)
@@ -287,27 +293,30 @@ public class PatientForm extends JPanel implements Form
 
 	public boolean areFieldsValid() 
 	{
-		int day= birthday.getDay();
-		int month= birthday.getMonth();
-		int year= birthday.getYear();		
+		boolean isValid = true;
+		JTextField defaultTextField = new JTextField();
 		if(!(lastNameValue.getText().length() > 0) || 
 				lastNameValue.getText().length() > PatientConstants.LAST_NAME_LENGTH)
-			return false;
+		{
+			lastNameValue.setBorder(BorderFactory.createLineBorder(Color.red));
+			isValid = false;
+		}
+		else lastNameValue.setBorder(defaultTextField.getBorder());
 		if(!(firstNameValue.getText().length() > 0) ||
 				firstNameValue.getText().length() > PatientConstants.FIRST_NAME_LENGTH)
-			return false;
+		{
+			firstNameValue.setBorder(BorderFactory.createLineBorder(Color.red));
+			isValid = false;
+		}
+		else firstNameValue.setBorder(defaultTextField.getBorder());
 		if(!(middleNameValue.getText().length() > 0) ||
 				middleNameValue.getText().length() > PatientConstants.MIDDLE_NAME_LENGTH)
-			return false;
-		if((month== 3 || month== 5 || 
-				month== 8 || month== 10) && day> 29)
-			return false;
-		if(month == 1 && !(year% 4 == 0 && year% 100 != 0 || year% 400 == 0) 
-				&& day> 27)
-			return false;
-		if(month== 1 && day> 28)
-			return false;
-		return true;
+		{
+			middleNameValue.setBorder(BorderFactory.createLineBorder(Color.red));
+			isValid = false;
+		}
+		else middleNameValue.setBorder(defaultTextField.getBorder());
+		return isValid;
 	}
 	
 	public void addListener(CustomListener listener)
