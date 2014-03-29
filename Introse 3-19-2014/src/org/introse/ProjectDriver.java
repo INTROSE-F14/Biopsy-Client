@@ -2,6 +2,8 @@ package org.introse;
 
 
 
+import java.awt.Color;
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -625,7 +627,7 @@ public class ProjectDriver
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
 			DatabaseHelper helper = new DatabaseHelper(patientDao, recordDao, diagnosisDao);
-			helper.backup(chooser.getSelectedFile());
+			helper.backup(new File(chooser.getSelectedFile().getAbsolutePath() + ".bcb"));
 		}
 	}
 }
