@@ -3,7 +3,6 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -15,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
@@ -32,7 +30,6 @@ public class ContentPanel extends JPanel
 		private JPanel itemPanel;
 		private JPanel listPanel;
 		private JPanel settingsPanel;
-		private JPanel setPanel;
 		private JPanel detailsPanel;
 		private DictionaryPanel pathPanel;
 		private DictionaryPanel physPanel;
@@ -176,19 +173,14 @@ public class ContentPanel extends JPanel
 		{
 			settingsPanel = new JPanel(new GridBagLayout());
 			settingsPanel.setBackground(Color.white);
-			JLabel header = new JLabel("Preferences");
-			header.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.HEADER));
-			
-			setPanel = new JPanel(new CardLayout());
-			setPanel.setBackground(Color.white);
 			
 			backResPanel = new BackupAndRestorePanel();
 			backResPanel.setBackground(Color.white);
-			setPanel.add(Constants.TitleConstants.PREFERENCES, backResPanel);
 			
 			GridBagConstraints c = new GridBagConstraints();
-			c.anchor = GridBagConstraints.LINE_START;
-			settingsPanel.add(setPanel,c);
+			c.anchor = GridBagConstraints.NORTHWEST;
+			c.fill = GridBagConstraints.BOTH;
+			settingsPanel.add(backResPanel,c);
 		}
 		
 		public void addListener(CustomListener listener)
@@ -401,5 +393,10 @@ public class ContentPanel extends JPanel
 			}
 			detailsPanel.revalidate();
 			detailsPanel.repaint();
+		}
+		
+		public BackupAndRestorePanel getBackupAndRestorePanel()
+		{
+			return backResPanel;
 		}
 	}

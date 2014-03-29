@@ -605,7 +605,7 @@ public class ProjectDriver
 		loader.showGUI();
 	}
 	
-	public void restore()
+	public void selectRestorePath()
 	{
 		final JFileChooser chooser = new JFileChooser(FileHelper.getBackupDirectory());
 		FileNameExtensionFilter backupFilter = new FileNameExtensionFilter("BCB file", "bcb");
@@ -613,21 +613,42 @@ public class ProjectDriver
 		int returnVal = chooser.showOpenDialog(mainMenu.getContentPanel());
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			DatabaseHelper helper = new DatabaseHelper(patientDao, recordDao, diagnosisDao);
-			helper.restore(chooser.getSelectedFile());
+			mainMenu.getContentPanel().getBackupAndRestorePanel().
+				setRestorePath(chooser.getSelectedFile().getAbsolutePath());
+			mainMenu.getContentPanel().getBackupAndRestorePanel().setRestoreEnabled(true);
+		}
+	}
+	
+	public void selectBackupPath()
+	{
+		final JFileChooser chooser = new JFileChooser();
+		chooser.setSelectedFile(FileHelper.createBackupFile());
+		FileNameExtensionFilter backupFilter = new FileNameExtensionFilter("BCB file", "bcb");
+		chooser.setFileFilter(backupFilter);
+		int returnVal = chooser.showDialog(mainMenu.getContentPanel(), "Create backup");
+		if(returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			mainMenu.getContentPanel().getBackupAndRestorePanel().
+				setBackupPath(chooser.getSelectedFile().getAbsolutePath());
+			mainMenu.getContentPanel().getBackupAndRestorePanel().setBackupEnabled(true);
 		}
 	}
 	
 	public void backup()
 	{
-		final JFileChooser chooser = new JFileChooser(FileHelper.getBackupDirectory());
-		FileNameExtensionFilter backupFilter = new FileNameExtensionFilter("BCB file", "bcb");
-		chooser.setFileFilter(backupFilter);
-		int returnVal = chooser.showSaveDialog(mainMenu.getContentPanel());
-		if(returnVal == JFileChooser.APPROVE_OPTION)
-		{
-			DatabaseHelper helper = new DatabaseHelper(patientDao, recordDao, diagnosisDao);
-			helper.backup(new File(chooser.getSelectedFile().getAbsolutePath() + ".bcb"));
-		}
+		String backupPath = mainMenu.getContentPanel().getBackupAndRestorePanel().getBackupPath();
+		DatabaseHelper helper = new DatabaseHelper(patientDao, recordDao, diagnosisDao);
+		helper.backup(new File(backupPath));
+		mainMenu.getContentPanel().getBackupAndRestorePanel().setBackupPath("");
+		mainMenu.getContentPanel().getBackupAndRestorePanel().setBackupEnabled(false);
+	}
+	
+	public void restore()
+	{
+		String restorePath = mainMenu.getContentPanel().getBackupAndRestorePanel().getRestorePath();
+		DatabaseHelper helper = new DatabaseHelper(patientDao, recordDao, diagnosisDao);
+		helper.restore(new File(restorePath));
+		mainMenu.getContentPanel().getBackupAndRestorePanel().setRestorePath("");
+		mainMenu.getContentPanel().getBackupAndRestorePanel().setRestoreEnabled(false);
 	}
 }

@@ -122,6 +122,8 @@ public abstract class Constants
 	
 	public abstract class ActionConstants
 	{
+		public static final String SELECT_RESTORE = "Select restore";
+		public static final String SELECT_BACKUP = "Select backup";
 		public static final String BACK = "Back";
 		public static final String NEW_HISTOPATHOLOGY = "New Histopathology";
 		public static final String NEW_GYNENECOLOGY = "New Gynecology";

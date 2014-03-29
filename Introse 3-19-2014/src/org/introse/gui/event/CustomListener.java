@@ -75,6 +75,10 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
        case ActionConstants.BACK: projectDriver.changeView(projectDriver.getPreviousView());
         						   projectDriver.removeDetailsPanel();
         						   break;
+       case ActionConstants.SELECT_RESTORE: projectDriver.selectRestorePath();
+    	   break;
+       case ActionConstants.SELECT_BACKUP: projectDriver.selectBackupPath();
+       break;
        case ActionConstants.BACKUP: projectDriver.backup();
        break;
        case ActionConstants.RESTORE: projectDriver.restore();
