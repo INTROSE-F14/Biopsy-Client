@@ -650,5 +650,6 @@ public class ProjectDriver
 		helper.restore(new File(restorePath));
 		mainMenu.getContentPanel().getBackupAndRestorePanel().setRestorePath("");
 		mainMenu.getContentPanel().getBackupAndRestorePanel().setRestoreEnabled(false);
+		refresh(TitleConstants.ALL);
 	}
 }

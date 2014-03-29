@@ -16,6 +16,7 @@ import org.introse.Constants;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.core.CustomCalendar;
+import org.introse.core.CustomDocument;
 import org.introse.core.CytologyRecord;
 import org.introse.core.GynecologyRecord;
 import org.introse.core.HistopathologyRecord;
@@ -82,6 +83,11 @@ public class RecordOverview extends JPanel
 
 		completedDate.setPickerFont(specimenValue.getFont());
 		receivedDate.setPickerFont(specimenValue.getFont());
+		
+		specimenValue.setDocument(new CustomDocument(RecordConstants.SPECIMEN_LENGTH));
+		physicianValue.setDocument(new CustomDocument(RecordConstants.PHYSICIAN_LENGTH));
+		pathologistValue.setDocument(new CustomDocument(RecordConstants.PATHOLOGIST_LENGTH));
+		roomValue.setDocument(new CustomDocument(RecordConstants.ROOM_LENGTH));
 	}
 	
 	private void layoutComponents()

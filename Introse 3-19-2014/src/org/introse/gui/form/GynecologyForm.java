@@ -27,6 +27,7 @@ import org.introse.Constants.CategoriesConstants;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
+import org.introse.core.CustomDocument;
 import org.introse.core.Diagnosis;
 import org.introse.core.GynecologyRecord;
 import org.introse.core.Patient;
@@ -408,6 +409,13 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		omnScroller = new JScrollPane(omnArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		omnScroller.setPreferredSize(new Dimension(500, 70));
+		
+		remarksValue.setDocument(new CustomDocument(RecordConstants.REMARKS_LENGTH));
+		grossDescValue.setDocument(new CustomDocument(RecordConstants.GROSS_LENGTH));
+		microNoteValue.setDocument(new CustomDocument(RecordConstants.MICRO_LENGTH));
+		omnArea.setDocument(new CustomDocument(RecordConstants.DIAGNOSIS_LENGTH));
+		unsatisfactoryDueTo.setDocument(new CustomDocument(RecordConstants.DIAGNOSIS_LENGTH));
+		
 	}
 	
 	public void setFields(Record record, Patient patient)

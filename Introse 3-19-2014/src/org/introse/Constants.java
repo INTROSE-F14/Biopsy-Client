@@ -39,6 +39,8 @@ public abstract class Constants
 		public static final int REMARKS_LENGTH = 200;
 		public static final int ROOM_LENGTH = 15;
 		public static final int DIAGNOSIS_LENGTH = 200;
+		public static final int GROSS_LENGTH = 200;
+		public static final int MICRO_LENGTH = 200;
 	}
 	
 	public abstract class PatientConstants

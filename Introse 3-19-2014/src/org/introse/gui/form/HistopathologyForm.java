@@ -4,21 +4,25 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 
 import org.introse.Constants;
 import org.introse.Constants.CategoriesConstants;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
+import org.introse.core.CustomDocument;
 import org.introse.core.Diagnosis;
 import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
@@ -127,6 +131,11 @@ public class HistopathologyForm extends JPanel implements RecordForm
 		remarksValue.setFont(diagnosisValue.getFont());
 		grossDescValue.setFont(diagnosisValue.getFont());
 		microNoteValue.setFont(diagnosisValue.getFont());
+		
+		remarksValue.setDocument(new CustomDocument(RecordConstants.REMARKS_LENGTH));
+		grossDescValue.setDocument(new CustomDocument(RecordConstants.GROSS_LENGTH));
+		microNoteValue.setDocument(new CustomDocument(RecordConstants.MICRO_LENGTH));
+		diagnosisValue.setDocument(new CustomDocument(RecordConstants.DIAGNOSIS_LENGTH));
 	}
 	
 	@Override
@@ -219,5 +228,5 @@ public class HistopathologyForm extends JPanel implements RecordForm
 	public void setLoadPatientEnabled(boolean isEnabled) 
 	{
 		overviewPanel.getPatientForm().setLoadExisting(isEnabled);
-	} 
+	}
 }

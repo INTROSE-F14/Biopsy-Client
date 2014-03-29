@@ -16,10 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.introse.Constants;
-import org.introse.Constants.ActionConstants;
 import org.introse.Constants.PatientConstants;
 import org.introse.Constants.PatientTable;
 import org.introse.core.CustomCalendar;
+import org.introse.core.CustomDocument;
 import org.introse.core.Patient;
 import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
@@ -117,6 +117,10 @@ public class PatientForm extends JPanel implements Form
 		_genderValue.setHorizontalAlignment(JLabel.CENTER);
 		_birthdayValue.setFont(_lastNameValue.getFont());
 		_birthdayValue.setHorizontalAlignment(JLabel.CENTER);
+		
+		firstNameValue.setDocument(new CustomDocument(PatientConstants.FIRST_NAME_LENGTH));
+		lastNameValue.setDocument(new CustomDocument(PatientConstants.LAST_NAME_LENGTH));
+		middleNameValue.setDocument(new CustomDocument(PatientConstants.MIDDLE_NAME_LENGTH));
 	}
 	
 	private void layoutComponents()
