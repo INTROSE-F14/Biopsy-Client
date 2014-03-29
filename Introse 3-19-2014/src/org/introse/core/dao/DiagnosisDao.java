@@ -10,4 +10,6 @@ public interface DiagnosisDao
 	public List<Diagnosis> getDiagnosis(Record record);
 	public void add(Diagnosis diagnosis);
 	public List<Diagnosis> getAll();
+	public Diagnosis get(Diagnosis diagnosis);
+	public void update(Diagnosis diagnosis);
 }

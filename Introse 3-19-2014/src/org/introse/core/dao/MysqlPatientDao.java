@@ -129,7 +129,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		if((lastName = (String)patient.getAttribute(Constants.PatientTable.LAST_NAME)) != null)
 		{
 			lastName = lastName.replace("%", "\\%");
-			sql = sql.concat(PatientTable.LAST_NAME + " LIKE '%" + lastName + "%'");
+			sql = sql.concat(PatientTable.LAST_NAME + " LIKE \"%" + lastName + "%\"");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -142,7 +142,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		if((firstName = (String)patient.getAttribute(Constants.PatientTable.FIRST_NAME)) != null)
 		{
 			firstName = firstName.replace("%", "\\%");
-			sql = sql.concat(PatientTable.FIRST_NAME + " LIKE '%" + firstName +"%'");
+			sql = sql.concat(PatientTable.FIRST_NAME + " LIKE \"%" + firstName +"%\"");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -154,7 +154,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		if((middleName = (String)patient.getAttribute(Constants.PatientTable.MIDDLE_NAME)) != null)
 		{
 			middleName.replace("%", "\\%");
-			sql = sql.concat(PatientTable.MIDDLE_NAME + " LIKE '%" + middleName + "%'");
+			sql = sql.concat(PatientTable.MIDDLE_NAME + " LIKE \"%" + middleName + "%\"");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -165,7 +165,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		String gender;
 		if((gender= (String)patient.getAttribute(Constants.PatientTable.GENDER)) != null)
 		{
-			sql = sql.concat(PatientTable.GENDER + " = '" + gender + "'");
+			sql = sql.concat(PatientTable.GENDER + " = \"" + gender + "\"");
 			whereCount++;
 		}	
 		if(whereCount > 0)
@@ -177,7 +177,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(Constants.PatientTable.BIRTHDAY);
 		if(birthday!= null)
 		{
-			String bdayString = PatientTable.BIRTHDAY + " LIKE '";
+			String bdayString = PatientTable.BIRTHDAY + " LIKE \"";
 			if(birthday.getYear() != -1)
 				bdayString = bdayString.concat("" + birthday.getYear() + "-");
 			else bdayString = bdayString.concat("%-");
@@ -191,10 +191,10 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 			if(birthday.getDay() != -1)
 			{
 				if(birthday.getDay() > 9)
-					bdayString = bdayString.concat("" + birthday.getDay() + "'");
-				else bdayString = bdayString.concat("0" + birthday.getDay() + "'");
+					bdayString = bdayString.concat("" + birthday.getDay() + "\"");
+				else bdayString = bdayString.concat("0" + birthday.getDay() + "\"");
 			}
-			else bdayString = bdayString.concat("%'");
+			else bdayString = bdayString.concat("%\"");
 			if(whereCount > 0)
 			{
 				sql = sql.concat(" AND ");
@@ -249,13 +249,13 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 	public void add(Patient patient)
 	{
 		int patientId = (int)patient.getAttribute(PatientTable.PATIENT_ID);
-		String lastName = "'"+(String)patient.getAttribute(PatientTable.LAST_NAME)+"'";
-		String firstName = "'"+(String)patient.getAttribute(PatientTable.FIRST_NAME)+"'";
-		String middleName = "'"+(String)patient.getAttribute(PatientTable.MIDDLE_NAME)+"'";
+		String lastName = "\""+(String)patient.getAttribute(PatientTable.LAST_NAME)+"\"";
+		String firstName = "\""+(String)patient.getAttribute(PatientTable.FIRST_NAME)+"\"";
+		String middleName = "\""+(String)patient.getAttribute(PatientTable.MIDDLE_NAME)+"\"";
 		
-		String gender = "'"+(String)patient.getAttribute(PatientTable.GENDER)+"'";
+		String gender = "\""+(String)patient.getAttribute(PatientTable.GENDER)+"\"";
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
-		String bDay = "'" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "'";
+		String bDay = "\"" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "\"";
 		
 		String sql = "Insert into Patients(" + PatientTable.PATIENT_ID + ", " + PatientTable.LAST_NAME  +
 				", " + PatientTable.FIRST_NAME + ", " + PatientTable.MIDDLE_NAME + ", " + PatientTable.GENDER + 
@@ -342,12 +342,12 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 	{
 		
 		int patientId = (int)patient.getAttribute(PatientTable.PATIENT_ID);
-		String lastName = "'"+(String)patient.getAttribute(PatientTable.LAST_NAME)+"'";
-		String firstName = "'"+(String)patient.getAttribute(PatientTable.FIRST_NAME)+"'";
-		String middleName = "'"+(String)patient.getAttribute(PatientTable.MIDDLE_NAME)+"'";
-		String gender = "'"+(String)patient.getAttribute(PatientTable.GENDER)+"'";
+		String lastName = "\""+(String)patient.getAttribute(PatientTable.LAST_NAME)+"\"";
+		String firstName = "\""+(String)patient.getAttribute(PatientTable.FIRST_NAME)+"\"";
+		String middleName = "\""+(String)patient.getAttribute(PatientTable.MIDDLE_NAME)+"\"";
+		String gender = "\""+(String)patient.getAttribute(PatientTable.GENDER)+"\"";
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
-		String bDay = "'" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "'";
+		String bDay = "\"" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "\"";
 		
 		String sql = "Update patients set " + 
 				PatientTable.LAST_NAME + " = " + lastName + ", " + 

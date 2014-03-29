@@ -172,9 +172,12 @@ public class HistopathologyForm extends JPanel implements RecordForm
 			record.putAttribute(RecordTable.DIAGNOSIS, newDiagnosis);
 		}
 		record.putAttribute(RecordTable.SPEC_TYPE, TitleConstants.OTHERS);
-		record.putAttribute(RecordTable.REMARKS, remarksValue.getText());
-		record.putAttribute(RecordTable.GROSS_DESC, grossDescValue.getText());
-		record.putAttribute(RecordTable.MICRO_NOTE, microNoteValue.getText());
+		if(remarksValue.getText().length() > 0)
+			record.putAttribute(RecordTable.REMARKS, remarksValue.getText());
+		if(grossDescValue.getText().length() > 0)
+			record.putAttribute(RecordTable.GROSS_DESC, grossDescValue.getText());
+		if(microNoteValue.getText().length() > 0)
+			record.putAttribute(RecordTable.MICRO_NOTE, microNoteValue.getText());
 		return record;
 	}
 

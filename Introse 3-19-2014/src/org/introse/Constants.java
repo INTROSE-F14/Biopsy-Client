@@ -28,8 +28,10 @@ public abstract class Constants
 		public static final char HISTOPATHOLOGY_RECORD = 'H';
 		public static final char GYNECOLOGY_RECORD = 'G';
 		public static final char CYTOLOGY_RECORD = 'C';
-		public static final int PATIENT = 3;
-		public static final int OTHERS = 4;
+		public static final int PATIENT = 2;
+		public static final int OTHERS = 3;
+		public static final int RECORD = 0;
+		public static final int DIAGNOSIS = 1;
 		
 		public static final int SPECIMEN_LENGTH = 50;
 		public static final int PHYSICIAN_LENGTH = 100;
@@ -49,6 +51,9 @@ public abstract class Constants
 	public abstract class TitleConstants
 	{
 		public static final String ALL="ALL";
+		public static final String DIAGNOSIS = "Diagnosis";
+		public static final String SEARCH_RECORD = "Search record";
+		public static final String SEARCH_PATIENT = "Search patient";
 		public static final String RECORD_OVERVIEW = "Record Overview";
 		public static final String RESULTS = "Interpretation and Results";
 		public static final String HISTOPATHOLOGY = "Histopathology";
@@ -139,6 +144,8 @@ public abstract class Constants
 		public static final String CANCEL = "CANCEL_EDIT";
 		public static final String PRINT = "PRINT";
 		public static final String SEARCH= "Search";
+		public static final String BACKUP = "Backup";
+		public static final String RESTORE = "Restore";
 	}
 	
 	public abstract class RecordTable

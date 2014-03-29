@@ -123,8 +123,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
-		String sql = "Select * from records WHERE " + Constants.RecordTable.RECORD_TYPE+ " = '" 
-		+ record.getAttribute(RecordTable.RECORD_TYPE) + "'" + " AND " + RecordTable.RECORD_YEAR + " = " + 
+		String sql = "Select * from records WHERE " + Constants.RecordTable.RECORD_TYPE+ " = \"" 
+		+ record.getAttribute(RecordTable.RECORD_TYPE) + "\"" + " AND " + RecordTable.RECORD_YEAR + " = " + 
 				record.getAttribute(RecordTable.RECORD_YEAR) + " AND " + RecordTable.RECORD_NUMBER + " = " + 
 		record.getAttribute(RecordTable.RECORD_NUMBER);
 
@@ -221,8 +221,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
-		String sql = "DELETE * FROM RECORDS WHERE " + Constants.RecordTable.RECORD_TYPE+ " = '" 
-				+ record.getAttribute(RecordTable.RECORD_TYPE) + "'" + " AND " + RecordTable.RECORD_YEAR + " = " + 
+		String sql = "DELETE * FROM RECORDS WHERE " + Constants.RecordTable.RECORD_TYPE+ " = \"" 
+				+ record.getAttribute(RecordTable.RECORD_TYPE) + "\"" + " AND " + RecordTable.RECORD_YEAR + " = " + 
 						record.getAttribute(RecordTable.RECORD_YEAR) + " AND " + RecordTable.RECORD_NUMBER + " = " + 
 				record.getAttribute(RecordTable.RECORD_NUMBER);
 		try 
@@ -296,7 +296,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		if((specimen = (String)record.getAttribute(Constants.RecordTable.SPECIMEN)) != null)
 		{
 			specimen = specimen.replace("%", "\\%");
-			sql = sql.concat(RecordTable.SPECIMEN + " LIKE '%" + specimen +"%'");
+			sql = sql.concat(RecordTable.SPECIMEN + " LIKE \"%" + specimen +"%\"");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -308,7 +308,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		if((pathologist = (String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)) != null)
 		{
 			pathologist = pathologist.replace("%", "\\%");
-			sql = sql.concat(RecordTable.PATHOLOGIST + " LIKE '%" + pathologist + "%'");
+			sql = sql.concat(RecordTable.PATHOLOGIST + " LIKE \"%" + pathologist + "%\"");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -320,7 +320,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		if((physician = (String)record.getAttribute(Constants.RecordTable.PHYSICIAN)) != null)
 		{
 			physician = physician.replace("%", "\\%");
-			sql = sql.concat(RecordTable.PHYSICIAN + " LIKE '%" + physician + "%'");
+			sql = sql.concat(RecordTable.PHYSICIAN + " LIKE \"%" + physician + "%\"");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -332,7 +332,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		if((room = (String)record.getAttribute(Constants.RecordTable.ROOM)) != null)
 		{
 			room = room.replace("%", "\\%");
-			sql = sql.concat(RecordTable.ROOM + " LIKE '%" + room + "%'");
+			sql = sql.concat(RecordTable.ROOM + " LIKE \"%" + room + "%\"");
 			whereCount++;
 		}
 		if(whereCount > 0)
@@ -344,7 +344,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		if((record.getAttribute(Constants.RecordTable.RECORD_TYPE) != null))
 		{
 			recordType = (char)record.getAttribute(Constants.RecordTable.RECORD_TYPE);
-			sql = sql.concat(RecordTable.RECORD_TYPE+ " = '" + recordType + "'");
+			sql = sql.concat(RecordTable.RECORD_TYPE+ " = \"" + recordType + "\"");
 			whereCount++;
 		}
 		
@@ -353,7 +353,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		
 		if(received != null)
 		{
-			String receivedString = RecordTable.DATE_RECEIVED + " LIKE '";
+			String receivedString = RecordTable.DATE_RECEIVED + " LIKE \"";
 			if(received.getYear() != -1)
 				receivedString = receivedString.concat("" + received.getYear() + "-");
 			else receivedString = receivedString.concat("%-");
@@ -367,10 +367,10 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			if(received.getDay() != -1)
 			{
 				if(received.getDay() > 9)
-				receivedString = receivedString.concat("" + received.getDay() + "%'");
-				else receivedString = receivedString.concat("0" + received.getDay() + "%'");
+				receivedString = receivedString.concat("" + received.getDay() + "%\"");
+				else receivedString = receivedString.concat("0" + received.getDay() + "%\"");
 			}
-			else receivedString = receivedString.concat("%'");
+			else receivedString = receivedString.concat("%\"");
 			if(whereCount > 0)
 			{
 				sql = sql.concat(" AND ");
@@ -382,7 +382,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		
 		if(completed != null)
 		{
-			String completedString = RecordTable.DATE_COMPLETED + " LIKE '";
+			String completedString = RecordTable.DATE_COMPLETED + " LIKE \"";
 			if(completed.getYear() != -1)
 				completedString = completedString.concat("" + completed.getYear() + "-");
 			else completedString = completedString.concat("%-");
@@ -396,10 +396,10 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			if(completed.getDay() != -1)
 			{
 				if(completed.getDay() > 9)
-				completedString = completedString.concat("" + completed.getDay() + "%'");
-				else completedString = completedString.concat("0" + completed.getDay() + "%'");
+				completedString = completedString.concat("" + completed.getDay() + "%\"");
+				else completedString = completedString.concat("0" + completed.getDay() + "%\"");
 			}
-			else completedString = completedString.concat("%'");
+			else completedString = completedString.concat("%\"");
 			if(whereCount > 0)
 			{
 				sql = sql.concat(" AND ");
@@ -492,25 +492,32 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 	public void add(Record record)
 	{
 		int patientId = (int)record.getAttribute(Constants.RecordTable.PATIENT_ID);
-		String recordType = "'"+(char)record.getAttribute(Constants.RecordTable.RECORD_TYPE)+"'";
+		String recordType = "\""+(char)record.getAttribute(Constants.RecordTable.RECORD_TYPE)+"\"";
 		int recordYear = (int)record.getAttribute(RecordTable.RECORD_YEAR);
 		int recordNumber = (int)record.getAttribute(RecordTable.RECORD_NUMBER);
-		String specimen = "'"+(String)record.getAttribute(Constants.RecordTable.SPECIMEN)+"'";
-		String pathologist = "'"+(String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)+"'";
-		String physician = "'" + (String)record.getAttribute(Constants.RecordTable.PHYSICIAN) +"'";
-		String remarks = "'"+(String)record.getAttribute(Constants.RecordTable.REMARKS)+"'";
-		String specimenType = "'"+ (String)record.getAttribute(RecordTable.SPEC_TYPE) +"'";
-		String grossdesc = "'" + (String)record.getAttribute(RecordTable.GROSS_DESC) + "'";
-		String micronote = "'" + (String)record.getAttribute(RecordTable.MICRO_NOTE) + "'";
+		String specimen = "\""+(String)record.getAttribute(Constants.RecordTable.SPECIMEN)+"\"";
+		String pathologist = "\""+(String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)+"\"";
+		String physician = "\"" + (String)record.getAttribute(Constants.RecordTable.PHYSICIAN) +"\"";
+		String specimenType = "\""+ (String)record.getAttribute(RecordTable.SPEC_TYPE) +"\"";
 		CustomCalendar received = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED);
 		CustomCalendar completed = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_COMPLETED);
-		String room = (String)record.getAttribute(RecordTable.ROOM);
-		if (room != null)
-			room = "'" + room + "'";
-		String dateReceived = "'" + received.getYear() + 
-				"-" + (received.getMonth() + 1) + "-" + received.getDay() + "'";
-		String dateCompleted = "'" + completed.getYear() + 
-				"-" + (completed.getMonth() + 1) + "-" + completed.getDay() + "'";
+		//nullables
+		String grossdesc = null;
+		String micronote = null;
+		String remarks = null;
+		String room = null;
+		if(record.getAttribute(RecordTable.ROOM)!= null)
+			room = "\"" + record.getAttribute(RecordTable.ROOM) + "\"";
+		if(record.getAttribute(RecordTable.MICRO_NOTE) != null)
+			micronote = "\"" + record.getAttribute(RecordTable.MICRO_NOTE) + "\"";
+		if(record.getAttribute(RecordTable.GROSS_DESC) != null)
+			grossdesc = "\"" + record.getAttribute(RecordTable.GROSS_DESC) + "\"";
+		if(record.getAttribute(Constants.RecordTable.REMARKS) != null)
+			remarks = "\"" + record.getAttribute(Constants.RecordTable.REMARKS) + "\"";
+		String dateReceived = "\"" + received.getYear() + 
+				"-" + (received.getMonth() + 1) + "-" + received.getDay() + "\"";
+		String dateCompleted = "\"" + completed.getYear() + 
+				"-" + (completed.getMonth() + 1) + "-" + completed.getDay() + "\"";
 		
 		
 		String sql = "Insert into Records(" + Constants.RecordTable.PATIENT_ID + ", "+ Constants.RecordTable.RECORD_YEAR+", "+
@@ -550,24 +557,32 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 	{
 		int recordNumber = (int)record.getAttribute(Constants.RecordTable.RECORD_NUMBER);
 		int recordYear = (int)record.getAttribute(RecordTable.RECORD_YEAR);
-		String recordType = "'"+(char)record.getAttribute(RecordTable.RECORD_TYPE)+"'";
-		String specimen = "'"+(String)record.getAttribute(Constants.RecordTable.SPECIMEN)+"'";
-		String pathologist = "'"+(String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)+"'";
-		String physician = "'" + (String)record.getAttribute(Constants.RecordTable.PHYSICIAN) +"'";
-		String remarks = "'"+(String)record.getAttribute(Constants.RecordTable.REMARKS)+"'";
-		String room = (String)record.getAttribute(RecordTable.ROOM);
-		String specimenType = "'" + (String)record.getAttribute(RecordTable.SPEC_TYPE) +"'";
-		String grossdesc = "'" + (String)record.getAttribute(RecordTable.GROSS_DESC) + "'";
-		String micronote = "'" + (String)record.getAttribute(RecordTable.MICRO_NOTE) + "'";
-		if(room != null)
-			room = "'" + room + "'";
+		String recordType = "\""+(char)record.getAttribute(RecordTable.RECORD_TYPE)+"\"";
+		String specimen = "\""+(String)record.getAttribute(Constants.RecordTable.SPECIMEN)+"\"";
+		String pathologist = "\""+(String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)+"\"";
+		String physician = "\"" + (String)record.getAttribute(Constants.RecordTable.PHYSICIAN) +"\"";
+		String specimenType = "\"" + (String)record.getAttribute(RecordTable.SPEC_TYPE) +"\"";
+		//nullables
+		String grossdesc = null;
+		String micronote = null;
+		String remarks = null;
+		String room = null;
+		if(record.getAttribute(RecordTable.ROOM)!= null)
+			room = "\"" + record.getAttribute(RecordTable.ROOM) + "\"";
+		if(record.getAttribute(RecordTable.MICRO_NOTE) != null)
+			micronote = "\"" + record.getAttribute(RecordTable.MICRO_NOTE) + "\"";
+		if(record.getAttribute(RecordTable.GROSS_DESC) != null)
+			grossdesc = "\"" + record.getAttribute(RecordTable.GROSS_DESC) + "\"";
+		if(record.getAttribute(Constants.RecordTable.REMARKS) != null)
+			remarks = "\"" + record.getAttribute(Constants.RecordTable.REMARKS) + "\"";
+		
 		CustomCalendar received = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED);
 		CustomCalendar completed = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_COMPLETED);
 		
-		String dateReceived = "'" + received.getYear() + 
-				"-" + (received.getMonth() + 1) + "-" + received.getDay() + "'";
-		String dateCompleted = "'" + completed.getYear() + 
-				"-" + (completed.getMonth() + 1) + "-" + completed.getDay() + "'";
+		String dateReceived = "\"" + received.getYear() + 
+				"-" + (received.getMonth() + 1) + "-" + received.getDay() + "\"";
+		String dateCompleted = "\"" + completed.getYear() + 
+				"-" + (completed.getMonth() + 1) + "-" + completed.getDay() + "\"";
 
 		String sql = "Update records set "  + 
 				Constants.RecordTable.SPECIMEN + " = " + specimen +", " + 
@@ -617,10 +632,10 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		int max = 0;
 		int count = 0;
 		String sql1 = "SELECT MAX(" + RecordTable.RECORD_NUMBER + ") FROM " + TitleConstants.RECORDS + " WHERE " + 
-		RecordTable.RECORD_TYPE + " = '" + record.getAttribute(RecordTable.RECORD_TYPE) + "' " + 
+		RecordTable.RECORD_TYPE + " = \"" + record.getAttribute(RecordTable.RECORD_TYPE) + "\" " + 
 		" AND " + RecordTable.RECORD_YEAR + " = " + record.getAttribute(RecordTable.RECORD_YEAR);
 		String sql2 = "SELECT COUNT(*) FROM " + TitleConstants.RECORDS + " WHERE " + 
-				RecordTable.RECORD_TYPE + " = '" + record.getAttribute(RecordTable.RECORD_TYPE) + "' " + 
+				RecordTable.RECORD_TYPE + " = \"" + record.getAttribute(RecordTable.RECORD_TYPE) + "\" " + 
 				" AND " + RecordTable.RECORD_YEAR + " = " + record.getAttribute(RecordTable.RECORD_YEAR);
 		
 		try 

@@ -17,6 +17,7 @@ import javax.swing.border.EmptyBorder;
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.PatientTable;
+import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
 import org.introse.gui.combobox.DatePicker;
@@ -35,7 +36,7 @@ public class SearchPatientDialog extends SearchDialog implements ActionListener
    
    public SearchPatientDialog()
    {
-	    super(ActionConstants.SEARCH_PATIENT);
+	    super(TitleConstants.SEARCH_PATIENT);
 	    initializeComponents();
 	    layoutComponents();
 	    setContentPane(pane);

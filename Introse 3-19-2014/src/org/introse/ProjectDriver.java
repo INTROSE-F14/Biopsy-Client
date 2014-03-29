@@ -6,10 +6,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.PatientTable;
@@ -138,7 +140,7 @@ public class ProjectDriver
 		recordDao = new MysqlRecordDao();
 		patientDao = new MysqlPatientDao();
 		diagnosisDao = new MysqlDiagnosisDao();
-
+		System.out.println(FileHelper.createProgramDirectory());
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
@@ -175,8 +177,6 @@ public class ProjectDriver
 	
 	public void logout()
 	{
-		DatabaseHelper helper = new DatabaseHelper(patientDao, recordDao, diagnosisDao);
-		helper.backup(FileHelper.createBackupFile());
 		mainMenu.exit();
 		createAndShowGui();
 	}
@@ -601,5 +601,31 @@ public class ProjectDriver
 	{
 		loader = new PatientLoader(patientList, listener);
 		loader.showGUI();
+	}
+	
+	public void restore()
+	{
+		final JFileChooser chooser = new JFileChooser(FileHelper.getBackupDirectory());
+		FileNameExtensionFilter backupFilter = new FileNameExtensionFilter("BCB file", "bcb");
+		chooser.setFileFilter(backupFilter);
+		int returnVal = chooser.showOpenDialog(mainMenu.getContentPanel());
+		if(returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			DatabaseHelper helper = new DatabaseHelper(patientDao, recordDao, diagnosisDao);
+			helper.restore(chooser.getSelectedFile());
+		}
+	}
+	
+	public void backup()
+	{
+		final JFileChooser chooser = new JFileChooser(FileHelper.getBackupDirectory());
+		FileNameExtensionFilter backupFilter = new FileNameExtensionFilter("BCB file", "bcb");
+		chooser.setFileFilter(backupFilter);
+		int returnVal = chooser.showSaveDialog(mainMenu.getContentPanel());
+		if(returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			DatabaseHelper helper = new DatabaseHelper(patientDao, recordDao, diagnosisDao);
+			helper.backup(chooser.getSelectedFile());
+		}
 	}
 }

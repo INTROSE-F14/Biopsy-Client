@@ -37,6 +37,7 @@ public class ContentPanel extends JPanel
 		private DictionaryPanel pathPanel;
 		private DictionaryPanel physPanel;
 		private DictionaryPanel specPanel;
+		private BackupAndRestorePanel backResPanel;
 		private JButton newButton;
 		private JButton searchButton;
 		private JButton refreshButton;
@@ -181,10 +182,9 @@ public class ContentPanel extends JPanel
 			setPanel = new JPanel(new CardLayout());
 			setPanel.setBackground(Color.white);
 			
-			JPanel BackResPanel = new JPanel(new GridLayout(0, 1)); //for backup and restore
-			BackResPanel = new BackupRestore();
-			BackResPanel.setBackground(Color.white);
-			setPanel.add(Constants.TitleConstants.PREFERENCES, BackResPanel);
+			backResPanel = new BackupAndRestorePanel();
+			backResPanel.setBackground(Color.white);
+			setPanel.add(Constants.TitleConstants.PREFERENCES, backResPanel);
 			
 			GridBagConstraints c = new GridBagConstraints();
 			c.anchor = GridBagConstraints.LINE_START;
@@ -193,6 +193,7 @@ public class ContentPanel extends JPanel
 		
 		public void addListener(CustomListener listener)
 		{
+			backResPanel.addListener(listener);
 			histopathologyList.addListener(listener);
 			cytologyList.addListener(listener);
 			gynecologyList.addListener(listener);

@@ -21,15 +21,20 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.introse.core.Preferences;
+
 
 public class FileHelper 
 {
-	public static final String PROGRAM_NAME = "SomeProgramName";
-	public static final String PROGRAM_DATA_PATH = "C:\\Users\\" + System.getProperty("user.name") + "\\" + PROGRAM_NAME;
+	public static final String PROGRAM_DATA_PATH = "C:\\Users\\" + System.getProperty("user.name") + "\\" + Preferences.PROGRAM_NAME;
 	public static final String PROPERTIES_FILE_NAME = "properties.txt";
 	
 	
-
+	public static boolean createProgramDirectory()
+	{
+		File directory = new File(getBackupDirectory());
+		return directory.mkdirs();
+	}
 	/* Method Name: createBackupFile
 	 * Brief Description:
 	 * 	creates a backup file in the backup directory

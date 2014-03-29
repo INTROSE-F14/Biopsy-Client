@@ -1,7 +1,6 @@
 package org.introse.gui.dialogbox;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -23,6 +22,7 @@ import org.introse.Constants.ActionConstants;
 import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
+import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
 import org.introse.core.CytologyRecord;
 import org.introse.core.GynecologyRecord;
@@ -46,7 +46,7 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
 	
    public SearchRecordDialog()
    {
-		super(ActionConstants.SEARCH_RECORD);
+		super(TitleConstants.SEARCH_RECORD);
 		patientID = -1;
 		initializeComponents();
 		layoutComponents();

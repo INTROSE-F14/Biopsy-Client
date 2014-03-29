@@ -829,9 +829,12 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		if(omn.isSelected() && omn.isEnabled())
 			diagnosisList.add(new Diagnosis(CategoriesConstants.OMN, omnArea.getText()));
 		record.putAttribute(RecordTable.DIAGNOSIS, diagnosisList);
-		record.putAttribute(RecordTable.REMARKS, remarksValue.getText());
-		record.putAttribute(RecordTable.GROSS_DESC, grossDescValue.getText());
-		record.putAttribute(RecordTable.MICRO_NOTE, microNoteValue.getText());
+		if(remarksValue.getText().length() > 0)
+			record.putAttribute(RecordTable.REMARKS, remarksValue.getText());
+		if(grossDescValue.getText().length() > 0)
+			record.putAttribute(RecordTable.GROSS_DESC, grossDescValue.getText());
+		if(microNoteValue.getText().length() > 0)
+			record.putAttribute(RecordTable.MICRO_NOTE, microNoteValue.getText());
 		return record;
 	}
 

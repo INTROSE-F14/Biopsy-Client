@@ -38,9 +38,9 @@ CREATE TABLE Records
 	specimen VARCHAR(50) NOT NULL,
 	specimenType VARCHAR (30) NOT NULL,
 	room VARCHAR(15),
-	remarks VARCHAR(200) NOT NULL,
-	grossDescription VARCHAR(200) NOT NULL,
-	microscopicNotes VARCHAR(200) NOT NULL,
+	remarks VARCHAR(200),
+	grossDescription VARCHAR(200),
+	microscopicNotes VARCHAR(200),
 	PRIMARY KEY(recordType, recordYear, recordNumber),
 	FOREIGN KEY(patientID) REFERENCES Patients(patientID)
 );

@@ -15,6 +15,7 @@ import org.introse.core.Record;
 
 public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 
+	
 	@Override
 	public List<Diagnosis> getDiagnosis(Record record) 
 	{
@@ -22,8 +23,8 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 		Statement stmt = null;
 		ResultSet result = null;
 		Connection conn = null;
-		String sql = "Select * from diagnosis WHERE " + Constants.DiagnosisTable.RECORD_TYPE+ " = '" 
-		+ record.getAttribute(RecordTable.RECORD_TYPE) + "'" + " AND " + DiagnosisTable.RECORD_YEAR + " = " + 
+		String sql = "Select * from diagnosis WHERE " + Constants.DiagnosisTable.RECORD_TYPE+ " = \"" 
+		+ record.getAttribute(RecordTable.RECORD_TYPE) + "\"" + " AND " + DiagnosisTable.RECORD_YEAR + " = " + 
 				record.getAttribute(RecordTable.RECORD_YEAR) + " AND " + DiagnosisTable.RECORD_NUMBER + " = " + 
 		record.getAttribute(RecordTable.RECORD_NUMBER);
 
@@ -65,10 +66,10 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 	@Override
 	public void add(Diagnosis diagnosis)
 	{
-		String recordType = "'"+diagnosis.getRecordType()+"'";
+		String recordType = "\""+diagnosis.getRecordType()+"\"";
 		int recordYear = diagnosis.getRecordYear();
 		int recordNumber = diagnosis.getRecordNumber();
-		String value = "'"+(String)diagnosis.getValue()+"'";
+		String value = "\""+(String)diagnosis.getValue()+"\"";
 		int category = (int)diagnosis.getCategory();
 		
 		String sql = "Insert into Diagnosis(" + DiagnosisTable.CATEGORY_ID+ ", " + DiagnosisTable.RECORD_TYPE+
@@ -103,8 +104,8 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
-		String sql = "DELETE FROM diagnosis WHERE " + Constants.DiagnosisTable.RECORD_TYPE+ " = '" 
-		+ record.getAttribute(RecordTable.RECORD_TYPE) + "'" + " AND " + DiagnosisTable.RECORD_YEAR + " = " + 
+		String sql = "DELETE FROM diagnosis WHERE " + Constants.DiagnosisTable.RECORD_TYPE+ " = \"" 
+		+ record.getAttribute(RecordTable.RECORD_TYPE) + "\"" + " AND " + DiagnosisTable.RECORD_YEAR + " = " + 
 				record.getAttribute(RecordTable.RECORD_YEAR) + " AND " + DiagnosisTable.RECORD_NUMBER + " = " + 
 		record.getAttribute(RecordTable.RECORD_NUMBER);
 		try 
@@ -174,4 +175,92 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 		return diagnosis;
 	}
 
+	@Override
+	public Diagnosis get(Diagnosis diagnosis) 
+	{
+		Diagnosis match = null;
+		int category = diagnosis.getCategory();
+		String recordType = "\"" + diagnosis.getRecordType() + "\"";
+		int recordYear = diagnosis.getRecordYear();
+		int recordNumber = diagnosis.getRecordNumber();
+		Statement stmt = null;
+		ResultSet result = null;
+		Connection conn = null;
+		String sql = "Select * from diagnosis WHERE " + DiagnosisTable.CATEGORY_ID + " = " +
+		category + " AND " + DiagnosisTable.RECORD_TYPE + " = " + recordType + " AND " + 
+		DiagnosisTable.RECORD_YEAR + " = " + recordYear + " AND " + 
+		DiagnosisTable.RECORD_NUMBER + " = " + recordNumber;
+
+		try 
+		{
+			System.out.println(sql);
+			conn = createConnection();
+			stmt = conn.createStatement();
+			result = stmt.executeQuery(sql);
+			
+			if(result.next())
+			{
+				recordNumber = result.getInt(DiagnosisTable.RECORD_NUMBER);
+				recordYear = result.getInt(DiagnosisTable.RECORD_YEAR);
+				char rType = result.getString(DiagnosisTable.RECORD_TYPE).charAt(0);
+				category = result.getInt(DiagnosisTable.CATEGORY_ID);
+				String value = result.getString(DiagnosisTable.VALUE);
+				match = new Diagnosis(category, value, rType,
+						recordYear, recordNumber);
+			}
+		} catch (ClassNotFoundException | SQLException e) 
+		{e.printStackTrace();}  
+		finally
+		{
+			try
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+				if(conn != null)
+					conn.close();
+			} catch (SQLException e) {e.printStackTrace();}
+		}
+		return match;
+	}
+	
+	public void update(Diagnosis diagnosis)
+	{
+		int category = diagnosis.getCategory();
+		String recordType = "\"" + diagnosis.getRecordType() + "\"";
+		int recordYear = diagnosis.getRecordYear();
+		int recordNumber = diagnosis.getRecordNumber();
+		String value = "\""+ diagnosis.getValue() +"\"";
+		
+		String sql = "Update diagnosis set "  + 
+				DiagnosisTable.VALUE + " = " + value  + 
+				" WHERE " + DiagnosisTable.CATEGORY_ID + " = " +
+				category + " AND " + DiagnosisTable.RECORD_TYPE + " = " + recordType + " AND " + 
+				DiagnosisTable.RECORD_YEAR + " = " + recordYear + " AND " + 
+				DiagnosisTable.RECORD_NUMBER + " = " + recordNumber;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet result = null;
+		try 
+		{
+			System.out.println(sql);
+			conn = createConnection();
+			stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
+		} catch (ClassNotFoundException | SQLException e) {e.printStackTrace();}  
+		finally
+		{
+			try
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+				if(conn != null)
+					conn.close();
+			} catch (SQLException e) {e.printStackTrace();}
+		}
+		
+	}
 }
