@@ -125,11 +125,32 @@ public class Record  extends ListItem implements Printable
 				physicianLabel = new JLabel("Physician"),
 				patientLabel = new JLabel("Patient");
 		
-		String label1 = (String)getAttribute(RecordTable.REF_NUM), 
-				label2 = (String)getAttribute(RecordTable.PATHOLOGIST), 
+		String  label2 = (String)getAttribute(RecordTable.PATHOLOGIST), 
 				label3 = (String)getAttribute(RecordTable.SPECIMEN), 
 				label4 = (String)getAttribute(RecordTable.PHYSICIAN),
 				label5 = patientName;
+		
+		String label1 = null;
+		if(getAttribute(RecordTable.RECORD_NUMBER) != null)
+		{
+			int number = (int)getAttribute(RecordTable.RECORD_NUMBER);
+			int i;
+			if(number > 999)
+				i = 4;
+			else if(number > 99)
+				i = 3;
+			else if(number > 9)
+				i = 2;
+			else i = 1;
+			
+			label1 = "" + number;
+			for(int j = i; j < 4; j++)
+			{
+				label1 = "0" + label1;
+			}
+			label1 = (String)getAttribute(RecordTable.RECORD_TYPE) + 
+				getAttribute(RecordTable.RECORD_YEAR) + "-" + label1;
+		}
 		
 		JLabel irnValue = new JLabel(label1),
 				pathologistValue = new JLabel(label2),

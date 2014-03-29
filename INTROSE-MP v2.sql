@@ -27,20 +27,21 @@ CREATE TABLE Changelog
 DROP TABLE IF EXISTS Records;
 CREATE TABLE Records
 (
-	internalReferenceNumber VARCHAR(20) NOT NULL,
-	recordType INT(1) UNSIGNED NOT NULL,
-	specimenType VARCHAR(30) NOT NULL,
-	patientID INT UNSIGNED AUTO_INCREMENT NOT NULL,
+	recordYear INT(2) NOT NULL,
+	recordNumber INT(4) NOT NULL,
+	recordType CHAR(1) NOT NULL,
+	patientID INT UNSIGNED NOT NULL,
 	physician VARCHAR(100) NOT NULL,
 	pathologist VARCHAR(100) NOT NULL,
 	dateReceived DATETIME NOT NULL,
 	dateCompleted DATETIME NOT NULL,
 	specimen VARCHAR(50) NOT NULL,
-	remarks VARCHAR(200) NOT NULL,
+	specimenType VARCHAR (30) NOT NULL,
 	room VARCHAR(15),
+	remarks VARCHAR(200) NOT NULL,
 	grossDescription VARCHAR(200) NOT NULL,
 	microscopicNotes VARCHAR(200) NOT NULL,
-	PRIMARY KEY(internalReferenceNumber),
+	PRIMARY KEY(recordType, recordYear, recordNumber),
 	FOREIGN KEY(patientID) REFERENCES Patients(patientID)
 );
 
@@ -65,11 +66,13 @@ DROP TABLE IF EXISTS Diagnosis;
 CREATE TABLE Diagnosis
 (
 	category_id INT UNSIGNED NOT NULL,
-	internalreferencenumber VARCHAR(20) NOT NULL,
+	recordYear INT(2) NOT NULL,
+	recordNumber INT(4) NOT NULL,
+	recordType CHAR(1) NOT NULL,
 	diagnosis_value VARCHAR(200) NOT NULL,
-	PRIMARY KEY(category_id, internalReferenceNumber),
+	PRIMARY KEY(category_id, recordYear, recordNumber, recordType),
 	FOREIGN KEY(category_id) REFERENCES Categories(category_id),
-	FOREIGN KEY(internalreferencenumber) REFERENCES Records(internalreferencenumber)
+	FOREIGN KEY(recordType, recordYear, recordNumber) REFERENCES Records(recordType, recordYear, recordNumber)
 );
 
 
@@ -84,3 +87,4 @@ insert into categories values
 (8, 'Squamous Cell', 2),
 (9, 'Glandular Cell', 2), 
 (10, 'Specimen Adequacy', null);
+

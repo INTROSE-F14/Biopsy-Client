@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -556,6 +557,14 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		if(remarks != null)
 		remarksValue.setText(remarks);
 		updateButtons();
+		
+		String microNote = (String)record.getAttribute(RecordTable.MICRO_NOTE);
+		if(microNote != null)
+			microNoteValue.setText(microNote);
+		
+		String grossdesc = (String)record.getAttribute(RecordTable.GROSS_DESC);
+		if(grossdesc != null)
+			grossDescValue.setText(grossdesc);
 	}
 	@Override
 	public void setRecordEditable(boolean isEditable)
@@ -641,61 +650,67 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 	
 	public boolean areFieldsValid()
 	{
+		JScrollPane defaultScrollPane = new JScrollPane();
+		boolean isValid = true;
 		if(!overviewPanel.areFieldsValid())
-			return false;
-		if(!(remarksValue.getText().length() > 0) ||
-				remarksValue.getText().length() > RecordConstants.REMARKS_LENGTH)
-			return false;
+			isValid = false;
+		/*
 		if(!conventionalSmear.isSelected() && !liquidBased.isSelected() && !others.isSelected())
-			return false;
+			isValid = false;
 		if(!satisfactory.isSelected() && !unsatisfactory.isSelected())
-			return false;
-		if(unsatisfactory.isSelected() && unsatisfactoryDueTo.getText().replaceAll("\\s", "").length() < 1)
-			return false;
+			isValid = false;
 		if(!nilm.isSelected() && !eca.isSelected() && !omn.isSelected())
-			return false;
+			isValid = false;
+			*/
+		if(unsatisfactory.isSelected() && unsatisfactoryDueTo.getText().replaceAll("\\s", "").length() < 1)
+			isValid = false;
+		
 		if(nilm.isSelected())
 		{
 			if(!organisms.isSelected() && !onf.isSelected() && !other.isSelected())
-				return false;
+				isValid = false;
 			
 			if(organisms.isSelected())
 			{
 				if(!org1.isSelected() && !org2.isSelected() && 
 						!org3.isSelected() && !org4.isSelected() && !org5.isSelected())
-					return false;
+					isValid = false;
 			}
 			if(onf.isSelected())
 			{
 				if(!onf1.isSelected() && !onf2.isSelected() && !onf3.isSelected())
-					return false;
+					isValid = false;
 			}
 			if(other.isSelected())
 				if(!other1.isSelected())
-					return false;
+					isValid = false;
 		}
 		if(eca.isSelected())
 		{
 			if(!squamousCell.isSelected() && !glandularCell.isSelected())
-				return false;
+				isValid = false;
 			if(squamousCell.isSelected())
 			{
 				if(!squamous1.isSelected() && !squamous2.isSelected() && !squamous3.isSelected()
 						&& !squamous4.isSelected())
-					return false;
+					isValid = false;
 			}
 			if(glandularCell.isSelected())
 			{
 				if(!glandular1.isSelected() && !glandular2.isSelected() && !glandular3.isSelected())
-					return false;
+					isValid = false;
 			}
 		}
 		if(omn.isSelected())
-			if(omnArea.getText().replaceAll("\\s", "").length() < 1 || 
+		{	if(omnArea.getText().replaceAll("\\s", "").length() < 1 || 
 					omnArea.getText().length() > RecordConstants.DIAGNOSIS_LENGTH)
-				return false;
-		
-		return true;
+			{
+				isValid = false;
+				omnScroller.setBorder(BorderFactory.createLineBorder(Color.red));
+			}
+			else omnScroller.setBorder(defaultScrollPane.getBorder());
+		}
+		return isValid;
 	}
 	
 	@Override
@@ -755,7 +770,6 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 	public Record getRecord() 
 	{
 		Record record = (GynecologyRecord)overviewPanel.getRecord();
-		String referenceNumber = (String)record.getAttribute(RecordTable.REF_NUM);
 		String specimenType = TitleConstants.OTHERS;
 		if(conventionalSmear.isSelected())
 			specimenType = TitleConstants.CONVENTIONAL;
@@ -816,6 +830,8 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 			diagnosisList.add(new Diagnosis(CategoriesConstants.OMN, omnArea.getText()));
 		record.putAttribute(RecordTable.DIAGNOSIS, diagnosisList);
 		record.putAttribute(RecordTable.REMARKS, remarksValue.getText());
+		record.putAttribute(RecordTable.GROSS_DESC, grossDescValue.getText());
+		record.putAttribute(RecordTable.MICRO_NOTE, microNoteValue.getText());
 		return record;
 	}
 

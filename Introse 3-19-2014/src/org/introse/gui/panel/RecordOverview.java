@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Calendar;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -32,11 +33,11 @@ public class RecordOverview extends JPanel
 	private JLabel refNumberLabel,  refNumberValue, specimenLabel, physicianLabel, pathologistLabel, dateReceivedLabel,
 	dateCompletedLabel, roomLabel;
 	private DatePicker receivedDate, completedDate;
-	private int recordType;
+	private char recordType;
 	private PatientForm patientForm;
 	private JPanel recordForm;
 	
-	public RecordOverview(int recordType)
+	public RecordOverview(char recordType)
 	{
 		super(new GridBagLayout());
 		this.recordType = recordType;
@@ -72,8 +73,8 @@ public class RecordOverview extends JPanel
 		pathologistValue.setFont(specimenValue.getFont());
 		roomValue.setFont(specimenValue.getFont());
 		roomValue.setHorizontalAlignment(JTextField.CENTER);
-		receivedDate = new DatePicker(50);
-		completedDate = new DatePicker(50);
+		receivedDate = new DatePicker(50, false);
+		completedDate = new DatePicker(50, false);
 	
 		Calendar c = Calendar.getInstance();
 		receivedDate.setDate(c);
@@ -171,7 +172,26 @@ public class RecordOverview extends JPanel
 	public void setRecordFields(Object object)
 	{	
 		Record record = (Record)object;
-		String refNumber = (String)record.getAttribute(RecordTable.REF_NUM.toString());
+		String refNumber = null;
+		if(record.getAttribute(RecordTable.RECORD_NUMBER) != null)
+		{
+			int number = (int)record.getAttribute(RecordTable.RECORD_NUMBER);
+			int i;
+			if(number > 999)
+				i = 4;
+			else if(number > 99)
+				i = 3;
+			else if(number > 9)
+				i = 2;
+			else i = 1;
+			refNumber = "" + number;
+			for(int j = i; j < 4; j++)
+			{
+				refNumber = "0" + refNumber;
+			}
+			refNumber = ""+record.getAttribute(RecordTable.RECORD_TYPE) + 
+				record.getAttribute(RecordTable.RECORD_YEAR) + "-" + refNumber;
+		}
 		String specimen = (String)record.getAttribute(RecordTable.SPECIMEN.toString());
 		String physician = (String)record.getAttribute(RecordTable.PHYSICIAN.toString());
 		String pathologist = (String)record.getAttribute(RecordTable.PATHOLOGIST.toString());
@@ -195,6 +215,11 @@ public class RecordOverview extends JPanel
 		CustomCalendar dateCompleted = (CustomCalendar)record.getAttribute(RecordTable.DATE_COMPLETED.toString());
 		if(dateCompleted != null)
 			completedDate.setDate(dateCompleted);
+		
+		JTextField defaultTextField = new JTextField();
+		specimenValue.setBorder(defaultTextField.getBorder());
+		physicianValue.setBorder(defaultTextField.getBorder());
+		pathologistValue.setBorder(defaultTextField.getBorder());
 	}
 	
 	public void setPatientFields(Patient patient)
@@ -219,18 +244,32 @@ public class RecordOverview extends JPanel
 	
 	public boolean areFieldsValid()
 	{
+		boolean isValid = true;
+		JTextField defaultTextField = new JTextField();
 		if(!(specimenValue.getText().length() > 0) || 
 				specimenValue.getText().length() > RecordConstants.SPECIMEN_LENGTH)
-			return false;
+		{
+			specimenValue.setBorder(BorderFactory.createLineBorder(Color.red));
+			isValid = false;
+		}
+		else specimenValue.setBorder(defaultTextField.getBorder());
 		if(!(physicianValue.getText().length() > 0) || 
 				physicianValue.getText().length() > RecordConstants.PHYSICIAN_LENGTH)
-			return false;
+		{
+			physicianValue.setBorder(BorderFactory.createLineBorder(Color.red));
+			isValid = false;
+		}
+		else physicianValue.setBorder(defaultTextField.getBorder());
 		if(!(pathologistValue.getText().length() > 0) ||
 				pathologistValue.getText().length() > RecordConstants.PATHOLOGIST_LENGTH)
-			return false;
+		{
+			pathologistValue.setBorder(BorderFactory.createLineBorder(Color.red));
+			isValid = false;
+		}
+		else pathologistValue.setBorder(defaultTextField.getBorder());
 		if(!patientForm.areFieldsValid())
-			return false;
-		return true;
+			isValid = false;
+		return isValid;
 	}
 	
 	public Record getRecord()
@@ -248,8 +287,17 @@ public class RecordOverview extends JPanel
 			record = new CytologyRecord();
 		}
 
-		record.putAttribute(RecordTable.RECORD_TYPE.toString(), recordType);
-		record.putAttribute(RecordTable.REF_NUM.toString(), refNumberValue.getText());
+		record.putAttribute(RecordTable.RECORD_TYPE, recordType);
+		if(!refNumberValue.getText().equals("Waiting for Completion"))
+		{
+			record.putAttribute(RecordTable.RECORD_YEAR, Integer.parseInt(refNumberValue.getText().substring(1, 3)));
+			record.putAttribute(RecordTable.RECORD_NUMBER, Integer.parseInt(refNumberValue.getText().substring(4, 8)));
+		}
+		else
+		{
+			String year = Calendar.getInstance().get(Calendar.YEAR)+"";
+			record.putAttribute(RecordTable.RECORD_YEAR, Integer.parseInt(year.substring(2, 4)));
+		}
 		record.putAttribute(RecordTable.SPECIMEN.toString(), specimenValue.getText());
 		record.putAttribute(RecordTable.PATHOLOGIST.toString(), pathologistValue.getText());
 		record.putAttribute(RecordTable.PHYSICIAN.toString(), physicianValue.getText());

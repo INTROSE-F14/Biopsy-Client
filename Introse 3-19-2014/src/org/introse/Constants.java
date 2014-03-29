@@ -25,9 +25,9 @@ public abstract class Constants
 	
 	public abstract class RecordConstants
 	{
-		public static final int HISTOPATHOLOGY_RECORD = 0;
-		public static final int GYNECOLOGY_RECORD = 1;
-		public static final int CYTOLOGY_RECORD = 2;
+		public static final char HISTOPATHOLOGY_RECORD = 'H';
+		public static final char GYNECOLOGY_RECORD = 'G';
+		public static final char CYTOLOGY_RECORD = 'C';
 		public static final int PATIENT = 3;
 		public static final int OTHERS = 4;
 		
@@ -127,7 +127,7 @@ public abstract class Constants
 		public static final String NEW_PATHOLOGIST = "New Pathologist";
 		public static final String LOAD_PATIENT = "LOAD_EXISTING_PATIENT";
 		public static final String SEARCH_PATIENT = "Search patient";
-		public static final String SEARCH_RECORD = "search record";
+		public static final String SEARCH_RECORD = "Search record";
 		public static final int VIEW = 0;
 		public static final int EDIT = 1;
 		public static final int NEW = 2;
@@ -137,7 +137,6 @@ public abstract class Constants
 		public static final String EDIT_RECORD = "EDIT_RECORD";
 		public static final String SAVE = "SAVE_RECORD";
 		public static final String CANCEL = "CANCEL_EDIT";
-		public static final String CLEAR = "CLEAR";
 		public static final String PRINT = "PRINT";
 		public static final String SEARCH= "Search";
 	}
@@ -145,7 +144,8 @@ public abstract class Constants
 	public abstract class RecordTable
 	{
 		public static final String PATIENT = "Patient";
-		public static final String REF_NUM = "internalreferencenumber";
+		public static final String RECORD_YEAR = "recordyear";
+		public static final String RECORD_NUMBER = "recordnumber";
 		public static final String RECORD_TYPE = "recordtype";
 		public static final String PATIENT_ID = "patientid";
 		public static final String PHYSICIAN = "physician";
@@ -157,6 +157,8 @@ public abstract class Constants
 		public static final String DIAGNOSIS = "diagnosis";
 		public static final String ROOM = "room";
 		public static final String SPEC_TYPE = "specimentype";
+		public static final String GROSS_DESC = "grossdescription";
+		public static final String MICRO_NOTE = "microscopicNotes";
 	}
 	
 	public abstract class PatientTable
@@ -171,8 +173,10 @@ public abstract class Constants
 	
 	public abstract class DiagnosisTable
 	{
-		public static final String CATEGORY_ID = "category_id";
-		public static final String REF_NUM = "internalreferencenumber";
+		public static final String CATEGORY_ID = "category_id";	
+		public static final String RECORD_YEAR = "recordyear";
+		public static final String RECORD_NUMBER = "recordnumber";
+		public static final String RECORD_TYPE = "recordtype";
 		public static final String VALUE = "diagnosis_value";
 	}
 	

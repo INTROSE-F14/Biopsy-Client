@@ -2,7 +2,6 @@ package org.introse;
 
 
 
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -27,6 +26,8 @@ import org.introse.core.Record;
 import org.introse.core.dao.MysqlDiagnosisDao;
 import org.introse.core.dao.MysqlPatientDao;
 import org.introse.core.dao.MysqlRecordDao;
+import org.introse.core.database.DatabaseHelper;
+import org.introse.core.database.FileHelper;
 import org.introse.core.network.Client;
 import org.introse.gui.dialogbox.ErrorDialog;
 import org.introse.gui.dialogbox.PatientLoader;
@@ -174,6 +175,8 @@ public class ProjectDriver
 	
 	public void logout()
 	{
+		DatabaseHelper helper = new DatabaseHelper(patientDao, recordDao, diagnosisDao);
+		helper.backup(FileHelper.createBackupFile());
 		mainMenu.exit();
 		createAndShowGui();
 	}
@@ -244,6 +247,7 @@ public class ProjectDriver
 							
 							  break;
 			case Constants.TitleConstants.SPECIMENS:  
+				
 							
 							  break;
 			case Constants.TitleConstants.SEARCH_RESULT:
@@ -344,7 +348,8 @@ public class ProjectDriver
 			{
 				System.out.println("Search");
 				Patient patient = (Patient)object;
-				//use patient for search kayo na bahala :)
+				((SearchRecordDialog)searchDialog).setPatient(patient);
+				loader.dispose();
 				return;
 			}
 			showDetails(object);
@@ -412,9 +417,8 @@ public class ProjectDriver
 				switch(rP.getMode())
 				{
 				case Constants.ActionConstants.NEW:  if(patientDao.get(p) == null)
-													 patientDao.add(p);
-													 r.putAttribute(RecordTable.REF_NUM,
-															 generateReferenceNumber((int)r.getAttribute(RecordTable.RECORD_TYPE)));
+													 	patientDao.add(p);
+													 recordDao.assignReferenceNumber(r);
 													 recordDao.add(r);
 													 break;
 													 
@@ -423,14 +427,17 @@ public class ProjectDriver
 				}
 				diagnosisDao.delete(r);
 				List<Diagnosis> diagnosis = (List)r.getAttribute(RecordTable.DIAGNOSIS);
-				Iterator<Diagnosis> i = diagnosis.iterator();
-				while(i.hasNext())
+				if(diagnosis != null)
 				{
-					Diagnosis d = i.next();
-					d.setReferenceNumber((String)r.getAttribute(RecordTable.REF_NUM));
-					diagnosisDao.add(d);
+					Iterator<Diagnosis> i = diagnosis.iterator();
+					while(i.hasNext())
+					{
+						Diagnosis d = i.next();
+						d.setReferenceNumber(((char)r.getAttribute(RecordTable.RECORD_TYPE)),
+								(int)r.getAttribute(RecordTable.RECORD_YEAR), (int)r.getAttribute(RecordTable.RECORD_NUMBER));
+						diagnosisDao.add(d);
+					}
 				}
-				
 				((RecordPanel)panel).getRecordForm().setFields(r, p);
 			}
 			else if(panel instanceof PatientPanel)
@@ -527,48 +534,6 @@ public class ProjectDriver
 		mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
 	}
 	
-	public String generateReferenceNumber(int type)
-	{
-		String prefix = "";
-		String refNum = "";
-		String recordNum = "";
-		
-		Record record = null;
-		int year = Calendar.getInstance().get(Calendar.YEAR) % 100;
-		switch(type)
-		{
-		case Constants.RecordConstants.HISTOPATHOLOGY_RECORD: 
-										 prefix = "H" + year + "-";
-										 record = new HistopathologyRecord();
-										 break;
-		case Constants.RecordConstants.GYNECOLOGY_RECORD: 
-										prefix = "G" + year + "-";
-										record = new GynecologyRecord();
-										break;
-		case Constants.RecordConstants.CYTOLOGY_RECORD: 
-										prefix = "C" + year + "-";
-										record = new CytologyRecord();
-		}
-		
-		int i = 0;
-		do
-		{
-			recordNum = "";
-			if(i < 10)
-				recordNum = "000" + i;
-			else if(i < 100)
-				recordNum = "00" + i;
-			else if(i < 1000)
-				recordNum = "0" + i;
-			else recordNum = ""+i;
-			refNum = prefix + recordNum;
-			record.putAttribute(Constants.RecordTable.REF_NUM, refNum);
-			i++;
-		}
-		while(recordDao.get(record) != null);
-		return refNum;
-	}
-	
 	public void loadExistingPatient(Object patient)
 	{
 		((RecordForm)((RecordPanel)panel).getRecordForm()).setPatient((Patient)patient);
@@ -606,11 +571,6 @@ public class ProjectDriver
 		}
 		searchDialog.showGUI();
 	}
-	
-    public void clearSearchFields()
-    {
-        this.searchDialog.clear();
-    }
 
 	public void displaySearchResult()
 	{
