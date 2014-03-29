@@ -32,6 +32,7 @@ public class ContentPanel extends JPanel
 		private JPanel itemPanel;
 		private JPanel listPanel;
 		private JPanel settingsPanel;
+		private JPanel setPanel;
 		private JPanel detailsPanel;
 		private JButton newButton;
 		private JButton searchButton;
@@ -180,9 +181,18 @@ public class ContentPanel extends JPanel
 			settingsPanel.setBackground(Color.white);
 			JLabel header = new JLabel("Preferences");
 			header.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.HEADER));
+			
+			setPanel = new JPanel(new CardLayout());
+			setPanel.setBackground(Color.white);
+			
+			JPanel BackResPanel = new JPanel(new GridLayout(0, 1)); //for backup and restore
+			BackResPanel = new BackupRestore();
+			BackResPanel.setBackground(Color.white);
+			setPanel.add(Constants.TitleConstants.PREFERENCES, BackResPanel);
+			
 			GridBagConstraints c = new GridBagConstraints();
 			c.anchor = GridBagConstraints.LINE_START;
-			settingsPanel.add(header, c);
+			settingsPanel.add(setPanel,c);
 		}
 		
 		public void addListener(CustomListener listener)
@@ -307,6 +317,13 @@ public class ContentPanel extends JPanel
 									  break;
 					case Constants.TitleConstants.PREFERENCES: 
 									  mainLayout.show(this, view);
+									  subLayout.show(itemPanel, view);
+									  headerLabel.setText(view);
+									  newButton.setActionCommand(ActionConstants.NEW_SPECIMEN);
+									  newButton.setVisible(false);
+									  refreshButton.setVisible(false);
+									  searchButton.setVisible(false);
+									  filterField.setVisible(false);
 									  break;
 					case Constants.TitleConstants.SEARCH_RESULT:
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);

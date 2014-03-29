@@ -135,7 +135,7 @@ public class NavigationPanel extends JPanel
 		pathButton.setName(Constants.TitleConstants.PATHOLOGISTS);
 		physButton.setName(Constants.TitleConstants.PHYSICIANS);
 		specButton.setName(Constants.TitleConstants.SPECIMENS);
-		prefButton.setName("VIEW_PREFERENCES");
+		prefButton.setName(Constants.TitleConstants.PREFERENCES);
 		logoutButton.setName("LOG_OUT");
 	}
 	
