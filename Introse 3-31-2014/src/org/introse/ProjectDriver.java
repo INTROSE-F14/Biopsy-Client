@@ -34,6 +34,7 @@ import org.introse.core.database.DatabaseHelper;
 import org.introse.core.database.FileHelper;
 import org.introse.core.dbtools.ExportCSV;
 import org.introse.core.network.Client;
+import org.introse.core.dbtools.ExportCSV;
 import org.introse.gui.dialogbox.ErrorDialog;
 import org.introse.gui.dialogbox.PatientLoader;
 import org.introse.gui.dialogbox.SearchDialog;

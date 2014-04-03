@@ -130,24 +130,8 @@ public class ExportCSV
 	
 	private String parseStr(String newStr)
 	{
-		//String tempStr = newStr.replaceAll("\"", "''");
-		String strArr[] = newStr.split(",");
-		String parseStr = strArr[0];
-		if(strArr.length > 2)
-		{
-			for(int i = 1; i < strArr.length; i++)
-			{
-				if(i == 1)
-					parseStr = parseStr + "\", " + strArr[i];
-				else if(i == strArr.length - 1)
-					parseStr = parseStr + ",\" " + strArr[i];
-				else
-					parseStr = parseStr + ", " + strArr[i];
-			}
-		}
-		else if(strArr.length == 2)
-			parseStr = parseStr + "\",\"" + strArr[1];
-		
+		String tempStr = newStr.replaceAll("\"", "''");		
+		String parseStr = "\"" + tempStr + "\"";
 		System.out.println(parseStr);
 		return parseStr;
 	}
