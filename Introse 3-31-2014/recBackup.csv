@@ -1,6 +1,3 @@
 Patient ID,Rec. Year,Rec. Num.,Rec. Type,Pathologist,Physician,Specimen,Remarks,Room,Gross Desc.,Micro. Note,Date Completed,Date Received
-1,14,0,C,Dr. Abba,Dr. Abba,Hands,NA,111,NA,NA,March 31  2014,March 31  2014
-1,14,0,G,Dr. Oso,Dr. Oso,Hands,NA,999,NA,NA,March 31  2014,March 31  2014
-1,14,0,H,Dr. Pastrana,Dr. Pastrana,Brain,NA,888,NA,NA,March 30  2014,March 30  2014
-1,14,1,H,Dr. Aguas,Dr. Aguas,Feet,NA,1111,BA,NA,March 31  2014,March 31  2014
-1,14,2,H,Dr. Lusa,Dr. Lusa,Nails,NA", MA, MA," NA,555,NA,NA,March 31  2014,March 31  2014
+1,14,0,H,asdf,asdf,Right scapular area,"asdf",null,"asdf","asdf",April 4  2014,April 4  2014
+2,14,1,H,fdsa,asdf,sadf,"asd",asdf,"asdf","asdf",April 4  2014,April 4  2014
