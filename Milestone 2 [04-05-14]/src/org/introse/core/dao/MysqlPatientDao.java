@@ -246,30 +246,15 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		return matches;
 	}
 	
-	public void hehe()
-	{
-		for(int i = 1; i < 10000; i++)
-		{
-			Patient p = new Patient();
-			p.putAttribute(PatientTable.PATIENT_ID, i);
-			if(i % 5 == 0)
-				p.putAttribute(PatientTable.FIRST_NAME, "HEHEHEHEHEHE");
-			else p.putAttribute(PatientTable.FIRST_NAME, "MEMEMEMEMEMEM");
-			p.putAttribute(PatientTable.LAST_NAME, "HUHUHUHUH");
-			p.putAttribute(PatientTable.MIDDLE_NAME, "HAHAHAHA");
-			p.putAttribute(PatientTable.GENDER, "M");
-			CustomCalendar c = new CustomCalendar();
-			p.putAttribute(PatientTable.BIRTHDAY, c);
-			add(p);
-		}
-	}
-	
 	public void add(Patient patient)
 	{
 		int patientId = (int)patient.getAttribute(PatientTable.PATIENT_ID);
-		String lastName = "\""+(String)patient.getAttribute(PatientTable.LAST_NAME)+"\"";
-		String firstName = "\""+(String)patient.getAttribute(PatientTable.FIRST_NAME)+"\"";
-		String middleName = "\""+(String)patient.getAttribute(PatientTable.MIDDLE_NAME)+"\"";
+		String lastName = ((String)patient.getAttribute(PatientTable.LAST_NAME)).replace("\"", "\\\"");
+		lastName = "\""+lastName+"\"";
+		String firstName = ((String)patient.getAttribute(PatientTable.FIRST_NAME)).replace("\"", "\\\"");
+		firstName = "\""+firstName+"\"";
+		String middleName = ((String)patient.getAttribute(PatientTable.MIDDLE_NAME)).replace("\"", "\\\"");
+		middleName = "\""+middleName+"\"";
 		
 		String gender = "\""+(String)patient.getAttribute(PatientTable.GENDER)+"\"";
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
@@ -360,9 +345,13 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 	{
 		
 		int patientId = (int)patient.getAttribute(PatientTable.PATIENT_ID);
-		String lastName = "\""+(String)patient.getAttribute(PatientTable.LAST_NAME)+"\"";
-		String firstName = "\""+(String)patient.getAttribute(PatientTable.FIRST_NAME)+"\"";
-		String middleName = "\""+(String)patient.getAttribute(PatientTable.MIDDLE_NAME)+"\"";
+		String lastName = ((String)patient.getAttribute(PatientTable.LAST_NAME)).replace("\"", "\\\"");
+		lastName = "\""+lastName+"\"";
+		String firstName = ((String)patient.getAttribute(PatientTable.FIRST_NAME)).replace("\"", "\\\"");
+		firstName = "\""+firstName+"\"";
+		String middleName = ((String)patient.getAttribute(PatientTable.MIDDLE_NAME)).replace("\"", "\\\"");
+		middleName = "\""+middleName+"\"";
+		
 		String gender = "\""+(String)patient.getAttribute(PatientTable.GENDER)+"\"";
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
 		String bDay = "\"" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "\"";

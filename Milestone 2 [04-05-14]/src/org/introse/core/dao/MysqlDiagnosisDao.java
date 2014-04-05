@@ -69,7 +69,8 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 		String recordType = "\""+diagnosis.getRecordType()+"\"";
 		int recordYear = diagnosis.getRecordYear();
 		int recordNumber = diagnosis.getRecordNumber();
-		String value = "\""+(String)diagnosis.getValue()+"\"";
+		String value =(String)diagnosis.getValue().replace("\"", "\\\"");
+		value =  "\""+value+"\"";
 		int category = (int)diagnosis.getCategory();
 		
 		String sql = "Insert into Diagnosis(" + DiagnosisTable.CATEGORY_ID+ ", " + DiagnosisTable.RECORD_TYPE+
