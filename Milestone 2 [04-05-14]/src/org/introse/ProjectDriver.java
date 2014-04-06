@@ -192,7 +192,6 @@ public class ProjectDriver
 			{
 				mainMenu = new MainMenu();
 				mainMenu.addListener(listener);
-				refresh(TitleConstants.ALL);
 				changeView(TitleConstants.HISTOPATHOLOGY);
 				mainMenu.showGUI();
 			}});
@@ -201,6 +200,7 @@ public class ProjectDriver
 	public void changeView(String view)
 	{
 		mainMenu.getContentPanel().changeView(view);
+		refresh(view);
 	}
 	
 	public String getPreviousView()
@@ -254,18 +254,6 @@ public class ProjectDriver
 							updateRList(recordDao.search((Record)lastSearch), view, true);
 						else updatePList(patientDao.search((Patient)lastSearch), view, true);
 									  break;
-					case "ALL":
-						record = new HistopathologyRecord();
-						record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.HISTOPATHOLOGY_RECORD);
-						updateRList(recordDao.search(record), TitleConstants.HISTOPATHOLOGY, false);
-						record = new GynecologyRecord();
-						record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.GYNECOLOGY_RECORD);
-						updateRList(recordDao.search(record), TitleConstants.GYNECOLOGY, false);
-						record = new CytologyRecord();
-						record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.CYTOLOGY_RECORD);
-						updateRList(recordDao.search(record), TitleConstants.CYTOLOGY, false);
-						updatePList(patientDao.getAll(), TitleConstants.PATIENTS, false);
-						break;
 			}
 	}
 	
@@ -575,7 +563,6 @@ public class ProjectDriver
 				}
 			}
 			panel.setMode(Constants.ActionConstants.VIEW);
-			refresh(mainMenu.getContentPanel().getPreviousView());
 		}
 		else new ErrorDialog("Save Error", "Some fields are invalid").showGui();
 	}
@@ -868,7 +855,6 @@ public class ProjectDriver
 						restorePanel.setStatus(StatusConstants.FAILED);
 						e.printStackTrace();
 					}
-					refresh(TitleConstants.ALL);
 				}
 			}
 		});
