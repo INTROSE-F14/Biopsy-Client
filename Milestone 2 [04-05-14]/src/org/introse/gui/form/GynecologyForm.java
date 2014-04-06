@@ -40,7 +40,7 @@ import org.introse.core.Preferences;
 import org.introse.core.Record;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.panel.RecordOverview;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 
 public class GynecologyForm extends JPanel implements ActionListener, RecordForm
@@ -328,7 +328,7 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		grossDescScroller.setPreferredSize(remarksScroller.getPreferredSize());
 		microNoteScroller.setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.64), 
 				(int)(Preferences.getScreenHeight() * 0.10)));
-		remarksValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		remarksValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		grossDescValue.setFont(remarksValue.getFont());
 		microNoteValue.setFont(remarksValue.getFont());
 		nilm = new JCheckBox(TitleConstants.NILM);

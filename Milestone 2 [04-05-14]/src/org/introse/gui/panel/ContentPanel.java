@@ -19,6 +19,7 @@ import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.gui.event.CustomListener;
+import org.introse.gui.window.LoginWindow;
 import org.introse.gui.window.MainMenu;
 	
 	
@@ -82,7 +83,7 @@ public class ContentPanel extends JPanel
 			newButton.setOpaque(true);
 			refreshButton.setOpaque(true);
 			searchButton.setOpaque(true);
-			newButton.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.MENU));
+			newButton.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.MENU));
 			refreshButton.setFont(newButton.getFont());
 			searchButton.setFont(newButton.getFont());
 			newButton.setContentAreaFilled(false);
@@ -97,7 +98,7 @@ public class ContentPanel extends JPanel
 			filterField = new JTextField("Quick filter", 25);
 			filterField.setForeground(Color.GRAY);
 			headerLabel = new JLabel();
-			headerLabel.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.HEADER));
+			headerLabel.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.HEADER));
 			countLabel = new JLabel("0");
 			countLabel.setFont(headerLabel.getFont());
 			countLabel.setForeground(Color.LIGHT_GRAY);

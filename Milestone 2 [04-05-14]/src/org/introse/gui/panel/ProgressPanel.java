@@ -10,7 +10,7 @@ import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants.StyleConstants;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class ProgressPanel extends JPanel {
 	
@@ -35,7 +35,7 @@ public class ProgressPanel extends JPanel {
 		patientCount= new JLabel();
 		progressBar.setIndeterminate(false);
 		
-		mainMessage.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.HEADER - 10));
+		mainMessage.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.HEADER - 10));
 		subMessage.setFont(mainMessage.getFont().deriveFont(StyleConstants.MENU));
 		patientCount.setFont(subMessage.getFont());
 		recordCount.setFont(subMessage.getFont());

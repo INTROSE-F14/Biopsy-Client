@@ -19,7 +19,7 @@ import org.introse.Constants.ActionConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.core.Preferences;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class ToolsPanel extends JPanel 
 {	
@@ -72,7 +72,7 @@ public class ToolsPanel extends JPanel
 		backupViewButton.setHorizontalTextPosition(SwingConstants.CENTER);
 		restoreViewButton.setHorizontalTextPosition(SwingConstants.CENTER);
 		exportViewButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		backupViewButton.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		backupViewButton.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		restoreViewButton.setFont(backupViewButton.getFont());
 		exportViewButton.setFont(backupViewButton.getFont());
 		backupViewButton.setOpaque(true);

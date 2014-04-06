@@ -26,7 +26,7 @@ import javax.swing.border.EmptyBorder;
 import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.Preferences;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class ListPanel extends JPanel
 {
@@ -84,7 +84,7 @@ public class ListPanel extends JPanel
 		emptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		emptyLabel.setHorizontalTextPosition(JLabel.CENTER);
 		emptyLabel.setVerticalTextPosition(JLabel.BOTTOM);
-		emptyLabel.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.HEADER - 20));
+		emptyLabel.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.HEADER - 20));
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -98,7 +98,7 @@ public class ListPanel extends JPanel
 		refreshLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		refreshLabel.setHorizontalTextPosition(JLabel.CENTER);
 		refreshLabel.setVerticalTextPosition(JLabel.BOTTOM);
-		refreshLabel.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.HEADER - 20));
+		refreshLabel.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.HEADER - 20));
 		
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;

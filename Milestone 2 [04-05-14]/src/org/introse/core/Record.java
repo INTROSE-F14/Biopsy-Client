@@ -18,7 +18,7 @@ import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.StyleConstants;
 import org.introse.gui.panel.ListItem;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class Record  extends ListItem implements Printable
 {
@@ -158,13 +158,13 @@ public class Record  extends ListItem implements Printable
 				specimenValue = new JLabel(label3),
 				patientValue = new JLabel(label5);
 		
-		irnLabel.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		irnLabel.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		pathologistLabel.setFont(irnLabel.getFont());
 		specimenLabel.setFont(irnLabel.getFont());
 		physicianLabel.setFont(irnLabel.getFont());
 		patientLabel.setFont(irnLabel.getFont());
 		
-		irnValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Font.BOLD, StyleConstants.SUBHEADER));
+		irnValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Font.BOLD, StyleConstants.SUBHEADER));
 		pathologistValue.setFont(irnLabel.getFont());
 		specimenValue.setFont(irnLabel.getFont());
 		physicianValue.setFont(irnLabel.getFont());

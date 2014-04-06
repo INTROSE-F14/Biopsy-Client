@@ -19,6 +19,7 @@ import org.introse.Constants.ActionConstants;
 import org.introse.Constants.StatusConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.core.Preferences;
+import org.introse.gui.window.LoginWindow;
 import org.introse.gui.window.MainMenu;
 
 public class ExportPanel extends JPanel {
@@ -52,7 +53,7 @@ public class ExportPanel extends JPanel {
 		lblExport = new JLabel(ActionConstants.EXPORT);
 		exportDescription1 = new JLabel("Export existing records and patients to a CSV file");
 		
-		lblExport.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.HEADER));
+		lblExport.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.HEADER));
 		exportDescription1.setFont(lblExport.getFont().deriveFont(StyleConstants.SUBHEADER));
 		
 		actionPanel = new JPanel(new CardLayout());
@@ -70,13 +71,13 @@ public class ExportPanel extends JPanel {
 		exportStatus = new JLabel();
 		successIcon = new ImageIcon(getClass().getResource("/res/icons/success.png"));
 		failIcon = new ImageIcon(getClass().getResource("/res/icons/fail.png"));
-		lblDiagnosisDirectory.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
-		lblPatientDirectory.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
-		lblRecordDirectory.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		lblDiagnosisDirectory.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		lblPatientDirectory.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		lblRecordDirectory.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		lblStatus.setFont(lblDiagnosisDirectory.getFont());
-		exportDiagnosisDirectory.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
-		exportPatientDirectory.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
-		exportRecordDirectory.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
+		exportDiagnosisDirectory.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
+		exportPatientDirectory.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
+		exportRecordDirectory.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
 		exportStatus.setFont(exportDiagnosisDirectory.getFont());
 		
 		exportDiagnosisDirectory.setOpaque(true);
@@ -109,7 +110,7 @@ public class ExportPanel extends JPanel {
 		mainMessage.setHorizontalTextPosition(JLabel.LEADING);
 		mainMessage.setIconTextGap(20);
 		
-		mainMessage.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		mainMessage.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		subMessage.setFont(mainMessage.getFont().deriveFont(StyleConstants.MENU));
 		patientCount.setFont(mainMessage.getFont());
 		recordCount.setFont(mainMessage.getFont());

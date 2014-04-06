@@ -23,7 +23,7 @@ import org.introse.core.CustomDocument;
 import org.introse.core.Patient;
 import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class PatientForm extends JPanel implements Form
 {
@@ -93,7 +93,7 @@ public class PatientForm extends JPanel implements Form
 		genderValue= new JComboBox<String>(gender);
 		genderValue.setBorder(null);
 		
-		lastNameValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		lastNameValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		lastNameValue.setHorizontalAlignment(JTextField.CENTER);
 		firstNameValue.setFont(lastNameValue.getFont());
 		firstNameValue.setHorizontalAlignment(JTextField.CENTER);
@@ -107,7 +107,7 @@ public class PatientForm extends JPanel implements Form
 		loadExisting = new JButton("Load Existing");
 		loadExisting.setVisible(false);
 		
-		_lastNameValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		_lastNameValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		_lastNameValue.setHorizontalAlignment(JLabel.CENTER);
 		_firstNameValue.setFont(_lastNameValue.getFont());
 		_firstNameValue.setHorizontalAlignment(JLabel.CENTER);

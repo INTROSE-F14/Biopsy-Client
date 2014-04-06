@@ -17,6 +17,7 @@ import org.introse.Constants;
 import org.introse.Constants.PatientTable;
 import org.introse.Constants.StyleConstants;
 import org.introse.gui.panel.ListItem;
+import org.introse.gui.window.LoginWindow;
 import org.introse.gui.window.MainMenu;
 
 public class Patient extends ListItem
@@ -126,9 +127,9 @@ public class Patient extends ListItem
 		JLabel nameValue = new JLabel(label1);
 		JLabel genderValue = new JLabel(label2);
 		JLabel birthdayValue = new JLabel(label3);
-		nameValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Font.BOLD, Constants.StyleConstants.SUBHEADER));
+		nameValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Font.BOLD, Constants.StyleConstants.SUBHEADER));
 		
-		nameLabel.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		nameLabel.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		genderLabel.setFont(nameLabel.getFont());
 		genderValue.setFont(nameLabel.getFont());
 		birthdayLabel.setFont(nameLabel.getFont());

@@ -1,12 +1,9 @@
 package org.introse.gui.window;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,36 +15,24 @@ import org.introse.gui.panel.ContentPanel;
 import org.introse.gui.panel.NavigationPanel;
 
 
-public class MainMenu {
+public class MainMenu extends JFrame{
 
-	private JFrame frame;
 	private JPanel mainPanel;
 	private NavigationPanel navigationPanel;
 	private ContentPanel contentPanel;
 	
-	public static Font PRIMARY_FONT;
-	public static Font SECONDARY_FONT;
-	
 	public MainMenu()
 	{
-		frame = new JFrame(Preferences.PROGRAM_NAME);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		try
-		{
-			PRIMARY_FONT = Font.createFont(Font.TRUETYPE_FONT,
-					getClass().getResourceAsStream("/res/fonts/calibri.ttf"));
-			SECONDARY_FONT = Font.createFont(Font.TRUETYPE_FONT,
-					getClass().getResourceAsStream("/res/fonts/calibri_light.ttf"));
-			
-		}catch (FontFormatException | IOException e) {e.printStackTrace();}
+		super(Preferences.PROGRAM_NAME);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		mainPanel = new JPanel(new GridBagLayout());
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		mainPanel.setBackground(Color.white);
 		createNavigationPanel();
 		createContentPanel();
-		frame.setContentPane(mainPanel);
+		setContentPane(mainPanel);
 	}
 	
 	
@@ -59,9 +44,9 @@ public class MainMenu {
 	
 	public void showGUI()
 	{
-		frame.pack();
-		frame.setMinimumSize(new Dimension(frame.getWidth(), frame.getHeight()));
-		frame.setVisible(true);
+		pack();
+		setMinimumSize(new Dimension(getWidth(), getHeight()));
+		setVisible(true);
 	}
 	
 	private void createNavigationPanel()
@@ -103,6 +88,6 @@ public class MainMenu {
 	
 	public void exit()
 	{
-		frame.dispose();
+		dispose();
 	}
 }

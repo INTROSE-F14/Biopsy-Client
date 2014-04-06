@@ -3,13 +3,14 @@ package org.introse.gui.window;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -31,6 +32,9 @@ public class LoginWindow extends JFrame implements KeyListener{
 	private JPasswordField passwordField;
 	private JButton actionButton;
 	private JLabel loadingStatus;
+	public static Font PRIMARY_FONT;
+	public static Font SECONDARY_FONT;
+	
 	public LoginWindow() 
 	{
 		super(TitleConstants.LOGIN_WINDOW);
@@ -38,6 +42,17 @@ public class LoginWindow extends JFrame implements KeyListener{
 		setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.4), 
 				(int)(Preferences.getScreenHeight() * 0.5)));
 		initUI();
+		try
+		{
+			PRIMARY_FONT = Font.createFont(Font.TRUETYPE_FONT,
+					getClass().getResourceAsStream("/res/fonts/calibri.ttf"));
+			SECONDARY_FONT = Font.createFont(Font.TRUETYPE_FONT,
+					getClass().getResourceAsStream("/res/fonts/calibri_light.ttf"));
+			
+		}catch (FontFormatException | IOException e) {e.printStackTrace();}
+		
+		
+		
 	}
 	
 	public void initUI()

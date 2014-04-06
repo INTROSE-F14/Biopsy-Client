@@ -19,7 +19,7 @@ import org.introse.Constants.ActionConstants;
 import org.introse.Constants.StatusConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.core.Preferences;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class BackupPanel extends JPanel {
 
@@ -52,7 +52,7 @@ public class BackupPanel extends JPanel {
 		lblBackup = new JLabel(ActionConstants.BACKUP);
 		backupDescription1 = new JLabel("Set up a backup for existing records and patients in the database");
 		
-		lblBackup.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.HEADER));
+		lblBackup.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.HEADER));
 		backupDescription1.setFont(lblBackup.getFont().deriveFont(StyleConstants.SUBHEADER));
 		
 		actionPanel = new JPanel(new CardLayout());
@@ -66,9 +66,9 @@ public class BackupPanel extends JPanel {
 		backupStatus = new JLabel();
 		successIcon = new ImageIcon(getClass().getResource("/res/icons/success.png"));
 		failIcon = new ImageIcon(getClass().getResource("/res/icons/fail.png"));
-		lblDirectory.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		lblDirectory.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		lblStatus.setFont(lblDirectory.getFont());
-		backupDirectory.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
+		backupDirectory.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
 		backupStatus.setFont(backupDirectory.getFont());
 		
 		backupDirectory.setOpaque(true);
@@ -93,7 +93,7 @@ public class BackupPanel extends JPanel {
 		mainMessage.setHorizontalTextPosition(JLabel.LEADING);
 		mainMessage.setIconTextGap(20);
 		
-		mainMessage.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		mainMessage.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		subMessage.setFont(mainMessage.getFont().deriveFont(StyleConstants.MENU));
 		patientCount.setFont(mainMessage.getFont());
 		recordCount.setFont(mainMessage.getFont());

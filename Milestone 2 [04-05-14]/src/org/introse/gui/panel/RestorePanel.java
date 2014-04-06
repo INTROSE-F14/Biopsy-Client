@@ -19,6 +19,7 @@ import org.introse.Constants.ActionConstants;
 import org.introse.Constants.StatusConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.core.Preferences;
+import org.introse.gui.window.LoginWindow;
 import org.introse.gui.window.MainMenu;
 
 public class RestorePanel extends JPanel {
@@ -52,7 +53,7 @@ public class RestorePanel extends JPanel {
 		lblRestore = new JLabel(ActionConstants.RESTORE);
 		restoreDescription1 = new JLabel("Restore records and patients from a Biopsy-Client Backup (BCB) file");
 		
-		lblRestore.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.HEADER));
+		lblRestore.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.HEADER));
 		restoreDescription1.setFont(lblRestore.getFont().deriveFont(StyleConstants.SUBHEADER));
 		
 		actionPanel = new JPanel(new CardLayout());
@@ -66,9 +67,9 @@ public class RestorePanel extends JPanel {
 		restoreStatus = new JLabel();
 		successIcon = new ImageIcon(getClass().getResource("/res/icons/success.png"));
 		failIcon = new ImageIcon(getClass().getResource("/res/icons/fail.png"));
-		lblDirectory.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		lblDirectory.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		lblStatus.setFont(lblDirectory.getFont());
-		restoreDirectory.setFont(MainMenu.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
+		restoreDirectory.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
 		restoreStatus.setFont(restoreDirectory.getFont());
 		
 		restoreDirectory.setOpaque(true);
@@ -93,7 +94,7 @@ public class RestorePanel extends JPanel {
 		mainMessage.setHorizontalTextPosition(JLabel.LEADING);
 		mainMessage.setIconTextGap(20);
 		
-		mainMessage.setFont(MainMenu.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		mainMessage.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		subMessage.setFont(mainMessage.getFont().deriveFont(StyleConstants.MENU));
 		patientCount.setFont(mainMessage.getFont());
 		recordCount.setFont(mainMessage.getFont());

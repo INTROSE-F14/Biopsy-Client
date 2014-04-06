@@ -31,7 +31,7 @@ import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class SearchRecordDialog extends SearchDialog implements KeyListener, ActionListener
 {
@@ -67,11 +67,11 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
 	   tf_room = new JTextField(5);
 	   tf_patient.setEditable(false);
                
-       tf_refNum.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       tf_specimen.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       tf_pathologist.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       tf_physician.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       tf_room.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       tf_refNum.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       tf_specimen.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       tf_pathologist.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       tf_physician.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       tf_room.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
        tf_refNum.addKeyListener(this);
        lbl_refNum = new JLabel("Reference Number");
        lbl_specimen = new JLabel("Specimen");
@@ -83,7 +83,7 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
        lbl_dash = new JLabel("-");
        lbl_patient = new JLabel("Patient");
                
-       lbl_refNum.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       lbl_refNum.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
        lbl_specimen.setFont(lbl_refNum.getFont());
        lbl_dReceived.setFont(lbl_refNum.getFont());
        lbl_dCompleted.setFont(lbl_refNum.getFont());
@@ -98,7 +98,7 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
 		dR = new DatePicker(50, true);
 		dC = new DatePicker(50, true);
 		cb_type = new JComboBox<>(type);
-        cb_type.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+        cb_type.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
         cb_type.setBorder(null);
         int year = Calendar.getInstance().get(Calendar.YEAR) % 100;
         int i = year;
@@ -116,8 +116,8 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
         cb_year = new JComboBox<String>(recordYears);
         cb_year.setFont(cb_type.getFont());
         cb_year.setBorder(null);
-		dR.setPickerFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-		dC.setPickerFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		dR.setPickerFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		dC.setPickerFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		b_search = new JButton("find");
 		b_clear = new JButton("clear");
 		b_load = new JButton("choose");

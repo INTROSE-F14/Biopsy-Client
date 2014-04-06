@@ -9,11 +9,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.ProjectDriver;
+import org.introse.gui.dialogbox.PopupDialog;
 import org.introse.gui.panel.ListItem;
 
 
@@ -26,9 +29,9 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) 
+	public void actionPerformed(final ActionEvent e) 
 	{
-		String actionCommand = e.getActionCommand();
+		final String actionCommand = e.getActionCommand();
 		switch(actionCommand)
 		{
 		case Constants.TitleConstants.HISTOPATHOLOGY:
@@ -39,8 +42,33 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 		case Constants.TitleConstants.PHYSICIANS:
 		case Constants.TitleConstants.SPECIMENS:
 		case Constants.TitleConstants.PREFERENCES:
-			projectDriver.changeView(actionCommand);
-			projectDriver.setSelectedButton(e.getSource());
+			if(projectDriver.getDetailPanelStatus() == ActionConstants.EDIT || 
+			projectDriver.getDetailPanelStatus() == ActionConstants.NEW)
+			{
+				PopupDialog popup = new PopupDialog(projectDriver.getMainMenu(), "Cancel form", 
+						TitleConstants.DISCARD_CHANGES_MESSAGE, "Yes", "No");
+				popup.addPropertyChangeListener(new PropertyChangeListener()
+				{
+
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) 
+					{
+						if(evt.getPropertyName().equals("POSITIVE"))
+						{
+							projectDriver.cancelCurrentForm();
+							projectDriver.changeView(actionCommand);
+							projectDriver.setSelectedButton(e.getSource());
+						}
+					}
+				});
+				popup.showGui();
+			}
+			else
+			{
+				projectDriver.removeDetailsPanel();
+				projectDriver.changeView(actionCommand);
+				projectDriver.setSelectedButton(e.getSource());
+			}
 			break;
 		case Constants.ActionConstants.REFRESH: projectDriver.refresh(projectDriver.getCurrentView());
 												projectDriver.removeDetailsPanel();
@@ -53,7 +81,23 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			break;
 		case Constants.ActionConstants.SAVE: projectDriver.saveCurrentForm();
 			break;
-		case Constants.ActionConstants.CANCEL: projectDriver.cancelCurrentForm();
+		case Constants.ActionConstants.CANCEL: 
+			
+			PopupDialog popup = new PopupDialog(projectDriver.getMainMenu(), "Cancel form", 
+					TitleConstants.DISCARD_CHANGES_MESSAGE, "Yes", "No");
+			popup.addPropertyChangeListener(new PropertyChangeListener()
+			{
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) 
+				{
+					if(evt.getPropertyName().equals("POSITIVE"))
+					{
+						projectDriver.cancelCurrentForm();
+						projectDriver.changeView(projectDriver.getPreviousView());
+					}
+				}
+			});
+			popup.showGui();
 			break;
 		case Constants.ActionConstants.NEW_HISTOPATHOLOGY:	projectDriver.createNew(Constants.RecordConstants.HISTOPATHOLOGY_RECORD);
 			break;
@@ -71,8 +115,34 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			break;
 		case ActionConstants.SEARCH: projectDriver.displaySearchResult();
 			break;
-       case ActionConstants.BACK: projectDriver.changeView(projectDriver.getPreviousView());
-        						   projectDriver.removeDetailsPanel();
+       case ActionConstants.BACK: 
+    	   if(projectDriver.getDetailPanelStatus() == ActionConstants.EDIT || 
+   			projectDriver.getDetailPanelStatus() == ActionConstants.NEW)
+   			{
+   				PopupDialog popup1 = new PopupDialog(projectDriver.getMainMenu(), "Cancel form", 
+   						TitleConstants.DISCARD_CHANGES_MESSAGE, "Yes", "No");
+   				popup1.addPropertyChangeListener(new PropertyChangeListener()
+   				{
+
+   					@Override
+   					public void propertyChange(PropertyChangeEvent evt) 
+   					{
+   						if(evt.getPropertyName().equals("POSITIVE"))
+   						{
+   							projectDriver.cancelCurrentForm();
+   							projectDriver.changeView(projectDriver.getPreviousView());
+   							projectDriver.setSelectedButton(projectDriver.getPreviousView());
+   						}
+   					}
+   				});
+   				popup1.showGui();
+   			}
+   			else
+   			{
+   				projectDriver.removeDetailsPanel();
+   				projectDriver.changeView(projectDriver.getPreviousView());
+   				projectDriver.setSelectedButton(projectDriver.getPreviousView());
+   			}
         						   break;
        case ActionConstants.SELECT_RESTORE: projectDriver.selectRestorePath();
     	   break;

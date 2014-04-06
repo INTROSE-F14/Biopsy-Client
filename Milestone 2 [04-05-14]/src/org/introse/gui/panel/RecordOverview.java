@@ -25,7 +25,7 @@ import org.introse.core.Record;
 import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.form.PatientForm;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class RecordOverview extends JPanel 
 {
@@ -65,9 +65,9 @@ public class RecordOverview extends JPanel
 		roomValue = new JTextField(30);
 		
 		refNumberValue.setHorizontalAlignment(JTextField.CENTER);
-		refNumberValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Font.BOLD).deriveFont(Constants.StyleConstants.SUBHEADER));
+		refNumberValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Font.BOLD).deriveFont(Constants.StyleConstants.SUBHEADER));
 		specimenValue.setHorizontalAlignment(JTextField.CENTER);
-		specimenValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		specimenValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		physicianValue.setHorizontalAlignment(JTextField.CENTER);
 		physicianValue.setFont(specimenValue.getFont());
 		pathologistValue.setHorizontalAlignment(JTextField.CENTER);

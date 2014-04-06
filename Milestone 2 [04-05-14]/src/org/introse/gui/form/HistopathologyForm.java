@@ -26,7 +26,7 @@ import org.introse.core.Preferences;
 import org.introse.core.Record;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.panel.RecordOverview;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class HistopathologyForm extends JPanel implements RecordForm
 {
@@ -131,7 +131,7 @@ public class HistopathologyForm extends JPanel implements RecordForm
 		grossDescScroller.setPreferredSize(diagnosisScroller.getPreferredSize());
 		microNoteScroller.setPreferredSize(diagnosisScroller.getPreferredSize());
 		
-		diagnosisValue.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.MENU));
+		diagnosisValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.MENU));
 		remarksValue.setFont(diagnosisValue.getFont());
 		grossDescValue.setFont(diagnosisValue.getFont());
 		microNoteValue.setFont(diagnosisValue.getFont());

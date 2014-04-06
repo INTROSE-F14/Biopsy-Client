@@ -41,7 +41,7 @@ import org.introse.core.workers.FilterWorker;
 import org.introse.core.workers.PatientListGenerator;
 import org.introse.core.workers.RecordListGenerator;
 import org.introse.core.workers.RestoreWorker;
-import org.introse.gui.dialogbox.ErrorDialog;
+import org.introse.gui.dialogbox.PopupDialog;
 import org.introse.gui.dialogbox.PatientLoader;
 import org.introse.gui.dialogbox.SearchDialog;
 import org.introse.gui.dialogbox.SearchPatientDialog;
@@ -80,7 +80,7 @@ public class ProjectDriver
 	private List<ListItem> gynecologyList;
 	private List<ListItem> cytologyList;
 	private List<ListItem> searchList;
-	private DetailPanel panel;
+	private DetailPanel detailPanel;
 	private SearchDialog searchDialog;
 	private PatientLoader loader;
 	private Object lastSearch;
@@ -162,10 +162,10 @@ public class ProjectDriver
 									startMainMenu();
 									break;
 								case Constants.NetworkConstants.AUTHENTICATION_FAILED:
-									new ErrorDialog("Login Failed", "You entered an invalid password").showGui();
+									new PopupDialog(loginForm, "Login Failed", "You entered an invalid password", "OK").showGui();
 									break;
 								case Constants.NetworkConstants.SERVER_ERROR:
-									new ErrorDialog("Server Error", "An error occured while trying to connect to the server").showGui();
+									new PopupDialog(loginForm, "Server Error", "An error occured while trying to connect to the server", "OK").showGui();
 									break;
 							}
 						} catch (InterruptedException | ExecutionException e) 
@@ -260,7 +260,7 @@ public class ProjectDriver
 	public void removeDetailsPanel()
 	{
 		mainMenu.getContentPanel().setDetailsPanel(null);
-		panel = null;
+		detailPanel = null;
 	}
 	
 	public void updateList(List<ListItem> list, String view)
@@ -449,7 +449,7 @@ public class ProjectDriver
 		{
 			if(listItem instanceof Patient)
 			{
-				if(panel != null && panel instanceof RecordPanel && panel.getMode() == 
+				if(detailPanel != null && detailPanel instanceof RecordPanel && detailPanel.getMode() == 
 						Constants.ActionConstants.NEW)
 				{
 						loadExistingPatient(object);
@@ -504,25 +504,25 @@ public class ProjectDriver
 			panel = new PatientPanel(form, Constants.ActionConstants.VIEW);
 			((DetailPanel)panel).addListener(listener);
 		}
-		this.panel = (DetailPanel)panel;
+		this.detailPanel = (DetailPanel)panel;
 		mainMenu.getContentPanel().setDetailsPanel(panel);
 		mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
 	}
 	
 	public void editCurrentForm()
 	{
-		panel.setMode(Constants.ActionConstants.EDIT);
+		detailPanel.setMode(Constants.ActionConstants.EDIT);
 	}
 	
 	public void saveCurrentForm()
 	{
-		if(panel.areFieldsValid())
+		if(detailPanel.areFieldsValid())
 		{
-			if(panel instanceof RecordPanel)
+			if(detailPanel instanceof RecordPanel)
 			{
-				Record r = ((RecordPanel)panel).getRecordForm().getRecord();
-				Patient p = ((RecordPanel)panel).getRecordForm().getPatient();
-				DetailPanel rP = (DetailPanel)panel;
+				Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
+				Patient p = ((RecordPanel)detailPanel).getRecordForm().getPatient();
+				DetailPanel rP = (DetailPanel)detailPanel;
 				r.putAttribute(Constants.RecordTable.PATIENT_ID, 
 						 p.getAttribute(PatientTable.PATIENT_ID));				
 				switch(rP.getMode())
@@ -549,12 +549,12 @@ public class ProjectDriver
 						diagnosisDao.add(d);
 					}
 				}
-				((RecordPanel)panel).getRecordForm().setFields(r, p);
+				((RecordPanel)detailPanel).getRecordForm().setFields(r, p);
 			}
-			else if(panel instanceof PatientPanel)
+			else if(detailPanel instanceof PatientPanel)
 			{
-				Patient p = (Patient)panel.getObject();
-				DetailPanel rP = (DetailPanel)panel;
+				Patient p = (Patient)detailPanel.getObject();
+				DetailPanel rP = (DetailPanel)detailPanel;
 				switch(rP.getMode())
 				{
 				case ActionConstants.NEW:	patientDao.add(p);
@@ -562,37 +562,33 @@ public class ProjectDriver
 				case ActionConstants.EDIT:	patientDao.update(p);
 				}
 			}
-			panel.setMode(Constants.ActionConstants.VIEW);
+			detailPanel.setMode(Constants.ActionConstants.VIEW);
 		}
-		else new ErrorDialog("Save Error", "Some fields are invalid").showGui();
+		else new PopupDialog(mainMenu, "Save Error", "Some fields are invalid", "OK").showGui();
 	}
 	
 	public void cancelCurrentForm()
 	{
-		if(((DetailPanel)panel).getMode() == Constants.ActionConstants.EDIT)
+		if(((DetailPanel)detailPanel).getMode() == Constants.ActionConstants.EDIT)
 		{
-			if(panel instanceof RecordPanel)
+			if(detailPanel instanceof RecordPanel)
 			{
-				Record record = (Record)panel.getObject();
+				Record record = (Record)detailPanel.getObject();
 				record = (Record)recordDao.get(record);
 				List<Diagnosis> diagnosis = diagnosisDao.getDiagnosis(record);
 				record.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
 				Patient patient = new Patient();
 				patient.putAttribute(PatientTable.PATIENT_ID, record.getAttribute(RecordTable.PATIENT_ID));
 				patient = (Patient)patientDao.get(patient);
-				((RecordPanel)panel).getRecordForm().setFields(record, patient);
+				((RecordPanel)detailPanel).getRecordForm().setFields(record, patient);
 			}
-			else if(panel instanceof PatientPanel)
+			else if(detailPanel instanceof PatientPanel)
 			{
-				((PatientPanel)panel).getPatientForm().setFields((Patient)patientDao.get((Patient)panel.getObject()));
+				((PatientPanel)detailPanel).getPatientForm().setFields((Patient)patientDao.get((Patient)detailPanel.getObject()));
 			}
-			panel.setMode(Constants.ActionConstants.VIEW);
+			detailPanel.setMode(Constants.ActionConstants.VIEW);
 		}
-		else
-		{
-			removeDetailsPanel();
-			changeView(getPreviousView());
-		}
+		else removeDetailsPanel();
 	}
 	
 	public void createNew(int type)
@@ -639,14 +635,14 @@ public class ProjectDriver
 											panel = new PatientPanel(patientForm, Constants.ActionConstants.NEW);
 											((DetailPanel)panel).addListener(listener);
 		}
-		this.panel = (DetailPanel)panel;
+		this.detailPanel = (DetailPanel)panel;
 		mainMenu.getContentPanel().setDetailsPanel(panel);
 		mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
 	}
 	
 	public void loadExistingPatient(Object patient)
 	{
-		((RecordForm)((RecordPanel)panel).getRecordForm()).setPatient((Patient)patient);
+		((RecordForm)((RecordPanel)detailPanel).getRecordForm()).setPatient((Patient)patient);
 		loader.dispose();
 	}
 	
@@ -878,5 +874,17 @@ public class ProjectDriver
 	public void changeToolsView(String view)
 	{
 		mainMenu.getContentPanel().getToolsPanel().showPanel(view);
+	}
+	
+	public MainMenu getMainMenu()
+	{
+		return mainMenu;
+	}
+	
+	public int getDetailPanelStatus()
+	{
+		if(detailPanel == null)
+			return -1;
+		else return detailPanel.getMode();
 	}
 }

@@ -22,7 +22,7 @@ import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
 import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.window.MainMenu;
+import org.introse.gui.window.LoginWindow;
 
 public class SearchPatientDialog extends SearchDialog implements ActionListener
 {
@@ -52,9 +52,9 @@ public class SearchPatientDialog extends SearchDialog implements ActionListener
 	    tf_mname = new JTextField(20);
 	    tf_lname = new JTextField(20);
            
-       tf_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       tf_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       tf_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       tf_fname.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       tf_mname.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       tf_lname.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	    
 	    lbl_fname = new JLabel("First Name: ");
 	    lbl_mname = new JLabel("Middle Name: ");
@@ -62,11 +62,11 @@ public class SearchPatientDialog extends SearchDialog implements ActionListener
 	    lbl_birthday = new JLabel("Birthday: ");
 	    lbl_gender = new JLabel("Gender: ");
            
-       lbl_fname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       lbl_mname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       lbl_lname.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       lbl_birthday.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-       lbl_gender.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       lbl_fname.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       lbl_mname.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       lbl_lname.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       lbl_birthday.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+       lbl_gender.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 	    
 	    String[] gender = {"Any", "M", "F"};
 	    cb_gender = new JComboBox<String>(gender);

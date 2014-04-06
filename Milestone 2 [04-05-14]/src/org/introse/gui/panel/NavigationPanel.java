@@ -12,6 +12,7 @@ import javax.swing.SwingConstants;
 
 import org.introse.Constants;
 import org.introse.gui.button.NavButton;
+import org.introse.gui.window.LoginWindow;
 import org.introse.gui.window.MainMenu;
 
 
@@ -35,7 +36,7 @@ public class NavigationPanel extends JPanel
 		JPanel recordsPanel = new JPanel(new GridLayout(0,1,0,0));
 		recordsPanel.setBackground(Color.white);
 		JLabel recordsPanelHeader = new JLabel("Records");
-		recordsPanelHeader.setFont(MainMenu.PRIMARY_FONT.deriveFont(Constants.StyleConstants.CATEGORY));
+		recordsPanelHeader.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.CATEGORY));
 		histoButton = new NavButton(Constants.StyleConstants.NORMAL, Constants.StyleConstants.HOVER,
 				Constants.StyleConstants.PRESSED, Constants.StyleConstants.SELECTED, "histopathology", true);
 		gyneButton = new NavButton(Constants.StyleConstants.NORMAL,Constants.StyleConstants.HOVER,
@@ -44,7 +45,7 @@ public class NavigationPanel extends JPanel
 				Constants.StyleConstants.PRESSED, Constants.StyleConstants.SELECTED, "cytology", false);
 		patientButton = new NavButton(Constants.StyleConstants.NORMAL, Constants.StyleConstants.HOVER,
 				Constants.StyleConstants.PRESSED, Constants.StyleConstants.SELECTED, "patients", false);
-		histoButton.setFont(MainMenu.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		histoButton.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		gyneButton.setFont(histoButton.getFont());
 		cytoButton.setFont(histoButton.getFont());
 		patientButton.setFont(histoButton.getFont());
