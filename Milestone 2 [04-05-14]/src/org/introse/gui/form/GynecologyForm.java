@@ -316,6 +316,13 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		microNoteValue = new JTextArea(3,50);
 		remarksValue= new JTextArea(3,25);
 		
+		grossDescValue.setLineWrap(true);
+		grossDescValue.setWrapStyleWord(true);
+		microNoteValue.setLineWrap(true);
+		microNoteValue.setWrapStyleWord(true);
+		remarksValue.setLineWrap(true);
+		remarksValue.setWrapStyleWord(true);
+		
 		remarksScroller = new JScrollPane(remarksValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		grossDescScroller = new JScrollPane(grossDescValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 

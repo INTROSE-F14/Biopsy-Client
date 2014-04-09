@@ -74,11 +74,11 @@ public class PatientForm extends JPanel implements Form
 		
 		editablePanel = new JPanel(new GridBagLayout());
 		editablePanel.setBackground(Color.white);
-		lastNameLabel = new JLabel("Last name");
-		firstNameLabel = new JLabel("First name");
-		middleNameLabel = new JLabel("Middle name");
-		genderLabel = new JLabel("Gender");
-		birthdayLabel = new JLabel("Birthday");
+		lastNameLabel = new JLabel("*Last name");
+		firstNameLabel = new JLabel("*First name");
+		middleNameLabel = new JLabel("*Middle name");
+		genderLabel = new JLabel("*Gender");
+		birthdayLabel = new JLabel("*Birthday");
 		
 		_lastNameLabel = new JLabel("Last name");
 		_firstNameLabel = new JLabel("First name");
@@ -104,7 +104,7 @@ public class PatientForm extends JPanel implements Form
 		Calendar c = Calendar.getInstance();
 		birthday.setDate(c);
 		birthday.setPickerFont(lastNameValue.getFont());
-		loadExisting = new JButton("Load Existing");
+		loadExisting = new JButton("Load Existing Patient");
 		loadExisting.setVisible(false);
 		
 		_lastNameValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));

@@ -52,9 +52,9 @@ public class RecordOverview extends JPanel
 		recordForm = new JPanel(new GridBagLayout());
 		recordForm.setBackground(Color.white);
 		refNumberLabel = new JLabel("Internal Reference Number");
-		specimenLabel = new JLabel("Specimen(s)");
-		physicianLabel = new JLabel("Physician");
-		pathologistLabel = new JLabel("Pathologist");
+		specimenLabel = new JLabel("*Specimen(s)");
+		physicianLabel = new JLabel("*Physician");
+		pathologistLabel = new JLabel("*Pathologist");
 		dateReceivedLabel = new JLabel("Date Recieved");
 		dateCompletedLabel = new JLabel("Date Completed");
 		roomLabel = new JLabel("Patient's Room");

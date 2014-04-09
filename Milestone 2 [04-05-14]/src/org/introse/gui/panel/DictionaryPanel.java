@@ -25,8 +25,8 @@ public class DictionaryPanel extends JPanel{
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
-		JLabel lblPhrase = new JLabel("      PHRASE: ");
-		lblPhrase.setFont(new Font("Calibri", Font.BOLD, 14));
+		JLabel lblPhrase = new JLabel("      Phrase: ");
+		lblPhrase.setFont(new Font("Calibri", Font.PLAIN, 18));
 		GridBagConstraints gbc_lblPhrase = new GridBagConstraints();
 		gbc_lblPhrase.insets = new Insets(0, 0, 5, 5);
 		gbc_lblPhrase.anchor = GridBagConstraints.EAST;
@@ -43,8 +43,12 @@ public class DictionaryPanel extends JPanel{
 		add(textField, gbc_textField);
 		textField.setColumns(30);
 		
-		JButton btnAdd = new JButton("ADD");
-		btnAdd.setFont(new Font("Calibri", Font.BOLD, 15));
+		JButton btnAdd = new JButton("add");
+		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnAdd.setForeground(Color.decode("#3498db"));
+		// btnAdd.setBackground(Color.decode(""));
+		btnAdd.setContentAreaFilled(true);
+		btnAdd.setFocusPainted(false);
 		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
 		gbc_btnAdd.insets = new Insets(0, 0, 5, 0);
 		gbc_btnAdd.gridx = 2;

@@ -116,6 +116,15 @@ public class CytologyForm extends JPanel implements RecordForm
 		microNoteValue = new JTextArea(5,32);
 		remarksValue= new JTextArea(5,32);
 		
+		diagnosisValue.setLineWrap(true);
+		diagnosisValue.setWrapStyleWord(true);
+		grossDescValue.setLineWrap(true);
+		grossDescValue.setWrapStyleWord(true);
+		microNoteValue.setLineWrap(true);
+		microNoteValue.setWrapStyleWord(true);
+		remarksValue.setLineWrap(true);
+		remarksValue.setWrapStyleWord(true);
+		
 		diagnosisScroller = new JScrollPane(diagnosisValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		remarksScroller = new JScrollPane(remarksValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
