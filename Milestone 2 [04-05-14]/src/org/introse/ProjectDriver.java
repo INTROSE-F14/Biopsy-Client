@@ -34,6 +34,7 @@ import org.introse.core.dao.MysqlDiagnosisDao;
 import org.introse.core.dao.MysqlPatientDao;
 import org.introse.core.dao.MysqlRecordDao;
 import org.introse.core.database.FileHelper;
+import org.introse.core.database.Printer;
 import org.introse.core.network.Client;
 import org.introse.core.workers.BackupWorker;
 import org.introse.core.workers.ExportWorker;
@@ -85,6 +86,7 @@ public class ProjectDriver
 	private PatientLoader loader;
 	private Object lastSearch;
 	private FilterWorker filterWorker;
+	private Printer printer;
 	
 	public static void main(String[] args) 
 	{
@@ -186,6 +188,7 @@ public class ProjectDriver
 		recordDao = new MysqlRecordDao();
 		patientDao = new MysqlPatientDao();
 		diagnosisDao = new MysqlDiagnosisDao();
+		printer = new Printer();
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
@@ -589,6 +592,12 @@ public class ProjectDriver
 			detailPanel.setMode(Constants.ActionConstants.VIEW);
 		}
 		else removeDetailsPanel();
+	}
+	
+	public void printCurrentForm()
+	{
+		Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
+		printer.startPrint(r);
 	}
 	
 	public void createNew(int type)

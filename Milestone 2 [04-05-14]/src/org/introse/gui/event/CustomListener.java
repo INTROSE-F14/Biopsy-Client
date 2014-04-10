@@ -163,6 +163,8 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
        case ActionConstants.VIEW_RESTORE: projectDriver.changeToolsView(actionCommand);
 			break;
        case ActionConstants.VIEW_TOOLSOVERVIEW: projectDriver.changeToolsView(null);
+       		break;
+       case ActionConstants.PRINT: projectDriver.printCurrentForm();
 		}
 	}
 
