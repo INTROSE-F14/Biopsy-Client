@@ -134,7 +134,21 @@ public class Printer implements Printable{
 		
 
 		//present in all records
-		String number = (String) this.record.getAttribute(Constants.RecordTable.RECORD_NUMBER);
+		int recordnumber = (int) this.record.getAttribute(Constants.RecordTable.RECORD_NUMBER);
+		int numZeroes;
+		if(recordnumber > 999)
+			numZeroes = 4;
+		else if(recordnumber > 99)
+			numZeroes = 3;
+		else if(recordnumber > 9)
+			numZeroes = 2;
+		else numZeroes = 1;
+		String refNumber = "" + recordnumber;
+		for(int i = numZeroes; i < 4; i++)
+		{
+			refNumber = "0" + refNumber;
+		}
+		String number = (String) this.record.getAttribute(Constants.RecordTable.RECORD_TYPE) + (String) this.record.getAttribute(Constants.RecordTable.RECORD_YEAR) + "-" + refNumber;
 		
 		String room;
 		if(this.record.getAttribute(Constants.RecordTable.ROOM) == null){
