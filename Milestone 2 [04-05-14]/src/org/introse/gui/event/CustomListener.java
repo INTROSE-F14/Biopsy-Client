@@ -45,7 +45,7 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			if(projectDriver.getDetailPanelStatus() == ActionConstants.EDIT || 
 			projectDriver.getDetailPanelStatus() == ActionConstants.NEW)
 			{
-				PopupDialog popup = new PopupDialog(projectDriver.getMainMenu(), "Cancel form", 
+				PopupDialog popup = new PopupDialog(projectDriver.getMainMenu(), "Cancel form?", 
 						TitleConstants.DISCARD_CHANGES_MESSAGE, "Yes", "No");
 				popup.addPropertyChangeListener(new PropertyChangeListener()
 				{

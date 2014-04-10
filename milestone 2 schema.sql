@@ -38,9 +38,9 @@ CREATE TABLE Records
 	specimen VARCHAR(50) NOT NULL,
 	specimenType VARCHAR (30) NOT NULL,
 	room VARCHAR(15),
-	remarks VARCHAR(200),
-	grossDescription VARCHAR(200),
-	microscopicNotes VARCHAR(200),
+	remarks VARCHAR(2000),
+	grossDescription VARCHAR(2000),
+	microscopicNotes VARCHAR(2000),
 	PRIMARY KEY(recordType, recordYear, recordNumber),
 	FOREIGN KEY(patientID) REFERENCES Patients(patientID)
 );
@@ -69,7 +69,7 @@ CREATE TABLE Diagnosis
 	recordYear INT(2) NOT NULL,
 	recordNumber INT(4) NOT NULL,
 	recordType CHAR(1) NOT NULL,
-	diagnosis_value VARCHAR(200) NOT NULL,
+	diagnosis_value VARCHAR(2000) NOT NULL,
 	PRIMARY KEY(category_id, recordYear, recordNumber, recordType),
 	FOREIGN KEY(category_id) REFERENCES Categories(category_id),
 	FOREIGN KEY(recordType, recordYear, recordNumber) REFERENCES Records(recordType, recordYear, recordNumber)

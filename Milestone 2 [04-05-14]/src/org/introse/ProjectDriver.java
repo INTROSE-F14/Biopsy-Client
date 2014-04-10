@@ -162,10 +162,10 @@ public class ProjectDriver
 									startMainMenu();
 									break;
 								case Constants.NetworkConstants.AUTHENTICATION_FAILED:
-									new PopupDialog(loginForm, "Login Failed", "You entered an invalid password", "OK").showGui();
+									new PopupDialog(loginForm, "Login Failed", "You entered an invalid password.", "OK").showGui();
 									break;
 								case Constants.NetworkConstants.SERVER_ERROR:
-									new PopupDialog(loginForm, "Server Error", "An error occured while trying to connect to the server", "OK").showGui();
+									new PopupDialog(loginForm, "Server Error", "An error occured while trying to connect to the server.", "OK").showGui();
 									break;
 							}
 						} catch (InterruptedException | ExecutionException e) 
@@ -564,7 +564,7 @@ public class ProjectDriver
 			}
 			detailPanel.setMode(Constants.ActionConstants.VIEW);
 		}
-		else new PopupDialog(mainMenu, "Save Error", "Some fields are invalid", "OK").showGui();
+		else new PopupDialog(mainMenu, "Save Error", "Please fill up all required fields.", "OK").showGui();
 	}
 	
 	public void cancelCurrentForm()

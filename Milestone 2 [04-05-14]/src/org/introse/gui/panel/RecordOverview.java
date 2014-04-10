@@ -55,7 +55,7 @@ public class RecordOverview extends JPanel
 		specimenLabel = new JLabel("*Specimen(s)");
 		physicianLabel = new JLabel("*Physician");
 		pathologistLabel = new JLabel("*Pathologist");
-		dateReceivedLabel = new JLabel("Date Recieved");
+		dateReceivedLabel = new JLabel("Date Received");
 		dateCompletedLabel = new JLabel("Date Completed");
 		roomLabel = new JLabel("Patient's Room");
 		refNumberValue= new JLabel();
