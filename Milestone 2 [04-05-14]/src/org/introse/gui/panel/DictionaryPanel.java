@@ -1,68 +1,113 @@
 package org.introse.gui.panel;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
-public class DictionaryPanel extends JPanel{
+import org.introse.Constants.ActionConstants;
+import org.introse.Constants.TitleConstants;
+import org.introse.gui.event.CustomListener;
+import org.introse.gui.event.ListListener;
+
+public class DictionaryPanel extends JPanel implements FocusListener
+{
+	
 	private JTextField textField;
-	private JTable table;
-	public DictionaryPanel() {
-		super();
+	private JButton addButton;
+	private ListPanel wordPanel;
+	
+	public DictionaryPanel() 
+	{
+		super(new GridBagLayout());
 		setBackground(Color.white);
-		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
-		setLayout(gridBagLayout);
-		
-		JLabel lblPhrase = new JLabel("      Phrase: ");
-		lblPhrase.setFont(new Font("Calibri", Font.PLAIN, 18));
-		GridBagConstraints gbc_lblPhrase = new GridBagConstraints();
-		gbc_lblPhrase.insets = new Insets(0, 0, 5, 5);
-		gbc_lblPhrase.anchor = GridBagConstraints.EAST;
-		gbc_lblPhrase.gridx = 0;
-		gbc_lblPhrase.gridy = 2;
-		add(lblPhrase, gbc_lblPhrase);
-		
-		textField = new JTextField();
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.anchor = GridBagConstraints.WEST;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 2;
-		add(textField, gbc_textField);
-		textField.setColumns(30);
-		
-		JButton btnAdd = new JButton("add");
-		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 18));
-		btnAdd.setForeground(Color.decode("#3498db"));
-		// btnAdd.setBackground(Color.decode(""));
-		btnAdd.setContentAreaFilled(true);
-		btnAdd.setFocusPainted(false);
-		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
-		gbc_btnAdd.insets = new Insets(0, 0, 5, 0);
-		gbc_btnAdd.gridx = 2;
-		gbc_btnAdd.gridy = 2;
-		add(btnAdd, gbc_btnAdd);
-		
-		table = new JTable();
-		table.setBackground(Color.decode("#ECF0F1"));
-		GridBagConstraints gbc_table = new GridBagConstraints();
-		gbc_table.insets = new Insets(0, 0, 0, 5);
-		gbc_table.fill = GridBagConstraints.BOTH;
-		gbc_table.gridx = 1;
-		gbc_table.gridy = 3;
-		add(table, gbc_table);
+		initUI();
+		layoutComponents();
+	}
+	
+	private void initUI()
+	{
+		textField = new JTextField(TitleConstants.DICTIONARY_HINT, 50);
+		textField.setForeground(Color.GRAY);
+		textField.addFocusListener(this);
+		addButton = new JButton("add");
+		wordPanel = new ListPanel(SwingConstants.VERTICAL, 100, 0);
+	}
+	
+	private void layoutComponents()
+	{
+		GridBagConstraints c= new GridBagConstraints();
+		c.anchor = GridBagConstraints.NORTHWEST;
+		int y = 0;
+		c.gridx = 0;
+		c.gridy = y;
+		c.insets = new Insets(0,0,10,0);
+		add(textField, c);
+		c.gridx = 1;
+		c.gridy = y++;
+		c.weightx = 1.0;
+		c.insets = new Insets(0,5,10,0);
+		add(addButton, c);
+		c.gridwidth = 2;
+		c.gridx = 0;
+		c.gridy = y;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		c.insets = new Insets(0,0,0,0);
+		add(wordPanel, c);
+	}
+	
+	public void addListListener(ListListener listener)
+	{
+		wordPanel.addMouseListener(listener);
+	}
+	
+	public void addButtonListener(CustomListener listener)
+	{
+		addButton.addActionListener(listener);
+		addButton.setActionCommand(ActionConstants.ADD_WORD);
 	}
 
+	public ListPanel getWordPanel()
+	{
+		return wordPanel;
 	}
+	
+	public String getWord()
+	{
+		return textField.getText();
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) 
+	{
+		if(textField.getText().equals(TitleConstants.DICTIONARY_HINT))
+		{
+			textField.setText("");
+			textField.setForeground(Color.black);
+		}
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) 
+	{
+		if(textField.getText().length() == 0)
+		{
+			textField.setText(TitleConstants.DICTIONARY_HINT);
+			textField.setForeground(Color.GRAY);
+		}
+	}
+	
+	public void reset()
+	{
+		textField.setText(TitleConstants.DICTIONARY_HINT);
+		textField.setForeground(Color.gray);
+	}
+}

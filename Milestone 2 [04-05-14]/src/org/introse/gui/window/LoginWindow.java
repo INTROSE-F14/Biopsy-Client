@@ -8,16 +8,20 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -34,6 +38,7 @@ public class LoginWindow extends JFrame implements KeyListener{
 	private JLabel loadingStatus;
 	public static Font PRIMARY_FONT;
 	public static Font SECONDARY_FONT;
+	public int isListening;
 	
 	public LoginWindow() 
 	{
@@ -50,9 +55,7 @@ public class LoginWindow extends JFrame implements KeyListener{
 					getClass().getResourceAsStream("/res/fonts/calibri_light.ttf"));
 			
 		}catch (FontFormatException | IOException e) {e.printStackTrace();}
-		
-		
-		
+		isListening = 0;
 	}
 	
 	public void initUI()
@@ -77,7 +80,6 @@ public class LoginWindow extends JFrame implements KeyListener{
 		passwordField.setFont(new Font("/res/fonts/calibri.ttf", Font.PLAIN, 17));
 		passwordField.setHorizontalAlignment(SwingConstants.CENTER);
 		passwordField.setBackground(Color.decode("#ecf0f1"));
-		passwordField.addKeyListener(this);
 		ImageIcon loginIconRollover = new ImageIcon(getClass().getResource("/res/icons/btnLoginHover.png"));
 		ImageIcon loginIconNormal = new ImageIcon(getClass().getResource("/res/icons/btnLogin.png"));
 		actionButton = new JButton();
@@ -139,7 +141,7 @@ public class LoginWindow extends JFrame implements KeyListener{
 	{
 		actionButton.addActionListener(listener);
 		actionButton.setActionCommand(Constants.ActionConstants.LOG_IN);
-		passwordField.addKeyListener(listener);
+		passwordField.addKeyListener(this);
 	}
 	
 	public String getPassword()
@@ -158,22 +160,27 @@ public class LoginWindow extends JFrame implements KeyListener{
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void keyTyped(KeyEvent e) {}
 
 	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void keyPressed(KeyEvent e) {}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
+	public void keyReleased(KeyEvent e) 
+	{
 		if(passwordField.getPassword().length > 0)
-			actionButton.setEnabled(true);
+		{
+			if(e.getKeyCode() == KeyEvent.VK_ENTER && isListening == 0)
+				actionButton.doClick();
+			else actionButton.setEnabled(true);
+			if(isListening == 1)
+				isListening = 0;
+		}
 		else actionButton.setEnabled(false);
-		
+	} 
+	
+	public void setListening(int isListening)
+	{
+		this.isListening = isListening;
 	}
 }

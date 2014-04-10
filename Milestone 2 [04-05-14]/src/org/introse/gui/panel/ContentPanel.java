@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,6 +18,7 @@ import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.gui.event.CustomListener;
+import org.introse.gui.event.ListListener;
 import org.introse.gui.window.LoginWindow;
 import org.introse.gui.window.MainMenu;
 	
@@ -52,11 +52,11 @@ public class ContentPanel extends JPanel
 		public ContentPanel(MainMenu menu)
 		{
 			super(new CardLayout());
-			histopathologyList = new ListPanel(SwingConstants.HORIZONTAL);
-			gynecologyList = new ListPanel(SwingConstants.HORIZONTAL);
-			cytologyList = new ListPanel(SwingConstants.HORIZONTAL);
-			patientList = new ListPanel(SwingConstants.HORIZONTAL);
-			searchList = new ListPanel(SwingConstants.HORIZONTAL);
+			histopathologyList = new ListPanel(SwingConstants.HORIZONTAL, 8, 4);
+			gynecologyList = new ListPanel(SwingConstants.HORIZONTAL, 8, 4);
+			cytologyList = new ListPanel(SwingConstants.HORIZONTAL, 8, 4);
+			patientList = new ListPanel(SwingConstants.HORIZONTAL, 10, 5);
+			searchList = new ListPanel(SwingConstants.HORIZONTAL, 8, 4);
 			createListPanel();
 			createSettingsPanel();
 			add(Constants.TitleConstants.RECORDS, listPanel);
@@ -158,7 +158,7 @@ public class ContentPanel extends JPanel
 			c.gridwidth = 5;
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.insets = new Insets(0,40,0,0);
-			listPanel.add(filterField, c);
+		//	listPanel.add(filterField, c);
 			c.fill = GridBagConstraints.BOTH;
 			c.gridx = 0;
 			c.gridy = 2;
@@ -186,19 +186,32 @@ public class ContentPanel extends JPanel
 			settingsPanel.add(toolsPanel,c);
 		}
 		
+		public void addListListener(ListListener listener)
+		{
+			histopathologyList.addMouseListener(listener);
+			gynecologyList.addMouseListener(listener);
+			cytologyList.addMouseListener(listener);
+			searchList.addMouseListener(listener);
+			patientList.addMouseListener(listener);
+			
+		}
+		
 		public void addListener(CustomListener listener)
 		{
+			physPanel.addButtonListener(listener);
+			pathPanel.addButtonListener(listener);
+			specPanel.addButtonListener(listener);
 			toolsPanel.addListener(listener);
-			histopathologyList.addListener(listener);
-			cytologyList.addListener(listener);
-			gynecologyList.addListener(listener);
-			patientList.addListener(listener);
-			searchList.addListener(listener);
+			histopathologyList.addButtonListener(listener);
+			cytologyList.addButtonListener(listener);
+			gynecologyList.addButtonListener(listener);
+			patientList.addButtonListener(listener);
+			searchList.addButtonListener(listener);
 			newButton.addActionListener(listener);
 			searchButton.addActionListener(listener);
 			refreshButton.addActionListener(listener);
 			refreshButton.setActionCommand(Constants.ActionConstants.REFRESH);
-			filterField.addKeyListener(listener);
+//			filterField.addKeyListener(listener);
 			filterField.addFocusListener(new FocusListener()
 			{
 
@@ -233,101 +246,77 @@ public class ContentPanel extends JPanel
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  countLabel.setText(histopathologyList.getList().size()+"");
+									  countLabel.setText(histopathologyList.getListSize()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_HISTOPATHOLOGY);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
-									  newButton.setVisible(true);
-									  refreshButton.setVisible(true);
 									  searchButton.setVisible(true);
-									  filterField.setVisible(true);
+									  newButton.setVisible(true);
 									  break;
 					case Constants.TitleConstants.GYNECOLOGY:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  countLabel.setText(gynecologyList.getList().size()+"");
+									  countLabel.setText(gynecologyList.getListSize()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_GYNENECOLOGY);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
-									  newButton.setVisible(true);
-									  refreshButton.setVisible(true);
 									  searchButton.setVisible(true);
-									  filterField.setVisible(true);
+									  newButton.setVisible(true);
 									  break;
 					case Constants.TitleConstants.CYTOLOGY:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel,view);
 									  headerLabel.setText(view);
-									  countLabel.setText(cytologyList.getList().size()+"");
+									  countLabel.setText(cytologyList.getListSize()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_CYTOTOLOGY);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
-									  newButton.setVisible(true);
-									  refreshButton.setVisible(true);
 									  searchButton.setVisible(true);
-									  filterField.setVisible(true);
+									  newButton.setVisible(true);
 									  break;
 					case Constants.TitleConstants.PATHOLOGISTS:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
+									  countLabel.setText(pathPanel.getWordPanel().getListSize() + "");
 									  headerLabel.setText(view);
-									  newButton.setVisible(false);
-									  refreshButton.setVisible(false);
 									  searchButton.setVisible(false);
-									  filterField.setVisible(false);
-									  countLabel.setVisible(false);
+									  newButton.setVisible(false);
 									  break;
 					case Constants.TitleConstants.PATIENTS: 
-										mainLayout.show(this, Constants.TitleConstants.RECORDS);
-										subLayout.show(itemPanel, view);
-										headerLabel.setText(view);
-										countLabel.setText(patientList.getList().size()+"");
-										newButton.setActionCommand(ActionConstants.NEW_PATIENT);
-										searchButton.setActionCommand(ActionConstants.SEARCH_PATIENT);
-										newButton.setVisible(true);
-										refreshButton.setVisible(true);
-										searchButton.setVisible(true);
-										filterField.setVisible(true);
-										break;
+									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
+									  subLayout.show(itemPanel, view);
+									  headerLabel.setText(view);
+									  countLabel.setText(patientList.getListSize()+"");
+									  searchButton.setActionCommand(ActionConstants.SEARCH_PATIENT);
+									  searchButton.setVisible(true);
+									  newButton.setVisible(true);
+									  break;
 					case Constants.TitleConstants.PHYSICIANS:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  newButton.setActionCommand(ActionConstants.NEW_PHYSICIAN);
-									  newButton.setVisible(false);
-									  refreshButton.setVisible(false);
+									  countLabel.setText(physPanel.getWordPanel().getListSize() + "");
 									  searchButton.setVisible(false);
-									  filterField.setVisible(false);
-									  countLabel.setVisible(false);
+									  newButton.setVisible(false);
 									  break;
 					case Constants.TitleConstants.SPECIMENS:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  newButton.setActionCommand(ActionConstants.NEW_SPECIMEN);
-									  newButton.setVisible(false);
-									  refreshButton.setVisible(false);
+									  countLabel.setText(specPanel.getWordPanel().getListSize() + "");
 									  searchButton.setVisible(false);
-									  filterField.setVisible(false);
-									  countLabel.setVisible(false);
+									  newButton.setVisible(false);
 									  break;
 					case Constants.TitleConstants.PREFERENCES: 
 									  mainLayout.show(this, view);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  newButton.setActionCommand(ActionConstants.NEW_SPECIMEN);
-									  newButton.setVisible(false);
-									  refreshButton.setVisible(false);
-									  searchButton.setVisible(false);
-									  filterField.setVisible(false);
 									  break;
 					case Constants.TitleConstants.SEARCH_RESULT:
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  countLabel.setText(searchList.getList().size()+"");
-									  newButton.setVisible(true);
-									  refreshButton.setVisible(true);
+									  countLabel.setText(searchList.getListSize()+"");
 									  searchButton.setVisible(true);
-									  filterField.setVisible(true);
+									  newButton.setVisible(false);
 									  break;
 					case Constants.TitleConstants.DETAIL_PANEL:
 						  				mainLayout.show(this, Constants.TitleConstants.DETAIL_PANEL);
@@ -336,7 +325,7 @@ public class ContentPanel extends JPanel
 				filterField.setText(TitleConstants.QUICK_FILTER);
 				filterField.setForeground(Color.GRAY);
 				
-				if(!currentView.equals(view))
+				if(!currentView.equals(view) && !currentView.equals(TitleConstants.DETAIL_PANEL))
 					previousView = currentView;
 				currentView = view;
 		}
@@ -354,30 +343,6 @@ public class ContentPanel extends JPanel
 		public String getFilter()
 		{
 			return filterField.getText();
-		}
-		
-		public void updateList(List<ListItem> list, String view)
-		{
-			switch(view)
-			{
-			case Constants.TitleConstants.HISTOPATHOLOGY: 
-								histopathologyList.updateList(list);
-								break;
-			case Constants.TitleConstants.GYNECOLOGY:  
-								gynecologyList.updateList(list);
-							  	break;
-			case Constants.TitleConstants.CYTOLOGY:  
-								cytologyList.updateList(list);
-							  	break;
-			case Constants.TitleConstants.PATIENTS: 
-								patientList.updateList(list);
-								break;
-			case Constants.TitleConstants.SEARCH_RESULT:
-								searchList.updateList(list);
-			}
-			
-			if(currentView.equals(view))
-	 			countLabel.setText(list.size()+"");
 		}
 		
 		public void setDetailsPanel(JPanel panel)
@@ -410,6 +375,20 @@ public class ContentPanel extends JPanel
 			case TitleConstants.CYTOLOGY: return cytologyList;
 			case TitleConstants.PATIENTS: return patientList;
 			case TitleConstants.SEARCH_RESULT: return searchList;
+			case TitleConstants.PHYSICIANS: return physPanel.getWordPanel();
+			case TitleConstants.PATHOLOGISTS: return pathPanel.getWordPanel();
+			case TitleConstants.SPECIMENS: return specPanel.getWordPanel();
+			}
+			return null;
+		}
+		
+		public DictionaryPanel getDickPanel(String view)
+		{
+			switch(view)
+			{
+			case TitleConstants.PHYSICIANS: return physPanel;
+			case TitleConstants.PATHOLOGISTS: return pathPanel;
+			case TitleConstants.SPECIMENS: return specPanel;
 			}
 			return null;
 		}

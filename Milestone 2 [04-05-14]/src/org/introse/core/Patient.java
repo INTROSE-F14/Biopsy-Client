@@ -7,8 +7,6 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
@@ -18,18 +16,15 @@ import org.introse.Constants.PatientTable;
 import org.introse.Constants.StyleConstants;
 import org.introse.gui.panel.ListItem;
 import org.introse.gui.window.LoginWindow;
-import org.introse.gui.window.MainMenu;
 
 public class Patient extends ListItem
 {
 	private HashMap<String, Object> attributes;
-	private List<Record> records;
 	
 	public Patient()
 	{
 		super();
 		attributes = new HashMap<>();
-		records = new Vector<Record>();
 	}
 
 	public Object getAttribute(String key)
@@ -103,8 +98,7 @@ public class Patient extends ListItem
 	@Override
 	public void initializePanel() 
 	{
-		setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.35), 
-				(int)(Preferences.getScreenHeight() * 0.17)));
+		setPreferredSize(new Dimension((400), 100));
 		String label1 = getAttribute(PatientTable.LAST_NAME) + ", " + getAttribute(PatientTable.FIRST_NAME) + 
 				" " + getAttribute(PatientTable.MIDDLE_NAME);
 		String label2 = "";

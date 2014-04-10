@@ -52,9 +52,11 @@ public abstract class Constants
 
 	public abstract class TitleConstants
 	{
+		public static final String DICTIONARY_HINT = "Add words, phrases, or names";
+		public static final String DICTIONARY = "Dictionary";
 		public static final String DISCARD_CHANGES_MESSAGE = "All changes made will be discarded, do you want to continue?";
 		public static final String REFRESH_PANEL = "Refresh";
-		public static final String EMPTY_PANEL = "Empty";
+		public static final String EMPTY_PANEL = "Ooops...it's empty";
 		public static final String LIST_PANEL = "List";
 		public static final String LOGIN_WINDOW = "Login - Biopsy Client";
 		public static final String ALL="ALL";
@@ -129,6 +131,7 @@ public abstract class Constants
 	
 	public abstract class ActionConstants
 	{
+		public static final String ADD_WORD = "Add word";
 		public static final String SELECT_EXPORT = "Select export";
 		public static final String SELECT_RESTORE = "Select restore";
 		public static final String SELECT_BACKUP = "Select backup";
@@ -161,6 +164,8 @@ public abstract class Constants
 		public static final String VIEW_BACKUP = "View backup";
 		public static final String VIEW_RESTORE = "View restore";
 		public static final String VIEW_EXPORT = "View export";
+		public static final String NEXT = "Next";
+		public static final String PREVIOUS = "Previous";
 	}
 	
 	public abstract class RecordTable
@@ -264,5 +269,17 @@ public abstract class Constants
 		public static final String GLANDULAR = "GLANDULAR CELL ABNORMALITIES";
 		public static final String OMN = "OTHER MALIGNANT NEOPLASMS";
 	}
+
+	public abstract class DictionaryTable
+	{
+		public static final String WORD = "word";
+		public static final String TYPE = "wordtype";
+	}
 	
+	public abstract class DictionaryConstants
+	{
+		public static final int SPECIMEN = 0;
+		public static final int PATHOLOGIST = 1;
+		public static final int PHYSICIAN = 2;
+	}
 }

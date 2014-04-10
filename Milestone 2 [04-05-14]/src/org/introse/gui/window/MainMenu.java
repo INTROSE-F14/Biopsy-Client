@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.introse.core.Preferences;
 import org.introse.gui.event.CustomListener;
+import org.introse.gui.event.ListListener;
 import org.introse.gui.panel.ContentPanel;
 import org.introse.gui.panel.NavigationPanel;
 
@@ -35,6 +36,10 @@ public class MainMenu extends JFrame{
 		setContentPane(mainPanel);
 	}
 	
+	public void addListListener(ListListener listener)
+	{
+		contentPanel.addListListener(listener);
+	}
 	
 	public void addListener(CustomListener listener)
 	{

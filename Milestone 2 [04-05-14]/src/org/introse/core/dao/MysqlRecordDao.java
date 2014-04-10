@@ -100,8 +100,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+		//		if(conn != null)
+		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return null;
@@ -201,8 +201,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+	//			if(conn != null)
+	//				conn.close();
 					
 			} catch (SQLException e) 
 			{e.printStackTrace();}
@@ -241,8 +241,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+		//		if(conn != null)
+		//			conn.close();
 					
 			} catch (SQLException e) 
 			{e.printStackTrace();}
@@ -250,7 +250,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 	}
 
 	@Override
-	public List<Record> search(Record record) 
+	public List<Record> search(Record record, int start, int range) 
 	{
 		Connection conn = null;
 		Statement stmt = null;
@@ -408,6 +408,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			sql = sql.concat(completedString);
 			whereCount++;
 		}
+		sql = sql.concat(" ORDER BY " + RecordTable.RECORD_NUMBER + " DESC, " + RecordTable.RECORD_YEAR + " DESC LIMIT " + start + ", " + range);
 		List<Record> records = new Vector<Record>();
 		
 		try 
@@ -479,8 +480,6 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 					
 			} catch (SQLException e) 
 			{e.printStackTrace();}
@@ -549,8 +548,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+	//			if(conn != null)
+	//				conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 	}
@@ -621,20 +620,18 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 	}
 	
-	public void assignReferenceNumber(Record record)
+	public int generateRecordNumber(Record record)
 	{
 		Connection conn = null;
 		Statement stmt = null;
 		Statement stmt2 = null;
 		ResultSet result = null;
 		ResultSet result2 = null;
-		int max = 0;
+		int max = -1;
 		int count = 0;
 		String sql1 = "SELECT MAX(" + RecordTable.RECORD_NUMBER + ") FROM " + TitleConstants.RECORDS + " WHERE " + 
 		RecordTable.RECORD_TYPE + " = \"" + record.getAttribute(RecordTable.RECORD_TYPE) + "\" " + 
@@ -657,7 +654,6 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				count = result2.getInt("COUNT(*)");
 				if(count > 0)
 					max++;
-				record.putAttribute(RecordTable.RECORD_NUMBER, max);
 			}
 			
 		} catch (ClassNotFoundException | SQLException e) {e.printStackTrace();}  
@@ -669,9 +665,194 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
+		return max;
+	}
+
+	@Override
+	public int getCount(Record record) 
+	{
+		int count = 0;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet result = null;
+		String sql = "Select count(*) from " + TitleConstants.RECORDS + " WHERE ";
+		int whereCount = 0;
+	
+		Object patientId;
+		if((patientId = record.getAttribute(Constants.RecordTable.PATIENT_ID)) != null)
+		{
+			sql = sql.concat(RecordTable.PATIENT_ID + " = " + (int)patientId);
+			whereCount++;
+		}
+		
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		Object recordYear;
+		if((recordYear = record.getAttribute(Constants.RecordTable.RECORD_YEAR)) != null)
+		{
+			sql = sql.concat(RecordTable.RECORD_YEAR + " = " + recordYear);
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		Object recordNumber;
+		if((recordNumber = record.getAttribute(Constants.RecordTable.RECORD_NUMBER)) != null)
+		{
+			sql = sql.concat(RecordTable.RECORD_NUMBER + " = " + recordNumber);
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		String specimen;
+		if((specimen = (String)record.getAttribute(Constants.RecordTable.SPECIMEN)) != null)
+		{
+			specimen = specimen.replace("%", "\\%");
+			sql = sql.concat(RecordTable.SPECIMEN + " LIKE \"%" + specimen +"%\"");
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		String pathologist;
+		if((pathologist = (String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)) != null)
+		{
+			pathologist = pathologist.replace("%", "\\%");
+			sql = sql.concat(RecordTable.PATHOLOGIST + " LIKE \"%" + pathologist + "%\"");
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		String physician;
+		if((physician = (String)record.getAttribute(Constants.RecordTable.PHYSICIAN)) != null)
+		{
+			physician = physician.replace("%", "\\%");
+			sql = sql.concat(RecordTable.PHYSICIAN + " LIKE \"%" + physician + "%\"");
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		String room;
+		if((room = (String)record.getAttribute(Constants.RecordTable.ROOM)) != null)
+		{
+			room = room.replace("%", "\\%");
+			sql = sql.concat(RecordTable.ROOM + " LIKE \"%" + room + "%\"");
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		char recordType;
+		if((record.getAttribute(Constants.RecordTable.RECORD_TYPE) != null))
+		{
+			recordType = (char)record.getAttribute(Constants.RecordTable.RECORD_TYPE);
+			sql = sql.concat(RecordTable.RECORD_TYPE+ " = \"" + recordType + "\"");
+			whereCount++;
+		}
+		
+		CustomCalendar received = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED);
+		CustomCalendar completed = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_COMPLETED);
+		
+		if(received != null)
+		{
+			String receivedString = RecordTable.DATE_RECEIVED + " LIKE \"";
+			if(received.getYear() != -1)
+				receivedString = receivedString.concat("" + received.getYear() + "-");
+			else receivedString = receivedString.concat("%-");
+			if(received.getMonth() != -1)
+			{
+				if(received.getMonth() > 9)
+				receivedString = receivedString.concat("" + received.getMonth() + "-");
+				else receivedString = receivedString.concat("0" + received.getMonth() + "-");
+			}
+			else receivedString = receivedString.concat("%-");
+			if(received.getDay() != -1)
+			{
+				if(received.getDay() > 9)
+				receivedString = receivedString.concat("" + received.getDay() + "%\"");
+				else receivedString = receivedString.concat("0" + received.getDay() + "%\"");
+			}
+			else receivedString = receivedString.concat("%\"");
+			if(whereCount > 0)
+			{
+				sql = sql.concat(" AND ");
+				whereCount--;
+			}
+			sql = sql.concat(receivedString);
+			whereCount++;
+		}
+		
+		if(completed != null)
+		{
+			String completedString = RecordTable.DATE_COMPLETED + " LIKE \"";
+			if(completed.getYear() != -1)
+				completedString = completedString.concat("" + completed.getYear() + "-");
+			else completedString = completedString.concat("%-");
+			if(completed.getMonth() != -1)
+			{
+				if(completed.getMonth() > 9)
+				completedString = completedString.concat("" + completed.getMonth() + "-");
+				else completedString = completedString.concat("0" + completed.getMonth() + "-");
+			}
+			else completedString = completedString.concat("%-");
+			if(completed.getDay() != -1)
+			{
+				if(completed.getDay() > 9)
+				completedString = completedString.concat("" + completed.getDay() + "%\"");
+				else completedString = completedString.concat("0" + completed.getDay() + "%\"");
+			}
+			else completedString = completedString.concat("%\"");
+			if(whereCount > 0)
+			{
+				sql = sql.concat(" AND ");
+				whereCount--;
+			}
+			sql = sql.concat(completedString);
+			whereCount++;
+		}
+		
+		try 
+		{
+			System.out.println(sql);
+			conn = createConnection();
+			stmt = conn.createStatement();
+			result = stmt.executeQuery(sql);
+			if(result.next())
+				count = result.getInt("count(*)");
+		} catch (ClassNotFoundException | SQLException e) 
+		{e.printStackTrace();} 
+		finally
+		{
+			try 
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+					
+			} catch (SQLException e) 
+			{e.printStackTrace();}
+		}
+		return count;
 	}
 }

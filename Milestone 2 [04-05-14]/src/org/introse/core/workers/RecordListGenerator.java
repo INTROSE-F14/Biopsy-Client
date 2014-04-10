@@ -49,15 +49,9 @@ public class RecordListGenerator extends SwingWorker<List<ListItem>, ListItem> {
 		return recordList;
 	}
 	
-	@Override 
-	protected void process(List<ListItem> items)
-	{
-	}
-	
 	@Override
 	protected void done()
-	{
-		
+	{	
 		firePropertyChange("DONE", null, null);
 	}
 }

@@ -1,7 +1,6 @@
 package org.introse.gui.dialogbox;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -94,7 +93,7 @@ public class PopupDialog extends JDialog implements ActionListener, MouseListene
 		positiveButton.setContentAreaFilled(false);
 		positiveButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 		positiveButton.setBorderPainted(true);
-		positiveButton.setFocusPainted(false);
+		positiveButton.setFocusPainted(true);
 		positiveButton.setFont(messageLabel.getFont());
 		
 		negativeButton = new JButton(negativeOption);
@@ -105,7 +104,7 @@ public class PopupDialog extends JDialog implements ActionListener, MouseListene
 		negativeButton.setContentAreaFilled(false);
 		negativeButton.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 		negativeButton.setBorderPainted(true);
-		negativeButton.setFocusPainted(false);
+		negativeButton.setFocusPainted(true);
 		negativeButton.setFont(messageLabel.getFont());
 	}
 	

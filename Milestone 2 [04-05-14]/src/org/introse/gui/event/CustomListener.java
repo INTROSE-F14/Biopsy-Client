@@ -5,8 +5,6 @@ package org.introse.gui.event;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
@@ -17,10 +15,9 @@ import org.introse.Constants.ActionConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.ProjectDriver;
 import org.introse.gui.dialogbox.PopupDialog;
-import org.introse.gui.panel.ListItem;
 
 
-public class CustomListener implements ActionListener, MouseListener, KeyListener
+public class CustomListener implements ActionListener, MouseListener
 {
 	private ProjectDriver projectDriver;
 	public CustomListener(ProjectDriver driver) 
@@ -45,7 +42,7 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			if(projectDriver.getDetailPanelStatus() == ActionConstants.EDIT || 
 			projectDriver.getDetailPanelStatus() == ActionConstants.NEW)
 			{
-				PopupDialog popup = new PopupDialog(projectDriver.getMainMenu(), "Cancel form?", 
+				PopupDialog popup = new PopupDialog(projectDriver.getMainMenu(), "Cancel form", 
 						TitleConstants.DISCARD_CHANGES_MESSAGE, "Yes", "No");
 				popup.addPropertyChangeListener(new PropertyChangeListener()
 				{
@@ -70,7 +67,7 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 				projectDriver.setSelectedButton(e.getSource());
 			}
 			break;
-		case Constants.ActionConstants.REFRESH: projectDriver.refresh(projectDriver.getCurrentView());
+		case Constants.ActionConstants.REFRESH: projectDriver.refresh(projectDriver.getCurrentView(), false);
 												projectDriver.removeDetailsPanel();
 			break;
 		case Constants.ActionConstants.LOG_OUT: projectDriver.logout();
@@ -83,7 +80,7 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 			break;
 		case Constants.ActionConstants.CANCEL: 
 			
-			PopupDialog popup = new PopupDialog(projectDriver.getMainMenu(), "Cancel form", 
+			PopupDialog popup = new PopupDialog(projectDriver.getMainMenu(), "Cancel form?", 
 					TitleConstants.DISCARD_CHANGES_MESSAGE, "Yes", "No");
 			popup.addPropertyChangeListener(new PropertyChangeListener()
 			{
@@ -163,7 +160,13 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
        case ActionConstants.VIEW_RESTORE: projectDriver.changeToolsView(actionCommand);
 			break;
        case ActionConstants.VIEW_TOOLSOVERVIEW: projectDriver.changeToolsView(null);
-       		break;
+       break;
+       case ActionConstants.NEXT:projectDriver.loadNext();
+    	   break;
+       case ActionConstants.PREVIOUS: projectDriver.loadPrevious();
+       break;
+       case ActionConstants.ADD_WORD: projectDriver.addCurrentWord();
+       break;
        case ActionConstants.PRINT: projectDriver.printCurrentForm();
 		}
 	}
@@ -190,34 +193,5 @@ public class CustomListener implements ActionListener, MouseListener, KeyListene
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) 
-	{
-		if(e.getComponent().contains(e.getPoint()))
-		{
-			e.getComponent().setBackground(Color.decode(Constants.StyleConstants.HOVER));
-			if(e.getComponent() instanceof ListItem)
-			{
-				ListItem listItem = (ListItem)e.getComponent();
-				projectDriver.viewItem(listItem);
-			}
-		}
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {}
-
-	@Override
-	public void keyReleased(KeyEvent e) 
-	{
-		if(e.getKeyCode() == KeyEvent.VK_ENTER)
-		{
-			if(projectDriver.loginForm == null)
-				projectDriver.applyFilter(projectDriver.getList(projectDriver.getCurrentView()),
-						projectDriver.getCurrentView());
-			else projectDriver.login();
-		}
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {}
+	public void mouseReleased(MouseEvent e) {}
 }

@@ -3,7 +3,6 @@ package org.introse.gui.form;
 import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.panel.RecordOverview;
 
 public interface RecordForm 
 {

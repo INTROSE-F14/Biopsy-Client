@@ -56,8 +56,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return matches;
@@ -94,8 +92,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 	}
@@ -126,8 +122,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 	}
@@ -169,8 +163,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return diagnosis;
@@ -219,8 +211,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return match;
@@ -258,10 +248,7 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
-		
 	}
 }

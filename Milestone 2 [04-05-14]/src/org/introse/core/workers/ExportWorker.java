@@ -60,7 +60,7 @@ public class ExportWorker extends SwingWorker<Void, String>
 	
 	private void patExport() throws Exception
 	{
-		List<Patient> patList = patientDao.getAll();
+		List<Patient> patList = patientDao.getAll(0, patientDao.getCount());
 		patientCount = 0;
 		int patientSize = patList.size();
 		setProgress(0);

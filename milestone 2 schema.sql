@@ -50,7 +50,7 @@ CREATE TABLE Dictionary
 (
 	word varchar(100) NOT NULL,
 	wordType int(1) NOT NULL,
-	PRIMARY KEY(word)
+	PRIMARY KEY(word, wordtype)
 );
 
 DROP TABLE IF EXISTS Categories;

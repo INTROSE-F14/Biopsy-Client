@@ -18,6 +18,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.introse.Constants.ActionConstants;
+import org.introse.Constants.DictionaryConstants;
 import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
@@ -25,29 +26,32 @@ import org.introse.Constants.StatusConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CytologyRecord;
 import org.introse.core.Diagnosis;
+import org.introse.core.Dictionary;
 import org.introse.core.GynecologyRecord;
 import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
 import org.introse.core.Preferences;
 import org.introse.core.Record;
 import org.introse.core.dao.MysqlDiagnosisDao;
+import org.introse.core.dao.MysqlDictionaryDao;
 import org.introse.core.dao.MysqlPatientDao;
 import org.introse.core.dao.MysqlRecordDao;
 import org.introse.core.database.FileHelper;
 import org.introse.core.database.Printer;
 import org.introse.core.network.Client;
 import org.introse.core.workers.BackupWorker;
+import org.introse.core.workers.DictionaryListGenerator;
 import org.introse.core.workers.ExportWorker;
-import org.introse.core.workers.FilterWorker;
 import org.introse.core.workers.PatientListGenerator;
 import org.introse.core.workers.RecordListGenerator;
 import org.introse.core.workers.RestoreWorker;
-import org.introse.gui.dialogbox.PopupDialog;
 import org.introse.gui.dialogbox.PatientLoader;
+import org.introse.gui.dialogbox.PopupDialog;
 import org.introse.gui.dialogbox.SearchDialog;
 import org.introse.gui.dialogbox.SearchPatientDialog;
 import org.introse.gui.dialogbox.SearchRecordDialog;
 import org.introse.gui.event.CustomListener;
+import org.introse.gui.event.ListListener;
 import org.introse.gui.form.CytologyForm;
 import org.introse.gui.form.Form;
 import org.introse.gui.form.GynecologyForm;
@@ -55,8 +59,8 @@ import org.introse.gui.form.HistopathologyForm;
 import org.introse.gui.form.PatientForm;
 import org.introse.gui.form.RecordForm;
 import org.introse.gui.panel.BackupPanel;
-import org.introse.gui.panel.ContentPanel;
 import org.introse.gui.panel.DetailPanel;
+import org.introse.gui.panel.DictionaryPanel;
 import org.introse.gui.panel.ExportPanel;
 import org.introse.gui.panel.ListItem;
 import org.introse.gui.panel.ListPanel;
@@ -71,21 +75,19 @@ public class ProjectDriver
 {
 	public static LoginWindow loginForm;
 	private final Client client = new Client();
-	private static final CustomListener listener =  new CustomListener(new ProjectDriver());
 	private MainMenu mainMenu;
 	private MysqlRecordDao recordDao;
 	private MysqlPatientDao patientDao;
 	private MysqlDiagnosisDao diagnosisDao;
-	private List<ListItem> patientList;
-	private List<ListItem> histopathologyList;
-	private List<ListItem> gynecologyList;
-	private List<ListItem> cytologyList;
-	private List<ListItem> searchList;
+	private MysqlDictionaryDao dictionaryDao;
 	private DetailPanel detailPanel;
 	private SearchDialog searchDialog;
 	private PatientLoader loader;
 	private Object lastSearch;
-	private FilterWorker filterWorker;
+	private SwingWorker<Integer, Void> loginWorker;
+	private static final ProjectDriver driver = new ProjectDriver();
+	private static final CustomListener listener =  new CustomListener(driver);
+	private static final ListListener listListener = new ListListener(driver);
 	private Printer printer;
 	
 	public static void main(String[] args) 
@@ -115,11 +117,11 @@ public class ProjectDriver
 	
 	public void login()
 	{
-		if(loginForm.getPassword().length() > 0)
+		if(loginWorker == null || loginWorker.isDone())
 		{
 			loginForm.setLoadingVisible(true);
 			loginForm.setLoginButtonEnabled(false);
-			final SwingWorker loginWorker = new SwingWorker<Integer, Void>()
+			loginWorker = new SwingWorker<Integer, Void>()
 			{
 				@Override
 				protected Integer doInBackground() throws Exception 
@@ -147,6 +149,7 @@ public class ProjectDriver
 							loginStatus = (int)loginWorker.get();
 							loginForm.setLoadingVisible(false);
 							loginForm.setLoginButtonEnabled(true);
+							loginForm.setListening(2);
 							switch(loginStatus)
 							{
 								case Constants.NetworkConstants.AUTHENTICATION_SUCCESSFUL: 
@@ -164,10 +167,26 @@ public class ProjectDriver
 									startMainMenu();
 									break;
 								case Constants.NetworkConstants.AUTHENTICATION_FAILED:
-									new PopupDialog(loginForm, "Login Failed", "You entered an invalid password.", "OK").showGui();
+									PopupDialog dialog = new PopupDialog(loginForm, "Login Failed", 
+											"You entered an invalid password.", "OK");
+									dialog.addPropertyChangeListener(new PropertyChangeListener(){
+
+										@Override
+										public void propertyChange(PropertyChangeEvent evt) 
+										{loginForm.setListening(1);}
+									});
+									dialog.showGui();
 									break;
 								case Constants.NetworkConstants.SERVER_ERROR:
-									new PopupDialog(loginForm, "Server Error", "An error occured while trying to connect to the server.", "OK").showGui();
+									PopupDialog dialog2 = new PopupDialog(loginForm, "Server Error", 
+											"An error occured while trying to connect to the server.", "OK");
+									dialog2.addPropertyChangeListener(new PropertyChangeListener(){
+
+										@Override
+										public void propertyChange(PropertyChangeEvent evt) 
+										{loginForm.setListening(1);}
+									});
+									dialog2.showGui();
 									break;
 							}
 						} catch (InterruptedException | ExecutionException e) 
@@ -175,7 +194,6 @@ public class ProjectDriver
 							e.printStackTrace();
 						}
 					}
-					
 				}
 			});
 			loginWorker.execute();
@@ -188,22 +206,33 @@ public class ProjectDriver
 		recordDao = new MysqlRecordDao();
 		patientDao = new MysqlPatientDao();
 		diagnosisDao = new MysqlDiagnosisDao();
+		dictionaryDao = new MysqlDictionaryDao();
 		printer = new Printer();
+		
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
 			{
 				mainMenu = new MainMenu();
+				mainMenu.addListListener(listListener);
 				mainMenu.addListener(listener);
 				changeView(TitleConstants.HISTOPATHOLOGY);
 				mainMenu.showGUI();
+				loadWords();
 			}});
+	}
+	
+	public void loadWords()
+	{
+		Dictionary.setPathologists(dictionaryDao.getWords(DictionaryConstants.PATHOLOGIST));
+		Dictionary.setPhysicians(dictionaryDao.getWords(DictionaryConstants.PHYSICIAN));
+		Dictionary.setSpecimens(dictionaryDao.getWords(DictionaryConstants.SPECIMEN));
 	}
 	
 	public void changeView(String view)
 	{
+		refresh(view, false);
 		mainMenu.getContentPanel().changeView(view);
-		refresh(view);
 	}
 	
 	public String getPreviousView()
@@ -219,7 +248,7 @@ public class ProjectDriver
 	public void setSelectedButton(Object button)
 	{
 		if(button instanceof String)
-		mainMenu.getNavigationPanel().setSelectedButton((String)button);
+			mainMenu.getNavigationPanel().setSelectedButton((String)button);
 		else mainMenu.getNavigationPanel().setSelectedButton(button);
 	}
 	
@@ -229,7 +258,7 @@ public class ProjectDriver
 		createAndShowGui();
 	}
 	
-	public void refresh(String view)
+	public void refresh(String view, boolean reset)
 	{
 		Record record = null;
 		switch(view)
@@ -237,26 +266,31 @@ public class ProjectDriver
 					case Constants.TitleConstants.HISTOPATHOLOGY: 
 						record = new HistopathologyRecord();
 						record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.HISTOPATHOLOGY_RECORD);
-						updateRList(recordDao.search(record), view, true);	
+						updateRList(record, view, reset);
 						break;
 					case Constants.TitleConstants.GYNECOLOGY:  
 						record = new GynecologyRecord();
 						record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.GYNECOLOGY_RECORD);
-						updateRList(recordDao.search(record), view, true);
+						updateRList(record, view, reset);
 									  break;
 					case Constants.TitleConstants.CYTOLOGY:  
 						record = new CytologyRecord();
 						record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.CYTOLOGY_RECORD);
-						updateRList(recordDao.search(record), view, true);
+						updateRList(record, view, reset);
 									break;
 					case Constants.TitleConstants.PATIENTS: 
-						updatePList(patientDao.getAll(), view, true);
+						updatePList((Patient)null, view, reset);
 										break;
 					case Constants.TitleConstants.SEARCH_RESULT:
 						if(lastSearch instanceof Record)
-							updateRList(recordDao.search((Record)lastSearch), view, true);
-						else updatePList(patientDao.search((Patient)lastSearch), view, true);
+							updateRList((Record)lastSearch, view, reset);
+						else updatePList((Patient)lastSearch, view, reset);
 									  break;
+					case TitleConstants.SPECIMENS: updateWList(DictionaryConstants.SPECIMEN, view);
+					break;
+					case TitleConstants.PATHOLOGISTS: updateWList(DictionaryConstants.PATHOLOGIST, view);
+					break;
+					case TitleConstants.PHYSICIANS: updateWList(DictionaryConstants.PHYSICIAN, view);
 			}
 	}
 	
@@ -266,18 +300,52 @@ public class ProjectDriver
 		detailPanel = null;
 	}
 	
-	public void updateList(List<ListItem> list, String view)
+	public void updateWList(int type, final String view)
 	{
-		mainMenu.getContentPanel().updateList(list, view);
+		final ListPanel listPanel = mainMenu.getContentPanel().getPanel(view);
+		listPanel.setListSize(dictionaryDao.getCount(type));
+		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
+		final DictionaryListGenerator listWorker = new DictionaryListGenerator(dictionaryDao, type);
+		listWorker.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) 
+			{
+				if(evt.getPropertyName().equals("DONE"))
+				{
+					try {
+						List<ListItem> words = listWorker.get();
+						switch(view)
+						{
+						case TitleConstants.PATHOLOGISTS: Dictionary.setPathologists(listWorker.getWords());
+						break;
+						case TitleConstants.PHYSICIANS: Dictionary.setPhysicians(listWorker.getWords());
+						break;
+						case TitleConstants.SPECIMENS: Dictionary.setSpecimens(listWorker.getWords());
+						}
+						listPanel.updateViewable(words);
+						if(words.size() > 0)
+							listPanel.showPanel(TitleConstants.LIST_PANEL);
+						else listPanel.showPanel(TitleConstants.EMPTY_PANEL);
+					} catch (InterruptedException | ExecutionException e)
+					{e.printStackTrace();}
+					
+				}
+			}
+		});
+		listWorker.execute();
 	}
 	
-	public void updateRList(List<Record> records, final String view, 
-			final boolean isFiltered)
-	{	
-		final ListPanel listPanel = mainMenu.getContentPanel().getPanel(view);
+	public void updateRList(Record record, String view, boolean reset)
+	{
+		final ListPanel listPanel = 
+				mainMenu.getContentPanel().getPanel(view);
+		if(reset)
+			listPanel.setStart(0);
+		listPanel.setListSize(recordDao.getCount(record));
 		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
-		
-		final RecordListGenerator listWorker = new RecordListGenerator(records, patientDao);
+		final RecordListGenerator listWorker = new RecordListGenerator(recordDao.search(record, listPanel.getStart(), 
+				listPanel.getRange()), patientDao);
 		listWorker.addPropertyChangeListener(new PropertyChangeListener()
 		{
 			@Override
@@ -287,55 +355,11 @@ public class ProjectDriver
 				{
 					try 
 					{
-						switch(view)
-						{
-						case TitleConstants.HISTOPATHOLOGY:
-							histopathologyList = listWorker.get();
-							break;
-						case TitleConstants.GYNECOLOGY:
-							gynecologyList = listWorker.get();
-							break;
-						case TitleConstants.CYTOLOGY:
-							cytologyList = listWorker.get();
-							break;
-						case TitleConstants.SEARCH_RESULT:
-							searchList = listWorker.get();
-						}
-						if(isFiltered)
-						{
-							final FilterWorker filterWorker = new FilterWorker(mainMenu.getContentPanel().getFilter(), 
-									listWorker.get());
-							filterWorker.addPropertyChangeListener(new PropertyChangeListener()
-							{
-								@Override
-								public void propertyChange(PropertyChangeEvent evt) {
-									if(evt.getPropertyName().equals("DONE"))
-									{
-										try 
-										{
-											List<ListItem> filteredList = filterWorker.get();
-											updateList(filteredList, view);
-											System.out.println("ASDASD: " + filteredList.size());
-											if(filteredList.size() < 1)
-												listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-											else listPanel.showPanel(TitleConstants.LIST_PANEL);
-										} catch (InterruptedException | ExecutionException e) {
-											e.printStackTrace();
-										}
-									}
-								}
-							});
-							filterWorker.execute();
-						}
-						else 
-						{
-							List<ListItem> list = listWorker.get();
-							updateList(listWorker.get(), view);
-							System.out.println("ASDASDA " + list.size());
-							if(list.size() < 1)
-								listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-							else listPanel.showPanel(TitleConstants.LIST_PANEL);
-						}
+						List<ListItem> list = listWorker.get();
+						listPanel.updateViewable(list);
+						if(list.size() < 1)
+							listPanel.showPanel(TitleConstants.EMPTY_PANEL);
+						else listPanel.showPanel(TitleConstants.LIST_PANEL);
 					} catch (InterruptedException | ExecutionException e) 
 					{e.printStackTrace();}
 				}
@@ -344,105 +368,49 @@ public class ProjectDriver
 		listWorker.execute();
 	}
 	
-	public void updatePList(List<Patient> patients, final String view, 
-			final boolean isFiltered)
-	{	
-		final ListPanel listPanel = mainMenu.getContentPanel().getPanel(view);
-		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
-		
-		final PatientListGenerator listWorker = new PatientListGenerator(patients);
-		listWorker.addPropertyChangeListener(new PropertyChangeListener()
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) 
-			{
-				if(evt.getPropertyName().equals("DONE"))
-				{
-					try 
-					{
-						switch(view)
-						{
-						case TitleConstants.PATIENTS:
-							patientList = listWorker.get();
-							break;
-						case TitleConstants.SEARCH_RESULT:
-							searchList = listWorker.get();
-						}
-						if(isFiltered)
-						{
-							final FilterWorker filterWorker = new FilterWorker(mainMenu.getContentPanel().getFilter(), 
-									listWorker.get());
-							filterWorker.addPropertyChangeListener(new PropertyChangeListener()
-							{
-								@Override
-								public void propertyChange(PropertyChangeEvent evt) {
-									if(evt.getPropertyName().equals("DONE"))
-									{
-										try 
-										{
-											List<ListItem> filteredList = filterWorker.get();
-											updateList(filteredList, view);
-											System.out.println("ASDASD: " + filteredList.size());
-											if(filteredList.size() < 1)
-												listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-											else listPanel.showPanel(TitleConstants.LIST_PANEL);
-										} catch (InterruptedException | ExecutionException e) {
-											e.printStackTrace();
-										}
-									}
-								}
-							});
-							filterWorker.execute();
-						}
-						else 
-						{
-							List<ListItem> list = listWorker.get();
-							updateList(listWorker.get(), view);
-							System.out.println("ASDASDA " + list.size());
-							if(list.size() < 1)
-								listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-							else listPanel.showPanel(TitleConstants.LIST_PANEL);
-						}
-					} catch (InterruptedException | ExecutionException e) 
-					{e.printStackTrace();}
-				}
-			}
-		});
-		listWorker.execute();
-	}
-
-	public void applyFilter(List<ListItem> list, final String view)
+	public void updatePList(Patient p, final String view, boolean reset)
 	{
-		final ListPanel listPanel = mainMenu.getContentPanel().getPanel(view);
-		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
-		
-		final ContentPanel panel = mainMenu.getContentPanel();
-		if(filterWorker == null || (filterWorker != null && filterWorker.isDone()))
+		List<Patient> list;
+		final ListPanel listPanel = 
+				mainMenu.getContentPanel().getPanel(view);
+		if(reset)
+			listPanel.setStart(0);
+		if(p == null)
 		{
-			filterWorker = new FilterWorker(panel.getFilter(), 
-					list);
-			filterWorker.addPropertyChangeListener(new PropertyChangeListener()
-			{
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if(evt.getPropertyName().equals("DONE"))
-					{
-						try 
-						{
-							List<ListItem> filteredList = filterWorker.get();
-							updateList(filteredList, view);
-							if(filteredList.size() < 1)
-								listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-							else listPanel.showPanel(TitleConstants.LIST_PANEL);
-							
-						} catch (InterruptedException | ExecutionException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			});
-			filterWorker.execute();
+			listPanel.setListSize(patientDao.getCount());
+			list = patientDao.getAll(listPanel.getStart(), listPanel.getRange());
 		}
+		else
+		{
+			listPanel.setListSize(patientDao.getCount(p));
+			list = patientDao.search(p, listPanel.getStart(), listPanel.getRange());
+		}
+		
+		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
+		
+
+		final PatientListGenerator listWorker = new PatientListGenerator(list);
+		listWorker.addPropertyChangeListener(new PropertyChangeListener()
+		{
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) 
+			{
+				if(evt.getPropertyName().equals("DONE"))
+				{
+					try 
+					{
+						
+							List<ListItem> list = listWorker.get();
+							listPanel.updateViewable(list);
+							if(list.size() < 1)
+								listPanel.showPanel(TitleConstants.EMPTY_PANEL);
+							else listPanel.showPanel(TitleConstants.LIST_PANEL);
+					} catch (InterruptedException | ExecutionException e) 
+					{e.printStackTrace();}
+				}
+			}
+		});
+		listWorker.execute();
 	}
 	
 	public void viewItem(ListItem listItem)
@@ -530,17 +498,28 @@ public class ProjectDriver
 						 p.getAttribute(PatientTable.PATIENT_ID));				
 				switch(rP.getMode())
 				{
-				case Constants.ActionConstants.NEW:  if(patientDao.get(p) == null)
-													 	patientDao.add(p);
-													 recordDao.assignReferenceNumber(r);
-													 recordDao.add(r);
+				case Constants.ActionConstants.NEW: int recordNumber = recordDao.generateRecordNumber(r);
+													System.out.println(recordNumber);
+													if(recordNumber == -1 || recordNumber > 9999)
+													{
+														PopupDialog dialog = new PopupDialog(mainMenu, 
+																"Error Saving record", "Record number full", "OK");
+														dialog.showGui();
+														return;
+													}
+													else
+													{	
+														 r.putAttribute(RecordTable.RECORD_NUMBER, recordNumber);
+														 if(patientDao.get(p) == null)
+														 	patientDao.add(p);
+														 recordDao.add(r);
+													}
 													 break;
-													 
 				case Constants.ActionConstants.EDIT: recordDao.update(r);
 													 break;
 				}
 				diagnosisDao.delete(r);
-				List<Diagnosis> diagnosis = (List)r.getAttribute(RecordTable.DIAGNOSIS);
+				List<Diagnosis> diagnosis = (List<Diagnosis>)r.getAttribute(RecordTable.DIAGNOSIS);
 				if(diagnosis != null)
 				{
 					Iterator<Diagnosis> i = diagnosis.iterator();
@@ -599,7 +578,7 @@ public class ProjectDriver
 		Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
 		printer.startPrint(r);
 	}
-	
+
 	public void createNew(int type)
 	{
 		JPanel panel = null;
@@ -612,7 +591,7 @@ public class ProjectDriver
 		case Constants.RecordConstants.HISTOPATHOLOGY_RECORD:	
 											record = new HistopathologyRecord();
 											patient = new Patient();
-											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getAll().size() + 1);
+											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getCount() + 1);
 											recordForm = new HistopathologyForm();
 											((RecordForm)recordForm).setFields(record, patient);
 											panel = new RecordPanel(recordForm, Constants.ActionConstants.NEW);
@@ -621,7 +600,7 @@ public class ProjectDriver
 		case Constants.RecordConstants.GYNECOLOGY_RECORD:		
 											record = new GynecologyRecord();
 											patient = new Patient();
-											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getAll().size() + 1);
+											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getCount() + 1);
 											recordForm = new GynecologyForm();
 											((RecordForm)recordForm).setFields(record, patient);
 											panel = new RecordPanel(recordForm, Constants.ActionConstants.NEW);
@@ -630,7 +609,7 @@ public class ProjectDriver
 		case Constants.RecordConstants.CYTOLOGY_RECORD:			
 											record = new CytologyRecord();
 											patient = new Patient();
-											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getAll().size() + 1);
+											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getCount() + 1);
 											recordForm = new CytologyForm();
 											((RecordForm)recordForm).setFields(record, patient);
 											panel = new RecordPanel(recordForm, Constants.ActionConstants.NEW);
@@ -638,7 +617,7 @@ public class ProjectDriver
 											break;
 		case Constants.RecordConstants.PATIENT:			
 											patient = new Patient();
-											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getAll().size() + 1);
+											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getCount() + 1);
 											patientForm = new PatientForm();
 											((Form)patientForm).setFields(patient);
 											panel = new PatientPanel(patientForm, Constants.ActionConstants.NEW);
@@ -693,26 +672,23 @@ public class ProjectDriver
 		{
 			Record record = (Record)searchDialog.getSearchCriteria();
 			lastSearch = record;
-			List<Record> matches = recordDao.search(record);
-			updateRList(matches, TitleConstants.SEARCH_RESULT, true);
 		}
 		else
 		{
 			Patient patient = (Patient)searchDialog.getSearchCriteria();
 			lastSearch = patient;
-			List<Patient> matches = patientDao.search(patient);
-			updatePList(matches, TitleConstants.SEARCH_RESULT, true);
 		}
 		searchDialog.dispose();
 		searchDialog = null;
-		changeView(TitleConstants.SEARCH_RESULT);
+		refresh(TitleConstants.SEARCH_RESULT, true);
+		mainMenu.getContentPanel().changeView(TitleConstants.SEARCH_RESULT);
 		removeDetailsPanel();
 		setSelectedButton("");
 	}
 	
 	public void openPatientLoad()
 	{
-		loader = new PatientLoader(patientList, listener);
+		loader = new PatientLoader(patientDao, listListener);
 		loader.showGUI();
 	}
 	
@@ -867,19 +843,6 @@ public class ProjectDriver
 		restorePanel.setStatus(StatusConstants.ONGOING);
 	}
 	
-	public List<ListItem> getList(String view)
-	{
-		switch(view)
-		{
-		case TitleConstants.HISTOPATHOLOGY: return histopathologyList;
-		case TitleConstants.GYNECOLOGY: return gynecologyList;
-		case TitleConstants.CYTOLOGY: return cytologyList;
-		case TitleConstants.PATIENTS: return patientList;
-		case TitleConstants.SEARCH_RESULT: return searchList;
-		}
-		return null;
-	}
-	
 	public void changeToolsView(String view)
 	{
 		mainMenu.getContentPanel().getToolsPanel().showPanel(view);
@@ -895,5 +858,42 @@ public class ProjectDriver
 		if(detailPanel == null)
 			return -1;
 		else return detailPanel.getMode();
+	}
+	
+	public void loadNext()
+	{
+		ListPanel listpanel = mainMenu.getContentPanel().getPanel(getCurrentView());
+		listpanel.next();
+		refresh(getCurrentView(), false);
+	}
+	
+	public void loadPrevious()
+	{
+		ListPanel listpanel = mainMenu.getContentPanel().getPanel(getCurrentView());
+		listpanel.previous();
+		refresh(getCurrentView(), false);
+	}
+	
+	public void addCurrentWord()
+	{
+		DictionaryPanel panel = mainMenu.getContentPanel().getDickPanel(getCurrentView());
+		String word = panel.getWord();
+		
+		if(word.replaceAll("\\s", "").length() > 0)
+		{
+			switch(getCurrentView())
+			{
+			case TitleConstants.PATHOLOGISTS: dictionaryDao.add(word, 
+					DictionaryConstants.PATHOLOGIST);
+			break;
+			case TitleConstants.PHYSICIANS: dictionaryDao.add(word, 
+					DictionaryConstants.PHYSICIAN);
+			break;
+			case TitleConstants.SPECIMENS: dictionaryDao.add(word, 
+					DictionaryConstants.SPECIMEN);
+			}
+			refresh(getCurrentView(), false);
+			panel.reset();
+		}
 	}
 }
