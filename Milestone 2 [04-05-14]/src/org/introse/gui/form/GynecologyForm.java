@@ -69,6 +69,7 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 	
 	private ButtonGroup mainCategory;
 	private JRadioButton nilm, eca, omn;
+	private ButtonGroup nilmGroup;
 	private JRadioButton organisms;
 	private ButtonGroup organismsGroup;
 	private JRadioButton org1, org2, org3, org4, org5;
@@ -338,17 +339,17 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		remarksValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		grossDescValue.setFont(remarksValue.getFont());
 		microNoteValue.setFont(remarksValue.getFont());
+		
+		//mainCategory = new ButtonGroup();
 		nilm = new JRadioButton(TitleConstants.NILM);
 		eca = new JRadioButton(TitleConstants.ECA);
 		omn = new JRadioButton(TitleConstants.OMN);
 		nilm.setBackground(Color.white);
 		eca.setBackground(Color.white);
 		omn.setBackground(Color.white);
-		mainCategory = new ButtonGroup();
-		mainCategory.add(nilm);
-		mainCategory.add(eca);
-		mainCategory.add(omn);
-		mainCategory.clearSelection();
+		//mainCategory.add(nilm);
+		//mainCategory.add(eca);
+		//mainCategory.add(omn);
 		
 		specimenTypeLabel = new JLabel(TitleConstants.SPEC_TYPE);
 		specGroup = new ButtonGroup();
@@ -370,14 +371,12 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		unsatisfactory.setBackground(Color.white);
 		unsatisfactoryDueTo = new JTextField(35);
 		saGroup.add(satisfactory);
-		saGroup.add(unsatisfactory);
+		saGroup.add(unsatisfactory);		
 		
-		
-		ButtonGroup grpNilm = new ButtonGroup();
-		grpNilm.add(organisms);
-		grpNilm.add(onf);
-		grpNilm.add(other);
-		
+		nilmGroup = new ButtonGroup();
+		nilmGroup.add(organisms);
+		nilmGroup.add(onf);
+		nilmGroup.add(other);		
 		
 		organisms = new JRadioButton(TitleConstants.ORGANISMS);
 		organismsGroup = new ButtonGroup();
