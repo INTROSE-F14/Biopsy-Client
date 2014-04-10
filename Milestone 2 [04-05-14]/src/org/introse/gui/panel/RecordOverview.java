@@ -260,6 +260,7 @@ public class RecordOverview extends JPanel
 			isValid = false;
 		}
 		else specimenValue.setBorder(defaultTextField.getBorder());
+                
 		if(!(physicianValue.getText().length() > 0) || 
 				physicianValue.getText().length() > RecordConstants.PHYSICIAN_LENGTH)
 		{
@@ -267,6 +268,7 @@ public class RecordOverview extends JPanel
 			isValid = false;
 		}
 		else physicianValue.setBorder(defaultTextField.getBorder());
+                
 		if(!(pathologistValue.getText().length() > 0) ||
 				pathologistValue.getText().length() > RecordConstants.PATHOLOGIST_LENGTH)
 		{
@@ -274,10 +276,12 @@ public class RecordOverview extends JPanel
 			isValid = false;
 		}
 		else pathologistValue.setBorder(defaultTextField.getBorder());
+                
                 if(receivedDate.getYear()>completedDate.getYear())
                 {
                         receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                         completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                        System.out.println("Alrighty Then");
                         isValid = false;
                 }
                 else if(receivedDate.getYear() == completedDate.getYear())
@@ -298,28 +302,27 @@ public class RecordOverview extends JPanel
                             }
                             else if (receivedDate.getDay()==completedDate.getDay())
                             {
-                                receivedDate.setBorder(defaultTextField.getBorder());
-                                completedDate.setBorder(defaultTextField.getBorder());
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                System.out.println("EFF");
                                 isValid = true;
                             }
                             else 
                             {    
-                                receivedDate.setBorder(defaultTextField.getBorder());
-                                completedDate.setBorder(defaultTextField.getBorder());
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                System.out.println("THIS");
                             }
                         }
                         else 
                         {
-                            receivedDate.setBorder(defaultTextField.getBorder());
-                            completedDate.setBorder(defaultTextField.getBorder());
+                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                            completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                            System.out.println("SHIET");
                         }
                 }
-                else 
-                {    
-                    receivedDate.setBorder(defaultTextField.getBorder());
-                    completedDate.setBorder(defaultTextField.getBorder());
-                }
-		if(patientForm.returnYear()>receivedDate.getYear() || 
+                
+                else if(patientForm.returnYear()>receivedDate.getYear() || 
                         patientForm.returnYear()>completedDate.getYear())
                 {
                         receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
@@ -349,26 +352,26 @@ public class RecordOverview extends JPanel
                             else if (patientForm.returnDay() == receivedDate.getDay() || 
                                     patientForm.returnDay() == completedDate.getDay())
                             {
-                                receivedDate.setBorder(defaultTextField.getBorder());
-                                completedDate.setBorder(defaultTextField.getBorder());
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                                 isValid = true;
                             }
                             else 
                             {    
-                                receivedDate.setBorder(defaultTextField.getBorder());
-                                completedDate.setBorder(defaultTextField.getBorder());
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                             }
                         }
                         else 
                         {
-                            receivedDate.setBorder(defaultTextField.getBorder());
-                            completedDate.setBorder(defaultTextField.getBorder());
+                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                            completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                         }
                 }
                 else 
                 {    
-                    receivedDate.setBorder(defaultTextField.getBorder());
-                    completedDate.setBorder(defaultTextField.getBorder());
+                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                    completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                 }
                 if(!patientForm.areFieldsValid())
 			isValid = false;
