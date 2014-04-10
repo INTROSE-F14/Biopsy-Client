@@ -231,4 +231,38 @@ public abstract class Constants
 		public static final int DEFAULT = 3;
 		public static final int ONGOING = 4;
 	}
+	
+	public abstract class PrintConstants
+	{
+		public static final String CYTOLOGY_NUMBER_LABEL = "CYTOLOGY NO: ";
+		public static final String HISTOPATHOLOGY_NUMBER_LABEL = "HISTOPATHOLOGY NO: ";
+		public static final String GYNECOLOGY_NUMBER_LABEL = "GYNECOLOGY NO: ";
+		public static final String PATIENT_NAME_LABEL = "NAME: ";
+		public static final String ROOM_LABEL = "ROOM: ";
+		public static final String AGE_LABEL = "AGE: ";
+		public static final String GENDER_LABEL = "SEX: ";
+		public static final String SPECIMEN_LABEL = "SPECIMEN: ";
+		public static final String PHYSICIAN_LABEL = "PHYSICIAN: Dr. ";
+		public static final String DATE_RECEIVED_LABEL = "DATE RECEIVED: ";
+		public static final String DATE_COMPLETED_LABEL = "DATE COMPLETED: ";
+		public static final String HISTOPATHOLOGY_TITLE = "HISPATHOLOGY REPORT";
+		public static final String CYTOLOGY_TITLE = "NON GYNECOLOGICAL CYTOLOGY REPORT";
+		public static final String GYNECOLOGY_TITLE = "GYNECOLOGICAL CYTOLOGY REPORT";
+		public static final String DIAGNOSIS_LABEL_C = "CYTOPATHOLOGIC DIAGNOSIS";
+		public static final String DIAGNOSIS_LABEL_H = "HISTOPATHOLOGIC DIAGNOSIS";
+		public static final String COMMENTS_LABEL = "COMMENTS";
+		public static final String DESCRIPTION_LABEL = "GROSS & MICROSCOPIC DESCRIPTIONS";
+		public static final String SPEC_ADEQ = "SPECIMEN ADEQUACY";
+		public static final String SATIS = "SATISFACTORY FOR EVALUATION";
+		public static final String UNSATIS = "UNSATISFACTORY FOR EVALUATION DUE TO ";
+		public static final String INTER_RES = "INTERPRETATION/RESULT";
+		public static final String NILM = "NEGATIVE FOR INTRAEPITHELIAL LESION OR MALIGNANCY";
+		public static final String ORGANISMS = "ORGANISMS";
+		public static final String ONF = "OTHER NON-NEOPLASTIC FINDINGS";
+		public static final String OTHER = "OTHER";
+		public static final String SQUAMOUS = "SQUAMOUS CELL ABNORMALITIES";
+		public static final String GLANDULAR = "GLANDULAR CELL ABNORMALITIES";
+		public static final String OMN = "OTHER MALIGNANT NEOPLASMS";
+	}
+	
 }

@@ -54,6 +54,17 @@ public class CustomCalendar
 		this.year = year;
 	}
 	
+	public int getAge(){
+		int age = getCurrentYear() - getYear();  
+		if (getCurrentMonth() < getMonth()) {
+		  age--;  
+		} else if (getCurrentMonth() == getMonth()
+		    && getCurrentMonth() < getMonth()) {
+		  age--;  
+		}
+		return age;
+	}
+	
 	@Override
 	public String toString()
 	{
