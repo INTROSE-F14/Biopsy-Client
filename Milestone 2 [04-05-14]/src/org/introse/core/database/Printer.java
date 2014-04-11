@@ -161,7 +161,17 @@ public class Printer implements Printable{
 			String age = ((CustomCalendar)((Patient)this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.BIRTHDAY)).getAge() + "";
 			
 			String gender = ((String)((Patient)this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.GENDER));
-			String specimen = (String)this.record.getAttribute(Constants.RecordTable.SPECIMEN);
+			
+			String specimen;
+			
+			switch((char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
+			case 'G':	specimen = (String)this.record.getAttribute(Constants.RecordTable.SPEC_TYPE);
+						break;
+			default: specimen = (String)this.record.getAttribute(Constants.RecordTable.SPECIMEN);
+			
+			}
+			
+			
 			String physician = (String)this.record.getAttribute(Constants.RecordTable.PHYSICIAN);
 			String dateReceived = this.record.getAttribute(Constants.RecordTable.DATE_RECEIVED).toString();;
 			String dateCompleted = this.record.getAttribute(Constants.RecordTable.DATE_COMPLETED).toString();
