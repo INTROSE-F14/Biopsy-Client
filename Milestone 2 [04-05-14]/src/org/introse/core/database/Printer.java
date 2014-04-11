@@ -349,17 +349,17 @@ public class Printer implements Printable{
 				}
 				else if(category == CategoriesConstants.SC){
 					cat = 1;
-					diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.SQUAMOUS;
+					diagnosis = diagnosis + "      [X] " + Constants.PrintConstants.SQUAMOUS;
 					diagnosis = diagnosis + "\n              -" + value;
 				}
 				else if(category == CategoriesConstants.GC){
 					cat = 2;
-					diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.GLANDULAR;
+					diagnosis = diagnosis + "      [X] " + Constants.PrintConstants.GLANDULAR;
 					diagnosis = diagnosis + "\n              -" + value;
 				}
 				else if(category == CategoriesConstants.OMN){
 					cat = 3;
-					diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.OMN;
+					diagnosis = diagnosis + "      [X] " + Constants.PrintConstants.OMN;
 					diagnosis = diagnosis + "\n              -" + value;
 				}
 			break;
