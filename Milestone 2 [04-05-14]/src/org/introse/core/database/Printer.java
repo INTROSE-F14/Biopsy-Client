@@ -326,32 +326,32 @@ public class Printer implements Printable{
 					diagnosis.concat("[X] " + Constants.PrintConstants.NILM);
 					cat = 0;
 					if(category == Constants.CategoriesConstants.ORGANISMS){
-						diagnosis.concat("\n      [X] " + Constants.PrintConstants.ORGANISMS);
-						diagnosis.concat("\n              -" + value);
+						diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.ORGANISMS;
+						diagnosis = diagnosis + "\n              -" + value;
 					}
 					else if (category == Constants.CategoriesConstants.ONF){
-						diagnosis.concat("\n      [X] " + Constants.PrintConstants.ONF);
-						diagnosis.concat("\n              -" + value);
+						diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.ONF;
+						diagnosis = diagnosis + "\n              -" + value;
 					}
 					else{
-						diagnosis.concat("\n      [X] " + Constants.PrintConstants.OTHER);
-						diagnosis.concat("\n              -" + value);
+						diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.OTHER;
+						diagnosis = diagnosis + "\n              -" + value;
 					}
 				}
 				else if(category == CategoriesConstants.SC){
 					cat = 1;
-					diagnosis.concat("\n      [X] " + Constants.PrintConstants.SQUAMOUS);
-					diagnosis.concat("\n              -" + value);
+					diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.SQUAMOUS;
+					diagnosis = diagnosis + "\n              -" + value;
 				}
 				else if(category == CategoriesConstants.GC){
 					cat = 2;
-					diagnosis.concat("\n      [X] " + Constants.PrintConstants.GLANDULAR);
-					diagnosis.concat("\n              -" + value);
+					diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.GLANDULAR;
+					diagnosis = diagnosis + "\n              -" + value;
 				}
 				else if(category == CategoriesConstants.OMN){
 					cat = 3;
-					diagnosis.concat("\n      [X] " + Constants.PrintConstants.OMN);
-					diagnosis.concat("\n              -" + value);
+					diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.OMN;
+					diagnosis = diagnosis + "\n              -" + value;
 				}
 			break;
 			case Constants.CategoriesConstants.SA: 
