@@ -58,7 +58,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				record.putAttribute(RecordTable.RECORD_NUMBER, 
 						result.getInt(RecordTable.RECORD_NUMBER));
 				record.putAttribute(Constants.RecordTable.RECORD_TYPE,
-						result.getString(Constants.RecordTable.RECORD_TYPE));
+						recordType);
 				record.putAttribute(Constants.RecordTable.PATHOLOGIST, 
 						result.getString(Constants.RecordTable.PATHOLOGIST));
 				record.putAttribute(Constants.RecordTable.PHYSICIAN,
@@ -158,7 +158,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				record.putAttribute(RecordTable.RECORD_NUMBER, 
 						result.getInt(RecordTable.RECORD_NUMBER));
 				record.putAttribute(Constants.RecordTable.RECORD_TYPE,
-						result.getString(Constants.RecordTable.RECORD_TYPE));
+						recordType);
 				record.putAttribute(Constants.RecordTable.PATHOLOGIST, 
 						result.getString(Constants.RecordTable.PATHOLOGIST));
 				record.putAttribute(Constants.RecordTable.PHYSICIAN,
@@ -419,8 +419,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			result = stmt.executeQuery(sql);
 			while(result.next())
 			{
-				char type = result.getString(Constants.RecordTable.RECORD_TYPE).charAt(0);
-				switch(type)
+				char _recordType = result.getString(Constants.RecordTable.RECORD_TYPE).charAt(0);
+				switch(_recordType)
 				{
 					case Constants.RecordConstants.HISTOPATHOLOGY_RECORD:
 						record = new HistopathologyRecord();
@@ -439,7 +439,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				record.putAttribute(RecordTable.RECORD_NUMBER, 
 						result.getInt(RecordTable.RECORD_NUMBER));
 				record.putAttribute(Constants.RecordTable.RECORD_TYPE,
-						result.getString(Constants.RecordTable.RECORD_TYPE));
+						_recordType);
 				record.putAttribute(Constants.RecordTable.PATHOLOGIST, 
 						result.getString(Constants.RecordTable.PATHOLOGIST));
 				record.putAttribute(Constants.RecordTable.PHYSICIAN,

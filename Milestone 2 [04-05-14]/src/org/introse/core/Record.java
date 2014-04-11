@@ -145,7 +145,7 @@ public class Record  extends ListItem implements Printable
 			{
 				label1 = "0" + label1;
 			}
-			label1 = (String)getAttribute(RecordTable.RECORD_TYPE) + 
+			label1 = ""+(char)getAttribute(RecordTable.RECORD_TYPE) + 
 				getAttribute(RecordTable.RECORD_YEAR) + "-" + label1;
 		}
 		

@@ -440,7 +440,6 @@ public class ProjectDriver
 	
 	public void showDetails(Object object)
 	{
-		JPanel panel = null;
 		if(object instanceof Record)
 		{
 			Record record = (Record)object;
@@ -463,8 +462,8 @@ public class ProjectDriver
 			
 			recordForm.setFields(record, patient);
 			
-			panel = new RecordPanel((JPanel)recordForm, Constants.ActionConstants.VIEW);
-			((DetailPanel)panel).addListener(listener);
+			detailPanel = new RecordPanel((JPanel)recordForm, Constants.ActionConstants.VIEW);
+			detailPanel.addListener(listener);
 		}
 		
 		else if(object instanceof Patient)
@@ -472,11 +471,10 @@ public class ProjectDriver
 			Patient patient = (Patient)object;
 			PatientForm form = new PatientForm();
 			form.setFields(patient);
-			panel = new PatientPanel(form, Constants.ActionConstants.VIEW);
-			((DetailPanel)panel).addListener(listener);
+			detailPanel = new PatientPanel(form, Constants.ActionConstants.VIEW);
+			detailPanel.addListener(listener);
 		}
-		this.detailPanel = (DetailPanel)panel;
-		mainMenu.getContentPanel().setDetailsPanel(panel);
+		mainMenu.getContentPanel().setDetailsPanel(detailPanel);
 		mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
 	}
 	
@@ -576,6 +574,8 @@ public class ProjectDriver
 	public void printCurrentForm()
 	{
 		Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
+		List<Diagnosis> diagnosis = diagnosisDao.getDiagnosis(r);
+		r.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
 		printer.startPrint(r);
 	}
 
