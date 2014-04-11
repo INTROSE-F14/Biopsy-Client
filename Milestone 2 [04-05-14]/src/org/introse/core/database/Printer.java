@@ -85,10 +85,6 @@ public class Printer implements Printable{
 		al_lines.add(null);
 	}
 	
-	private void setRecord(Record record){
-		this.record = record;
-	}
-	
 	private void initRecord(FontMetrics metrics, PageFormat pf){
 		int margins = 36;
 		String spaceString = " ";
@@ -97,192 +93,192 @@ public class Printer implements Printable{
 		
 		//constants	
 		String numberLabel;
+		if(this.record != null){
+			switch((char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
+			case 'H': numberLabel = Constants.PrintConstants.HISTOPATHOLOGY_NUMBER_LABEL;
+					break;
+			case 'C': numberLabel = Constants.PrintConstants.CYTOLOGY_NUMBER_LABEL;
+					break;
+			case 'G': numberLabel = Constants.PrintConstants.GYNECOLOGY_NUMBER_LABEL;
+					break;
+			default: numberLabel = "";
+			}
+			
+			String roomLabel = Constants.PrintConstants.ROOM_LABEL;
+			String patientLabel = Constants.PrintConstants.PATIENT_NAME_LABEL;
+			String ageLabel = Constants.PrintConstants.AGE_LABEL;
+			String genderLabel = Constants.PrintConstants.GENDER_LABEL;
+			String specimenLabel = Constants.PrintConstants.SPECIMEN_LABEL;
+			String physicianLabel = Constants.PrintConstants.PHYSICIAN_LABEL;
+			String dateReceivedLabel = Constants.PrintConstants.DATE_RECEIVED_LABEL;
+			String dateCompletedLabel = Constants.PrintConstants.DATE_COMPLETED_LABEL;
+			
+			String title;
+			
+			switch((char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
+			case 'H': title = Constants.PrintConstants.HISTOPATHOLOGY_TITLE;
+					break;
+			case 'C': title = Constants.PrintConstants.CYTOLOGY_TITLE;
+					break;
+			case 'G': title = Constants.PrintConstants.GYNECOLOGY_TITLE;
+					break;
+			default: title = "";
+			}
 		
-		switch((char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
-		case 'H': numberLabel = Constants.PrintConstants.HISTOPATHOLOGY_NUMBER_LABEL;
-				break;
-		case 'C': numberLabel = Constants.PrintConstants.CYTOLOGY_NUMBER_LABEL;
-				break;
-		case 'G': numberLabel = Constants.PrintConstants.GYNECOLOGY_NUMBER_LABEL;
-				break;
-		default: numberLabel = "";
-		}
-		
-		String roomLabel = Constants.PrintConstants.ROOM_LABEL;
-		String patientLabel = Constants.PrintConstants.PATIENT_NAME_LABEL;
-		String ageLabel = Constants.PrintConstants.AGE_LABEL;
-		String genderLabel = Constants.PrintConstants.GENDER_LABEL;
-		String specimenLabel = Constants.PrintConstants.SPECIMEN_LABEL;
-		String physicianLabel = Constants.PrintConstants.PHYSICIAN_LABEL;
-		String dateReceivedLabel = Constants.PrintConstants.DATE_RECEIVED_LABEL;
-		String dateCompletedLabel = Constants.PrintConstants.DATE_COMPLETED_LABEL;
-		
-		String title;
-		
-		switch((char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
-		case 'H': title = Constants.PrintConstants.HISTOPATHOLOGY_TITLE;
-				break;
-		case 'C': title = Constants.PrintConstants.CYTOLOGY_TITLE;
-				break;
-		case 'G': title = Constants.PrintConstants.GYNECOLOGY_TITLE;
-				break;
-		default: title = "";
-		}
+			String commentsLabel = Constants.PrintConstants.COMMENTS_LABEL;;
+			String descriptionLabel = Constants.PrintConstants.DESCRIPTION_LABEL;;
+			
 	
-		String commentsLabel = Constants.PrintConstants.COMMENTS_LABEL;;
-		String descriptionLabel = Constants.PrintConstants.DESCRIPTION_LABEL;;
-		
-
-		//present in all records
-		int recordnumber = (int) this.record.getAttribute(Constants.RecordTable.RECORD_NUMBER);
-		int numZeroes;
-		if(recordnumber > 999)
-			numZeroes = 4;
-		else if(recordnumber > 99)
-			numZeroes = 3;
-		else if(recordnumber > 9)
-			numZeroes = 2;
-		else numZeroes = 1;
-		String refNumber = "" + recordnumber;
-		for(int i = numZeroes; i < 4; i++)
-		{
-			refNumber = "0" + refNumber;
-		}
-		String number = (String) this.record.getAttribute(Constants.RecordTable.RECORD_TYPE) + (String) this.record.getAttribute(Constants.RecordTable.RECORD_YEAR) + "-" + refNumber;
-		
-		String room;
-		if(this.record.getAttribute(Constants.RecordTable.ROOM) == null){
-			room = "N/A";
-		}
-		else{
-			room = (String) this.record.getAttribute(Constants.RecordTable.ROOM);
-		}
-		
-		String patientName = ((String)((Patient) this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.LAST_NAME)).toUpperCase() + ", " + 
-							 (String)((Patient) this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.FIRST_NAME) + " " +
-							 (String)((Patient) this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.MIDDLE_NAME);
-							 
-		String age = ((CustomCalendar)((Patient)this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.BIRTHDAY)).getAge() + "";
-		
-		String gender = ((String)((Patient)this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.GENDER));
-		String specimen = (String)this.record.getAttribute(Constants.RecordTable.SPECIMEN);
-		String physician = (String)this.record.getAttribute(Constants.RecordTable.PHYSICIAN);
-		String dateReceived = this.record.getAttribute(Constants.RecordTable.DATE_RECEIVED).toString();;
-		String dateCompleted = this.record.getAttribute(Constants.RecordTable.DATE_COMPLETED).toString();
-		
-		List<Diagnosis> l_diagnosis = (List)record.getAttribute(RecordTable.DIAGNOSIS);
-		
-		String comments = (String) this.record.getAttribute(Constants.RecordTable.REMARKS);
-		String description = (String) this.record.getAttribute(Constants.RecordTable.GROSS_DESC) + "\n" + (String) this.record.getAttribute(Constants.RecordTable.MICRO_NOTE);				
-		
-		String numberCombo = numberLabel + number;
-		String roomCombo = roomLabel + room;
-		int numberLength = metrics.charsWidth(numberCombo.toCharArray(), 0, numberCombo.toCharArray().length);
-		int roomLength = metrics.charsWidth(roomCombo.toCharArray(), 0, roomCombo.toCharArray().length);
-		int line1Space = width - numberLength - roomLength;
-		int numSpaces1 = line1Space/space;
-		
-		for(int i=0; i<numSpaces1; i++){
-			numberCombo = numberCombo + " ";
-		}
-		al_lines.add(new PrintedLine(numberCombo + roomCombo, 0));
-		
-		String patientCombo = patientLabel + patientName;
-		String ageCombo = ageLabel + age;
-		String genderCombo = genderLabel + gender;
-		int patientLength = metrics.charsWidth(patientCombo.toCharArray(), 0, patientCombo.toCharArray().length);
-		int ageLength = metrics.charsWidth(ageCombo.toCharArray(), 0, ageCombo.toCharArray().length);
-		int genderLength = metrics.charsWidth(genderCombo.toCharArray(), 0, genderCombo.toCharArray().length);
-		int line2Space = (width - patientLength - ageLength - genderLength)/2;
-		int numSpaces2 = line2Space/space;
-		
-		for(int i=0; i<numSpaces2; i++){
-			patientCombo = patientCombo + " ";
-		}
-		patientCombo = patientCombo + ageCombo;
-		for(int i=0; i<numSpaces2; i++){
-			patientCombo = patientCombo + " ";
-		}
-		al_lines.add(new PrintedLine(patientCombo + genderCombo, 0));
-		
-		String specimenCombo = specimenLabel + specimen;
-		String physicianCombo = physicianLabel + physician;
-		int specimenLength = metrics.charsWidth(specimenCombo.toCharArray(), 0, specimenCombo.toCharArray().length);
-		int physicianLength = metrics.charsWidth(physicianCombo.toCharArray(), 0, physicianCombo.toCharArray().length);
-		int line3Space = width - physicianLength - specimenLength;
-		int numSpaces3 = line3Space/space;
-		
-		for(int i=0; i<numSpaces3; i++){
-			specimenCombo = specimenCombo + " ";
-		}
-		al_lines.add(new PrintedLine(specimenCombo + physicianCombo, 0));
-		
-		String dRCombo = dateReceivedLabel + dateReceived;
-		String dCCombo = dateCompletedLabel + dateCompleted;
-		int dRLength = metrics.charsWidth(dRCombo.toCharArray(), 0, dRCombo.toCharArray().length);
-		int dCLength = metrics.charsWidth(dCCombo.toCharArray(), 0, dCCombo.toCharArray().length);
-		int line4Space = width - dRLength - dCLength;
-		int numSpaces4 = line4Space/space;
-		
-		for(int i=0; i<numSpaces4; i++){
-			dRCombo = dRCombo + " ";
-		}
-		al_lines.add(new PrintedLine(dRCombo + dCCombo, 0));
-
-		al_lines.add(null);
-		al_lines.add(new PrintedLine(title, 1));
-		al_lines.add(null);
-		
-		switch((char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
-		case 'H':	al_lines.add(new PrintedLine(Constants.PrintConstants.DIAGNOSIS_LABEL_H,0));
-					al_lines.add(null);
-					break;
-		case 'C':	al_lines.add(new PrintedLine(Constants.PrintConstants.DIAGNOSIS_LABEL_C,0));
-					al_lines.add(null);
-					break;
-		case 'G' :	break;
-		
-		}
-		
-		switch((char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
-		case 'G': this.addGynecologyDiagnosis(l_diagnosis, metrics, pf);
-				break;
-		default: this.addHistoCytoDiagnosis(l_diagnosis, metrics, pf);
-		}
-
-		al_lines.add(null);
-		al_lines.add(new PrintedLine(commentsLabel, 0));
-		al_lines.add(null);
-		
-		String[] a_comments = comments.split("\n");
-		
-		for(int j=0;j<a_comments.length;j++){
-			ArrayList<String> al_comments = new ArrayList<String>();
-			al_comments.add(a_comments[j]);
-			al_comments = parseString(al_comments, metrics, pf);
-			
-			for(int i=0; i<al_comments.size();i++){
-				al_lines.add(new PrintedLine(al_comments.get(i), 0));
+			//present in all records
+			int recordnumber = (int) this.record.getAttribute(Constants.RecordTable.RECORD_NUMBER);
+			int numZeroes;
+			if(recordnumber > 999)
+				numZeroes = 4;
+			else if(recordnumber > 99)
+				numZeroes = 3;
+			else if(recordnumber > 9)
+				numZeroes = 2;
+			else numZeroes = 1;
+			String refNumber = "" + recordnumber;
+			for(int i = numZeroes; i < 4; i++)
+			{
+				refNumber = "0" + refNumber;
 			}
-		}
-		
-		al_lines.add(null);
-		al_lines.add(new PrintedLine(descriptionLabel,0));
-		al_lines.add(null);
-		
-		String[] a_description = description.split("\n");
-		
-		for(int j=0;j<a_description.length;j++){
-			ArrayList<String> al_description = new ArrayList<String>();
-			al_description.add(a_description[j]);
-			al_description = parseString(al_description, metrics, pf);
+			String number = (String) this.record.getAttribute(Constants.RecordTable.RECORD_TYPE) + (String) this.record.getAttribute(Constants.RecordTable.RECORD_YEAR) + "-" + refNumber;
 			
-			for(int i=0; i<al_description.size();i++){
-				al_lines.add(new PrintedLine(al_description.get(i), 0));
+			String room;
+			if(this.record.getAttribute(Constants.RecordTable.ROOM) == null){
+				room = "N/A";
 			}
+			else{
+				room = (String) this.record.getAttribute(Constants.RecordTable.ROOM);
+			}
+			
+			String patientName = ((String)((Patient) this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.LAST_NAME)).toUpperCase() + ", " + 
+								 (String)((Patient) this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.FIRST_NAME) + " " +
+								 (String)((Patient) this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.MIDDLE_NAME);
+								 
+			String age = ((CustomCalendar)((Patient)this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.BIRTHDAY)).getAge() + "";
+			
+			String gender = ((String)((Patient)this.record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.GENDER));
+			String specimen = (String)this.record.getAttribute(Constants.RecordTable.SPECIMEN);
+			String physician = (String)this.record.getAttribute(Constants.RecordTable.PHYSICIAN);
+			String dateReceived = this.record.getAttribute(Constants.RecordTable.DATE_RECEIVED).toString();;
+			String dateCompleted = this.record.getAttribute(Constants.RecordTable.DATE_COMPLETED).toString();
+			
+			List<Diagnosis> l_diagnosis = (List)record.getAttribute(RecordTable.DIAGNOSIS);
+			
+			String comments = (String) this.record.getAttribute(Constants.RecordTable.REMARKS);
+			String description = (String) this.record.getAttribute(Constants.RecordTable.GROSS_DESC) + "\n" + (String) this.record.getAttribute(Constants.RecordTable.MICRO_NOTE);				
+			
+			String numberCombo = numberLabel + number;
+			String roomCombo = roomLabel + room;
+			int numberLength = metrics.charsWidth(numberCombo.toCharArray(), 0, numberCombo.toCharArray().length);
+			int roomLength = metrics.charsWidth(roomCombo.toCharArray(), 0, roomCombo.toCharArray().length);
+			int line1Space = width - numberLength - roomLength;
+			int numSpaces1 = line1Space/space;
+			
+			for(int i=0; i<numSpaces1; i++){
+				numberCombo = numberCombo + " ";
+			}
+			al_lines.add(new PrintedLine(numberCombo + roomCombo, 0));
+			
+			String patientCombo = patientLabel + patientName;
+			String ageCombo = ageLabel + age;
+			String genderCombo = genderLabel + gender;
+			int patientLength = metrics.charsWidth(patientCombo.toCharArray(), 0, patientCombo.toCharArray().length);
+			int ageLength = metrics.charsWidth(ageCombo.toCharArray(), 0, ageCombo.toCharArray().length);
+			int genderLength = metrics.charsWidth(genderCombo.toCharArray(), 0, genderCombo.toCharArray().length);
+			int line2Space = (width - patientLength - ageLength - genderLength)/2;
+			int numSpaces2 = line2Space/space;
+			
+			for(int i=0; i<numSpaces2; i++){
+				patientCombo = patientCombo + " ";
+			}
+			patientCombo = patientCombo + ageCombo;
+			for(int i=0; i<numSpaces2; i++){
+				patientCombo = patientCombo + " ";
+			}
+			al_lines.add(new PrintedLine(patientCombo + genderCombo, 0));
+			
+			String specimenCombo = specimenLabel + specimen;
+			String physicianCombo = physicianLabel + physician;
+			int specimenLength = metrics.charsWidth(specimenCombo.toCharArray(), 0, specimenCombo.toCharArray().length);
+			int physicianLength = metrics.charsWidth(physicianCombo.toCharArray(), 0, physicianCombo.toCharArray().length);
+			int line3Space = width - physicianLength - specimenLength;
+			int numSpaces3 = line3Space/space;
+			
+			for(int i=0; i<numSpaces3; i++){
+				specimenCombo = specimenCombo + " ";
+			}
+			al_lines.add(new PrintedLine(specimenCombo + physicianCombo, 0));
+			
+			String dRCombo = dateReceivedLabel + dateReceived;
+			String dCCombo = dateCompletedLabel + dateCompleted;
+			int dRLength = metrics.charsWidth(dRCombo.toCharArray(), 0, dRCombo.toCharArray().length);
+			int dCLength = metrics.charsWidth(dCCombo.toCharArray(), 0, dCCombo.toCharArray().length);
+			int line4Space = width - dRLength - dCLength;
+			int numSpaces4 = line4Space/space;
+			
+			for(int i=0; i<numSpaces4; i++){
+				dRCombo = dRCombo + " ";
+			}
+			al_lines.add(new PrintedLine(dRCombo + dCCombo, 0));
+	
+			al_lines.add(null);
+			al_lines.add(new PrintedLine(title, 1));
+			al_lines.add(null);
+			
+			switch((char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
+			case 'H':	al_lines.add(new PrintedLine(Constants.PrintConstants.DIAGNOSIS_LABEL_H,0));
+						al_lines.add(null);
+						break;
+			case 'C':	al_lines.add(new PrintedLine(Constants.PrintConstants.DIAGNOSIS_LABEL_C,0));
+						al_lines.add(null);
+						break;
+			case 'G' :	break;
+			
+			}
+			
+			switch((char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
+			case 'G': this.addGynecologyDiagnosis(l_diagnosis, metrics, pf);
+					break;
+			default: this.addHistoCytoDiagnosis(l_diagnosis, metrics, pf);
+			}
+	
+			al_lines.add(null);
+			al_lines.add(new PrintedLine(commentsLabel, 0));
+			al_lines.add(null);
+			
+			String[] a_comments = comments.split("\n");
+			
+			for(int j=0;j<a_comments.length;j++){
+				ArrayList<String> al_comments = new ArrayList<String>();
+				al_comments.add(a_comments[j]);
+				al_comments = parseString(al_comments, metrics, pf);
+				
+				for(int i=0; i<al_comments.size();i++){
+					al_lines.add(new PrintedLine(al_comments.get(i), 0));
+				}
+			}
+			
+			al_lines.add(null);
+			al_lines.add(new PrintedLine(descriptionLabel,0));
+			al_lines.add(null);
+			
+			String[] a_description = description.split("\n");
+			
+			for(int j=0;j<a_description.length;j++){
+				ArrayList<String> al_description = new ArrayList<String>();
+				al_description.add(a_description[j]);
+				al_description = parseString(al_description, metrics, pf);
+				
+				for(int i=0; i<al_description.size();i++){
+					al_lines.add(new PrintedLine(al_description.get(i), 0));
+				}
+			}
+			al_lines.add(null);
 		}
-		al_lines.add(null);
-		
 		
 	}
 	
@@ -440,6 +436,7 @@ public class Printer implements Printable{
 	
 	public void startPrint(Record record){
 		this.al_lines.clear();
+		this.record = record;
 		PrinterJob job = PrinterJob.getPrinterJob();
         job.setPrintable(this, setMargin(job));
 		 boolean ok = job.printDialog();
@@ -460,7 +457,6 @@ public class Printer implements Printable{
 
         if (pageBreaks == null) {
         	this.addHeader();
-			this.setRecord(record);
             this.initRecord(metrics, pf);
             int linesPerPage = (int)(pf.getImageableHeight()/lineHeight);
             int numBreaks = (al_lines.size()-1)/linesPerPage;
