@@ -14,7 +14,6 @@ import org.introse.Constants;
 import org.introse.core.Patient;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Diagnosis;
-import org.introse.core.dao.MysqlDiagnosisDao;
 
 public class Printer implements Printable{
 
@@ -91,7 +90,6 @@ public class Printer implements Printable{
 		String spaceString = " ";
 		int space = metrics.charsWidth(spaceString.toCharArray(), 0, spaceString.toCharArray().length);
 		int width = (int) pf.getImageableWidth() - margins;
-		MysqlDiagnosisDao diagnosisDao = new MysqlDiagnosisDao();
 		
 		//constants	
 		String numberLabel;
@@ -178,7 +176,7 @@ public class Printer implements Printable{
 			String dateReceived = this.record.getAttribute(Constants.RecordTable.DATE_RECEIVED).toString();;
 			String dateCompleted = this.record.getAttribute(Constants.RecordTable.DATE_COMPLETED).toString();
 			
-			List<Diagnosis> l_diagnosis = diagnosisDao.getDiagnosis(record);
+			List<Diagnosis> l_diagnosis = (List)record.getAttribute(RecordTable.DIAGNOSIS);
 			
 			String comments = (String) this.record.getAttribute(Constants.RecordTable.REMARKS);
 			String description = (String) this.record.getAttribute(Constants.RecordTable.GROSS_DESC) + "\n" + (String) this.record.getAttribute(Constants.RecordTable.MICRO_NOTE);				
