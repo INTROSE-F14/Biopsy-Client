@@ -577,7 +577,11 @@ public class ProjectDriver
 			}
 			detailPanel.setMode(Constants.ActionConstants.VIEW);
 		}
-		else removeDetailsPanel();
+		else 
+		{
+			removeDetailsPanel();
+			changeView(getPreviousView());
+		}
 	}
 	
 	public void printCurrentForm()
