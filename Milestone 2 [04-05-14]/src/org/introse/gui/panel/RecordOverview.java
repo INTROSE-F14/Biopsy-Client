@@ -294,11 +294,11 @@ public class RecordOverview extends JPanel
                         completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                         isValid = false;
                 }
-                else if(receivedDate.getYear() <= completedDate.getYear() && 
-                        patientForm.returnYear() <= receivedDate.getYear() && 
-                        patientForm.returnYear() <= completedDate.getYear())
+                else if(receivedDate.getYear() == completedDate.getYear() && 
+                        patientForm.returnYear() == receivedDate.getYear() && 
+                        patientForm.returnYear() == completedDate.getYear())
                 {
-                        if(receivedDate.getMonth()>completedDate.getMonth() || 
+                        if(receivedDate.getMonth() > completedDate.getMonth() || 
                                 patientForm.returnMonth() > receivedDate.getMonth() || 
                                 patientForm.returnMonth() > completedDate.getMonth())
                         {
@@ -306,11 +306,11 @@ public class RecordOverview extends JPanel
                             completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                             isValid = false;
                         }
-                        else if (receivedDate.getMonth()<=completedDate.getMonth() && 
+                        else if (receivedDate.getMonth() == completedDate.getMonth() && 
                                 patientForm.returnMonth() == receivedDate.getMonth() && 
                                 patientForm.returnMonth() == completedDate.getMonth())
                         {
-                            if (receivedDate.getDay()>completedDate.getDay() ||
+                            if (receivedDate.getDay() > completedDate.getDay() ||
                                     patientForm.returnDay() > receivedDate.getDay() ||
                                     patientForm.returnDay() > completedDate.getDay())
                             {
@@ -318,9 +318,9 @@ public class RecordOverview extends JPanel
                                 completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                                 isValid = false;
                             }
-                            else if (receivedDate.getDay()<=completedDate.getDay() && 
-                                    patientForm.returnDay() <= receivedDate.getDay() && 
-                                    patientForm.returnDay() <= completedDate.getDay())
+                            else if (receivedDate.getDay() == completedDate.getDay() && 
+                                    patientForm.returnDay() == receivedDate.getDay() && 
+                                    patientForm.returnDay() == completedDate.getDay())
                             {
                                 receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                                 completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
@@ -330,14 +330,14 @@ public class RecordOverview extends JPanel
                             {    
                                 receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                                 completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                                isValid = false;
+                                isValid = true;
                             }
                         }
                         else 
                         {
                             receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                             completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                            isValid = false;
+                            isValid = true;
                         }
                 }
         
@@ -389,9 +389,9 @@ public class RecordOverview extends JPanel
                 }*/
                 else 
                 {    
-                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                    completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                    isValid = false;
+                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                    completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                    isValid = true;
                 }
 		if(!patientForm.areFieldsValid())
 			isValid = false;
