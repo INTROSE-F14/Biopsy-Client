@@ -309,7 +309,7 @@ public class Printer implements Printable{
 	
 	private void addGynecologyDiagnosis(List<Diagnosis> l_diagnosis, FontMetrics metrics, PageFormat pf){
 		String diagnosis = "";
-		int cat = 0;
+		int cat = -1;
 		for(int i=0; i<l_diagnosis.size();i++){
 			int category = l_diagnosis.get(i).getCategory();
 			String value = l_diagnosis.get(i).getValue();
@@ -374,6 +374,14 @@ public class Printer implements Printable{
 		al_lines.add(null);
 		String[] a_diagnosis;
 		switch(cat){
+		case -1: 	al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.NILM,0));
+					al_lines.add(null);
+					al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.SQUAMOUS,0));
+					al_lines.add(null);
+					al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.GLANDULAR,0));
+					al_lines.add(null);
+					al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.OMN,0));
+					break;
 		case 0:  a_diagnosis = diagnosis.split("\n"); 
 				for(int i =0; i<a_diagnosis.length; i++){
 					ArrayList<String> al_diagnosis = new ArrayList<String>();
