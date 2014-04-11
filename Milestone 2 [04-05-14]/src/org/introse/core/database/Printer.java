@@ -51,8 +51,9 @@ public class Printer implements Printable{
 	}
 	
 	private int getIndexOfFittingString (String[] a_string, FontMetrics metrics, PageFormat pf){
-
-		int width = (int) pf.getImageableWidth();
+		
+		int margins = 36;
+		int width = (int) pf.getImageableWidth() - margins;
 		int i = 0;
 		String temp = a_string[i];
 		while(metrics.charsWidth(temp.toCharArray(), 0, temp.toCharArray().length) <= width){
