@@ -285,102 +285,114 @@ public class RecordOverview extends JPanel
 			isValid = false;
 		}
 		else pathologistValue.setBorder(defaultTextField.getBorder());
-		if(receivedDate.getYear()>completedDate.getYear())
-        {
-                receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                System.out.println("Alrighty Then");
-                isValid = false;
-        }
-        else if(receivedDate.getYear() == completedDate.getYear())
-        {
-                if(receivedDate.getMonth()>completedDate.getMonth())
+		
+                if(receivedDate.getYear()>completedDate.getYear() || 
+                        patientForm.returnYear()>receivedDate.getYear() || 
+                        patientForm.returnYear()>completedDate.getYear())
                 {
-                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                    completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                    isValid = false;
-                }
-                else if (receivedDate.getMonth()==completedDate.getMonth())
-                {
-                    if (receivedDate.getDay()>completedDate.getDay())
-                    {
                         receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                         completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                         isValid = false;
-                    }
-                    else if (receivedDate.getDay()==completedDate.getDay())
-                    {
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        System.out.println("EFF");
-                        isValid = true;
-                    }
-                    else 
-                    {    
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        System.out.println("THIS");
-                    }
                 }
-                else 
+                else if(receivedDate.getYear() <= completedDate.getYear() && 
+                        patientForm.returnYear() <= receivedDate.getYear() && 
+                        patientForm.returnYear() <= completedDate.getYear())
                 {
-                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                    completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                    System.out.println("SHIET");
+                        if(receivedDate.getMonth()>completedDate.getMonth() || 
+                                patientForm.returnMonth() > receivedDate.getMonth() || 
+                                patientForm.returnMonth() > completedDate.getMonth())
+                        {
+                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                            completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                            isValid = false;
+                        }
+                        else if (receivedDate.getMonth()<=completedDate.getMonth() && 
+                                patientForm.returnMonth() == receivedDate.getMonth() && 
+                                patientForm.returnMonth() == completedDate.getMonth())
+                        {
+                            if (receivedDate.getDay()>completedDate.getDay() ||
+                                    patientForm.returnDay() > receivedDate.getDay() ||
+                                    patientForm.returnDay() > completedDate.getDay())
+                            {
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                                isValid = false;
+                            }
+                            else if (receivedDate.getDay()<=completedDate.getDay() && 
+                                    patientForm.returnDay() <= receivedDate.getDay() && 
+                                    patientForm.returnDay() <= completedDate.getDay())
+                            {
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                isValid = true;
+                            }
+                            else 
+                            {    
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                isValid = false;
+                            }
+                        }
+                        else 
+                        {
+                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                            completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                            isValid = false;
+                        }
                 }
-        }
         
-        else if(patientForm.returnYear()>receivedDate.getYear() || 
-                patientForm.returnYear()>completedDate.getYear())
-        {
-                receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                isValid = false;
-        }
-        else if(patientForm.returnYear() == receivedDate.getYear() || 
-                patientForm.returnYear() == completedDate.getYear())
-        {
-                if(patientForm.returnMonth() > receivedDate.getMonth() || 
-                        patientForm.returnMonth() > completedDate.getMonth())
+                /*else if(patientForm.returnYear()>receivedDate.getYear() || 
+                        patientForm.returnYear()>completedDate.getYear())
                 {
+                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                        completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                        isValid = false;
+                }
+                else if(patientForm.returnYear() == receivedDate.getYear() || 
+                        patientForm.returnYear() == completedDate.getYear())
+                {
+                        if(patientForm.returnMonth() > receivedDate.getMonth() || 
+                                patientForm.returnMonth() > completedDate.getMonth())
+                        {
+                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                            completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                            isValid = false;
+                        }
+                        else if (patientForm.returnMonth() == receivedDate.getMonth() || 
+                                patientForm.returnMonth() == completedDate.getMonth())
+                        {
+                            if (patientForm.returnDay() > receivedDate.getDay() ||
+                                    patientForm.returnDay() > completedDate.getDay())
+                            {
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                                isValid = false;
+                            }
+                            else if (patientForm.returnDay() == receivedDate.getDay() || 
+                                    patientForm.returnDay() == completedDate.getDay())
+                            {
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                isValid = true;
+                            }
+                            else 
+                            {    
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                            }
+                        }
+                        else 
+                        {
+                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                            completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                        }
+                }*/
+                else 
+                {    
                     receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                     completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                     isValid = false;
                 }
-                else if (patientForm.returnMonth() == receivedDate.getMonth() || 
-                        patientForm.returnMonth() == completedDate.getMonth())
-                {
-                    if (patientForm.returnDay() > receivedDate.getDay() ||
-                            patientForm.returnDay() > completedDate.getDay())
-                    {
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                        isValid = false;
-                    }
-                    else if (patientForm.returnDay() == receivedDate.getDay() || 
-                            patientForm.returnDay() == completedDate.getDay())
-                    {
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        isValid = true;
-                    }
-                    else 
-                    {    
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                    }
-                }
-                else 
-                {
-                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                    completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                }
-        }
-        else 
-        {    
-            receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-            completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-        }
 		if(!patientForm.areFieldsValid())
 			isValid = false;
 		return isValid;
