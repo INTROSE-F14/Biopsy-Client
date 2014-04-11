@@ -737,31 +737,15 @@ public class ProjectDriver
 	{
 		ExportPanel exportPanel = mainMenu.getContentPanel().getToolsPanel().getExportPanel();
 		FileNameExtensionFilter exportFilter = new FileNameExtensionFilter("CSV file", "csv");
-		JFileChooser patientchooser = new JFileChooser();
-		patientchooser.setSelectedFile(FileHelper.createPatientExportFile());
-		patientchooser.setFileFilter(exportFilter);
-		int returnVal = patientchooser.showDialog(mainMenu.getContentPanel(), "Export patient");
+		JFileChooser exportFileChooser = new JFileChooser();
+		exportFileChooser.setSelectedFile(FileHelper.createExportFile());
+		exportFileChooser.setFileFilter(exportFilter);
+		int returnVal = exportFileChooser.showDialog(mainMenu.getContentPanel(), "Export patient");
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			exportPanel.setExportPatientPath(patientchooser.getSelectedFile().getAbsolutePath());
-			JFileChooser recordchooser = new JFileChooser();
-			recordchooser.setSelectedFile(FileHelper.createRecordExportFile());
-			recordchooser.setFileFilter(exportFilter);
-			returnVal = recordchooser.showDialog(mainMenu.getContentPanel(), "Export record");
-			if(returnVal == JFileChooser.APPROVE_OPTION)
-			{
-				exportPanel.setExportRecordPath(recordchooser.getSelectedFile().getAbsolutePath());
-				JFileChooser diagnosischooser = new JFileChooser();
-				diagnosischooser.setSelectedFile(FileHelper.createDiagnosisExportFile());
-				diagnosischooser.setFileFilter(exportFilter);
-				returnVal = diagnosischooser.showDialog(mainMenu.getContentPanel(), "Export diagnosis");
-				if(returnVal == JFileChooser.APPROVE_OPTION)
-				{
-					exportPanel.setExportDiagnosisPath(diagnosischooser.getSelectedFile().getAbsolutePath());
-					exportPanel.setStatus(StatusConstants.PREPARING);
-					export();
-				}
-			}
+			exportPanel.setExportPath(exportFileChooser.getSelectedFile().getAbsolutePath());
+			exportPanel.setStatus(StatusConstants.PREPARING);
+			export();
 		}
 	}
 	
@@ -796,11 +780,8 @@ public class ProjectDriver
 	public void export()
 	{
 		final ExportPanel exportPanel = mainMenu.getContentPanel().getToolsPanel().getExportPanel();
-		String patientPath = exportPanel.getExportPatientPath();
-		String recordPath = exportPanel.getExportRecordPath();
-		String diagnosisPath = exportPanel.getExportDiagnosisPath();
-		final ExportWorker exportWorker = new ExportWorker(new File(patientPath), new File(recordPath),
-				new File(diagnosisPath), exportPanel);
+		String exportPath = exportPanel.getExportPath();
+		final ExportWorker exportWorker = new ExportWorker(new File(exportPath), exportPanel);
 		exportWorker.addPropertyChangeListener(new PropertyChangeListener(){
 
 			@Override

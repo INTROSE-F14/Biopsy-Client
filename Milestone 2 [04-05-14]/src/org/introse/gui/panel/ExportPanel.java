@@ -20,18 +20,16 @@ import org.introse.Constants.StatusConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.core.Preferences;
 import org.introse.gui.window.LoginWindow;
-import org.introse.gui.window.MainMenu;
 
 public class ExportPanel extends JPanel {
 
-	private JLabel lblExport, lblDiagnosisDirectory, lblRecordDirectory, lblPatientDirectory, 
-	lblStatus, exportDescription1, exportDiagnosisDirectory, exportRecordDirectory, 
-	exportPatientDirectory, exportStatus;
+	private JLabel lblExport, lblDirectory,
+	lblStatus, exportDescription1, exportDirectory, exportStatus;
 	private JButton btnExport, btnBack;
 	
 	private JPanel actionPanel, progressPanel;
 	private JProgressBar progressBar;
-	private JLabel mainMessage, subMessage, lblRecords, recordCount, lblPatient, patientCount;
+	private JLabel mainMessage, subMessage, lblRecords, recordCount;
 	private ImageIcon successIcon, failIcon;
 	
 	public ExportPanel()
@@ -61,39 +59,23 @@ public class ExportPanel extends JPanel {
 		
 		progressPanel = new JPanel(new GridBagLayout());
 		progressPanel.setBackground(Color.white);
-		lblDiagnosisDirectory = new JLabel("Diagnosis Export file");
-		lblRecordDirectory = new JLabel("Records export file");
-		lblPatientDirectory = new JLabel("Patient export file");
+		lblDirectory = new JLabel("Export file");
 		lblStatus = new JLabel("Status");
-		exportDiagnosisDirectory = new JLabel();
-		exportPatientDirectory = new JLabel();
-		exportRecordDirectory = new JLabel();
+		exportDirectory = new JLabel();
 		exportStatus = new JLabel();
 		successIcon = new ImageIcon(getClass().getResource("/res/icons/success.png"));
 		failIcon = new ImageIcon(getClass().getResource("/res/icons/fail.png"));
-		lblDiagnosisDirectory.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
-		lblPatientDirectory.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
-		lblRecordDirectory.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
-		lblStatus.setFont(lblDiagnosisDirectory.getFont());
-		exportDiagnosisDirectory.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
-		exportPatientDirectory.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
-		exportRecordDirectory.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
-		exportStatus.setFont(exportDiagnosisDirectory.getFont());
+		lblDirectory.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
+		lblStatus.setFont(lblDirectory.getFont());
+		exportDirectory.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
+		exportStatus.setFont(exportDirectory.getFont());
 		
-		exportDiagnosisDirectory.setOpaque(true);
-		exportPatientDirectory.setOpaque(true);
-		exportRecordDirectory.setOpaque(true);
-		exportDiagnosisDirectory.setBackground(Color.white);
-		exportRecordDirectory.setBackground(Color.white);
-		exportPatientDirectory.setBackground(Color.white);
+		exportDirectory.setOpaque(true);
+		exportDirectory.setBackground(Color.white);
 		exportStatus.setOpaque(true);
 		exportStatus.setBackground(Color.white);
-		lblDiagnosisDirectory.setOpaque(true);
-		lblRecordDirectory.setOpaque(true);
-		lblPatientDirectory.setOpaque(true);
-		lblDiagnosisDirectory.setBackground(Color.white);
-		lblRecordDirectory.setBackground(Color.white);
-		lblPatientDirectory.setBackground(Color.white);
+		lblDirectory.setOpaque(true);
+		lblDirectory.setBackground(Color.white);
 		lblStatus.setOpaque(true);
 		lblStatus.setBackground(Color.white);
 		
@@ -103,8 +85,6 @@ public class ExportPanel extends JPanel {
 		mainMessage = new JLabel();
 		subMessage = new JLabel();
 		recordCount = new JLabel();
-		patientCount= new JLabel();
-		lblPatient = new JLabel("Patient(s)");
 		lblRecords = new JLabel("Record(s)");
 		progressBar.setIndeterminate(true);
 		mainMessage.setHorizontalTextPosition(JLabel.LEADING);
@@ -112,9 +92,7 @@ public class ExportPanel extends JPanel {
 		
 		mainMessage.setFont(LoginWindow.PRIMARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		subMessage.setFont(mainMessage.getFont().deriveFont(StyleConstants.MENU));
-		patientCount.setFont(mainMessage.getFont());
 		recordCount.setFont(mainMessage.getFont());
-		lblPatient.setFont(mainMessage.getFont());
 		lblRecords.setFont(mainMessage.getFont());
 		
 		JPanel emptyPanel = new JPanel();
@@ -158,29 +136,11 @@ public class ExportPanel extends JPanel {
 		c.gridy = y++;
 		c.gridx = 0;
 		c.insets = new Insets(0,0,5,10);
-		progressPanel.add(lblPatientDirectory, c);
+		progressPanel.add(lblDirectory, c);
 		c.weightx = 1.0;
 		c.gridx = 1;
 		c.insets = new Insets(0,0,5,0);
-		progressPanel.add(exportPatientDirectory, c);
-		c.gridwidth = 1;
-		c.gridy = y++;
-		c.gridx = 0;
-		c.insets = new Insets(0,0,5,10);
-		progressPanel.add(lblRecordDirectory, c);
-		c.weightx = 1.0;
-		c.gridx = 1;
-		c.insets = new Insets(0,0,5,0);
-		progressPanel.add(exportRecordDirectory, c);
-		c.gridwidth = 1;
-		c.gridy = y++;
-		c.gridx = 0;
-		c.insets = new Insets(0,0,5,10);
-		progressPanel.add(lblDiagnosisDirectory, c);
-		c.weightx = 1.0;
-		c.gridx = 1;
-		c.insets = new Insets(0,0,5,0);
-		progressPanel.add(exportDiagnosisDirectory, c);
+		progressPanel.add(exportDirectory, c);
 		c.weightx = 0.0;
 		c.gridy = y++;
 		c.gridx = 0;
@@ -212,17 +172,7 @@ public class ExportPanel extends JPanel {
 		c.gridx = 1;
 		c.insets = new Insets(0,0,5,0);
 		progressPanel.add(recordCount, c);
-		c.gridx = 0;
-		c.weightx = 0.0;
-		c.gridy = y;
-		c.insets = new Insets(0,0,5,10);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		progressPanel.add(lblPatient, c);
-		c.gridy = y++;
-		c.weightx = 1.0;
-		c.gridx = 1;
-		c.insets = new Insets(0,0,5,0);
-		progressPanel.add(patientCount, c);
+		
 	}
 	
 	public void addListener(ActionListener listener)
@@ -239,43 +189,14 @@ public class ExportPanel extends JPanel {
 		});
 	}
 	
-	/*public void setExportHealthDataPath(String path)
+	public void setExportPath(String path)
 	{
-		exportHealthDataDirectory.setText(path);
-	}*/
-	public void setExportDiagnosisPath(String path)
-	{
-		exportDiagnosisDirectory.setText(path);
+		exportDirectory.setText(path);
 	}
 	
-	public void setExportRecordPath(String path)
+	public String getExportPath()
 	{
-		exportRecordDirectory.setText(path);
-	}
-	
-	public void setExportPatientPath(String path)
-	{
-		exportPatientDirectory.setText(path);
-	}
-	
-	/*public String getExportHealthDataPath()
-	{
-		return exportHealthDataDirectory.getText();
-	}*/
-	
-	public String getExportDiagnosisPath()
-	{
-		return exportDiagnosisDirectory.getText();
-	}
-	
-	public String getExportRecordPath()
-	{
-		return exportRecordDirectory.getText();
-	}
-	
-	public String getExportPatientPath()
-	{
-		return exportPatientDirectory.getText();
+		return exportDirectory.getText();
 	}
 	
 	public JProgressBar getProgressBar()
@@ -296,11 +217,6 @@ public class ExportPanel extends JPanel {
 	public void setRecordCount(int count)
 	{
 		recordCount.setText(""+count);
-	}
-	
-	public void setPatientCount(int count)
-	{
-		patientCount.setText(""+count);
 	}
 	
 	public void setStatus(int status)
@@ -340,9 +256,7 @@ public class ExportPanel extends JPanel {
 										btnBack.setEnabled(false);
 			break;
 		case StatusConstants.DEFAULT: exportStatus.setText("");
-									  exportDiagnosisDirectory.setText("");
-									  exportRecordDirectory.setText("");
-									  exportPatientDirectory.setText("");
+									  exportDirectory.setText("");
 									  mainMessage.setText("");
 									  mainMessage.setIcon(null);
 									  subMessage.setText("");

@@ -2,6 +2,7 @@ package org.introse.core.workers;
 
 import java.io.File;
 import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.SwingWorker;
@@ -9,42 +10,22 @@ import javax.swing.SwingWorker;
 import org.introse.Constants;
 import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordTable;
-import org.introse.core.Diagnosis;
 import org.introse.core.HealthData;
-import org.introse.core.Patient;
-import org.introse.core.Record;
-import org.introse.core.dao.DiagnosisDao;
-import org.introse.core.dao.MysqlDiagnosisDao;
 import org.introse.core.dao.MysqlHealthDataDao;
-import org.introse.core.dao.MysqlPatientDao;
-import org.introse.core.dao.MysqlRecordDao;
-import org.introse.core.dao.PatientDao;
-import org.introse.core.dao.RecordDao;
 import org.introse.gui.panel.ExportPanel;
 
 public class ExportWorker extends SwingWorker<Void, String> 
 {
 	private MysqlHealthDataDao healthDataDao;
-	private DiagnosisDao diagnosisDao;
-	private RecordDao recordDao;
-	private PatientDao patientDao;
-	private File healthDataFile;
-	private File patientFile;
-	private File recordFile;
-	private File diagnosisFile;
+	private File exportFile;
 	private ExportPanel exportPanel;
-	private int patientCount, recordCount;
+	private int recordCount;
 	
-	public ExportWorker(File patientFile, File recordFile, File diagnosisFile, ExportPanel exportPanel)
+	public ExportWorker(File exportFile, ExportPanel exportPanel)
 	{
 		//this.healthDataFile = healthDataFile;
-		this.patientFile = patientFile;
-		this.recordFile = recordFile;
-		this.diagnosisFile = diagnosisFile;
+		this.exportFile = exportFile;
 		this.healthDataDao = new MysqlHealthDataDao();
-		this.diagnosisDao = new MysqlDiagnosisDao();
-		this.patientDao = new MysqlPatientDao();
-		this.recordDao = new MysqlRecordDao();
 		this.exportPanel = exportPanel;
 	}
 	
@@ -52,14 +33,7 @@ public class ExportWorker extends SwingWorker<Void, String>
 	protected Void doInBackground() throws Exception 
 	{
 		setProgress(0);
-		publish("Step 1/3:Exporting patients");
-		patExport();
-		setProgress(0);
-		publish("Step 2/3:Exporting records");
-		recExport();
-		setProgress(0);
-		publish("Step 3/3:Exporting diagnosis");
-		diagExport();
+		publish("Exporting data:Please wait");
 		healthDataExport();
 		setProgress(100);
 		return null;
@@ -69,18 +43,21 @@ public class ExportWorker extends SwingWorker<Void, String>
 	{
 		List<HealthData> hdList = healthDataDao.getData();
 		PrintWriter writer = null;
+		int total = hdList.size();
+		int completed = 0;
 		try
 		{
-			writer = new PrintWriter("healthData.csv");
+			writer = new PrintWriter(exportFile);
 			writer.println("Patient ID,Last Name,First Name,Middle Name,Birthdate,Gender,Record ID,Pathologist,Physician,"
 					+ "Specimen,Remarks,Room,Gross Description,Microscopic Notes,Date Received,Date Completed,Category ID,Diagnosis");
-			for(int i = 0; i < hdList.size(); i++)
+			Iterator<HealthData> i = hdList.iterator();
+			while(i.hasNext())
 			{
 				String remarks = "";
 				String grossDesc = "";
 				String microNote = "";
 				String room = "";
-				HealthData tempHealthData = hdList.get(i);
+				HealthData tempHealthData = i.next();
 				
 				String expStr = tempHealthData.getAttribute(PatientTable.PATIENT_ID.toString()) + "," +
 						tempHealthData.getAttribute(PatientTable.LAST_NAME.toString()) + "," +
@@ -111,139 +88,9 @@ public class ExportWorker extends SwingWorker<Void, String>
 						parseStr((String)tempHealthData.getAttribute(Constants.DiagnosisTable.VALUE));
 				writer.println(expStr);
 				System.out.println(expStr);
-				patientCount++;
-			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			throw new Exception();
-		}
-		finally
-		{
-			if(writer != null)
-				writer.close();
-		}
-	}
-	
-	private void patExport() throws Exception
-	{
-		List<Patient> patList = patientDao.getAll();
-		patientCount = 0;
-		int patientSize = patList.size();
-		setProgress(0);
-		PrintWriter writer = null;
-		try
-		{
-			writer = new PrintWriter(patientFile);
-			writer.println("Patient ID, Last Name, First Name, Middle Name, Birthdate, Gender");
-			for(int i = 0; i < patList.size(); i++)
-			{
-				Patient tempPat = patList.get(i);
-				String expStr = tempPat.getAttribute(PatientTable.PATIENT_ID.toString()) + "," +
-						tempPat.getAttribute(PatientTable.LAST_NAME.toString()) + "," +
-						tempPat.getAttribute(PatientTable.FIRST_NAME.toString()) + "," +
-						tempPat.getAttribute(PatientTable.MIDDLE_NAME.toString()) + "," + 
-						parseStr(tempPat.getAttribute(PatientTable.BIRTHDAY).toString()) + "," +
-						tempPat.getAttribute(PatientTable.GENDER.toString());
-				writer.println(expStr);
-				patientCount++;
-				setProgress(patientCount * 100 / patientSize);
-				publish("Step 1/3:Exporting patients");
-			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			throw new Exception();
-		}
-		finally
-		{
-			if(writer != null)
-				writer.close();
-		}
-	}
-	
-	private void diagExport() throws Exception
-	{
-		List<Diagnosis> diagList = diagnosisDao.getAll();
-		PrintWriter writer = null;
-		int completedDiagnosis = 0;
-		int diagnosisSize = diagList.size();
-		try
-		{
-			writer = new PrintWriter(diagnosisFile);
-			writer.println("Rec. Num,Rec. Year,Rec. Type,Category ID,Value");
-			for(int i = 0; i < diagList.size(); i++)
-			{
-				Diagnosis tempDiag = diagList.get(i);
-				String expStr = Integer.toString(tempDiag.getRecordNumber()) + "," +
-						Integer.toString(tempDiag.getRecordYear()) + "," +
-						Character.toString(tempDiag.getRecordType()) + "," +
-						Integer.toString(tempDiag.getCategory()) + "," +
-						parseStr(tempDiag.getValue());
-				System.out.println();
-				writer.println(expStr);
-				completedDiagnosis++;
-				setProgress(completedDiagnosis * 100 / diagnosisSize);
-				publish("Step 3/3:Exporting diagnosis");
-			}
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-			throw new Exception();
-		}
-		finally
-		{
-			if(writer != null)
-				writer.close();
-		}
-	}
-
-	private void recExport() throws Exception
-	{
-		List<Record> recList = recordDao.getAll();
-		recordCount = 0;
-		int recordSize = recList.size();
-		PrintWriter writer = null;
-		try
-		{
-			writer = new PrintWriter(recordFile);
-			writer.println("Patient ID,Rec. Year,Rec. Num.,Rec. Type,Pathologist,Physician,Specimen,Remarks,Room,Gross Desc.,Micro. Note,Date Completed,Date Received");
-			for(int i = 0; i < recList.size(); i++)
-			{
-				Record tempRec = recList.get(i);
-				String expStr = tempRec.getAttribute(Constants.RecordTable.PATIENT_ID.toString()) + "," +
-				tempRec.getAttribute(Constants.RecordTable.RECORD_YEAR.toString()) + "," +
-				tempRec.getAttribute(RecordTable.RECORD_NUMBER.toString()) + "," +
-				tempRec.getAttribute(Constants.RecordTable.RECORD_TYPE.toString()) + "," +
-				tempRec.getAttribute(Constants.RecordTable.PATHOLOGIST.toString())  + "," +
-				tempRec.getAttribute(Constants.RecordTable.PHYSICIAN.toString())  + "," +
-				tempRec.getAttribute(Constants.RecordTable.SPECIMEN.toString())  + ",";
-				
-				//these are nullables
-				String remarks = "";
-				String grossDesc = "";
-				String microNote = "";
-				String room = "";
-				
-				if((remarks = (String)tempRec.getAttribute(RecordTable.REMARKS)) != null)
-					remarks = parseStr(remarks);
-				if((room = (String)tempRec.getAttribute(RecordTable.ROOM)) != null)
-					room = parseStr(room);
-				if((grossDesc = (String)tempRec.getAttribute(RecordTable.GROSS_DESC)) != null)
-					grossDesc = parseStr(grossDesc);
-				if((microNote = (String)tempRec.getAttribute(RecordTable.MICRO_NOTE)) != null)
-					microNote = parseStr(microNote);
-				
-				expStr = expStr + remarks + "," + room + "," + grossDesc + "," + microNote + ","+
-				parseStr(tempRec.getAttribute(RecordTable.DATE_COMPLETED).toString())  + "," +
-				parseStr(tempRec.getAttribute(RecordTable.DATE_RECEIVED).toString());
-				writer.println(expStr);
 				recordCount++;
-				setProgress(recordCount * 100 / recordSize);
-				publish("Step 2/3:Exporting records");
+				setProgress(recordCount * 100 / total);
+				publish("Exporting data:Please wait");
 			}
 		}
 		catch(Exception e)
@@ -283,7 +130,6 @@ public class ExportWorker extends SwingWorker<Void, String>
 		exportPanel.setMainMessage(main);
 		exportPanel.setSubMessage(sub);
 		exportPanel.setRecordCount(recordCount);
-		exportPanel.setPatientCount(patientCount);
 	}
 	
 	@Override
@@ -291,6 +137,5 @@ public class ExportWorker extends SwingWorker<Void, String>
 	{
 		firePropertyChange("DONE", null, null);
 		exportPanel.setRecordCount(recordCount);
-		exportPanel.setPatientCount(patientCount);
 	}
 }

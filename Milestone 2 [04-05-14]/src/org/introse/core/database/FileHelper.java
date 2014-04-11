@@ -53,34 +53,12 @@ public class FileHelper
 		return file;
 	}
 	
-	public static File createDiagnosisExportFile()
+	public static File createExportFile()
 	{
 		File file = null;
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd-HH-mm");
-		String fileName = "[Diagnosis]" + sdf.format(date) + ".csv";
-		file = new File(PROGRAM_DATA_PATH + "\\Export\\" + fileName);
-		file.getParentFile().mkdirs();
-		return file;
-	}
-	
-	public static File createRecordExportFile()
-	{
-		File file = null;
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd-HH-mm");
-		String fileName = "[Records]" + sdf.format(date) + ".csv";
-		file = new File(PROGRAM_DATA_PATH + "\\Export\\" + fileName);
-		file.getParentFile().mkdirs();
-		return file;
-	}
-	
-	public static File createPatientExportFile()
-	{
-		File file = null;
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd-HH-mm");
-		String fileName = "[Patients]" + sdf.format(date) + ".csv";
+		String fileName = sdf.format(date) + ".csv";
 		file = new File(PROGRAM_DATA_PATH + "\\Export\\" + fileName);
 		file.getParentFile().mkdirs();
 		return file;
