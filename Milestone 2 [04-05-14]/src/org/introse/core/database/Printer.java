@@ -391,13 +391,13 @@ public class Printer implements Printable{
 					for(int j=0; j<al_diagnosis.size();j++){
 						al_lines.add(new PrintedLine(al_diagnosis.get(j), 0));
 					}
-					al_lines.add(null);
-					al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.SQUAMOUS,0));
-					al_lines.add(null);
-					al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.GLANDULAR,0));
-					al_lines.add(null);
-					al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.OMN,0));
 				}
+				al_lines.add(null);
+				al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.SQUAMOUS,0));
+				al_lines.add(null);
+				al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.GLANDULAR,0));
+				al_lines.add(null);
+				al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.OMN,0));
 				break;
 		case 1: a_diagnosis = diagnosis.split("\n"); 
 				al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.NILM,0));
@@ -410,11 +410,12 @@ public class Printer implements Printable{
 					for(int j=0; j<al_diagnosis.size();j++){
 						al_lines.add(new PrintedLine(al_diagnosis.get(j), 0));
 					}
-					al_lines.add(null);
-					al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.GLANDULAR,0));
-					al_lines.add(null);
-					al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.OMN,0));
+					
 				}
+				al_lines.add(null);
+				al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.GLANDULAR,0));
+				al_lines.add(null);
+				al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.OMN,0));
 				break;
 		case 2: a_diagnosis = diagnosis.split("\n"); 
 				al_lines.add(new PrintedLine("[ ] "+Constants.PrintConstants.NILM,0));
