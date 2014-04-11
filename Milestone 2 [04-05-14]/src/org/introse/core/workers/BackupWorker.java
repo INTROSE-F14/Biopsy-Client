@@ -58,7 +58,7 @@ public class BackupWorker extends SwingWorker<Void, String>
 			setProgress(0);
 			publish("Step 1/3:Backing up patients");
 			
-			writer = new PrintWriter(new FileWriter(backupFile, true));
+			writer = new PrintWriter(new FileWriter(backupFile, false));
 			writer.println("#" + TitleConstants.PATIENTS + "#");
 			Iterator<Patient> patientIterator = patients.iterator();
 			while(patientIterator.hasNext())
@@ -90,7 +90,7 @@ public class BackupWorker extends SwingWorker<Void, String>
 			{
 				Record record = recordIterator.next();
 				int patientId = (int)record.getAttribute(RecordTable.PATIENT_ID);
-				char recordType = ((String)record.getAttribute(RecordTable.RECORD_TYPE)).charAt(0);
+				char recordType = ((char)record.getAttribute(RecordTable.RECORD_TYPE));
 				int recordYear = (int)record.getAttribute(RecordTable.RECORD_YEAR);
 				int recordNumber = (int)record.getAttribute(RecordTable.RECORD_NUMBER);
 				String physician = (String)record.getAttribute(RecordTable.PHYSICIAN);
