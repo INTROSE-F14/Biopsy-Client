@@ -38,7 +38,7 @@ public class DictionaryPanel extends JPanel implements FocusListener
 		textField.setForeground(Color.GRAY);
 		textField.addFocusListener(this);
 		addButton = new JButton("add");
-		wordPanel = new ListPanel(SwingConstants.VERTICAL, 100, 0);
+		wordPanel = new ListPanel(SwingConstants.HORIZONTAL, 30, 15);
 	}
 	
 	private void layoutComponents()
@@ -52,9 +52,9 @@ public class DictionaryPanel extends JPanel implements FocusListener
 		add(textField, c);
 		c.gridx = 1;
 		c.gridy = y++;
-		c.weightx = 1.0;
 		c.insets = new Insets(0,5,10,0);
 		add(addButton, c);
+		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 2;
 		c.gridx = 0;
 		c.gridy = y;
@@ -73,6 +73,7 @@ public class DictionaryPanel extends JPanel implements FocusListener
 	{
 		addButton.addActionListener(listener);
 		addButton.setActionCommand(ActionConstants.ADD_WORD);
+		wordPanel.addButtonListener(listener);
 	}
 
 	public ListPanel getWordPanel()

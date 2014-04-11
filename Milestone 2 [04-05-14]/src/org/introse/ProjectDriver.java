@@ -224,9 +224,15 @@ public class ProjectDriver
 	
 	public void loadWords()
 	{
-		Dictionary.setPathologists(dictionaryDao.getWords(DictionaryConstants.PATHOLOGIST));
-		Dictionary.setPhysicians(dictionaryDao.getWords(DictionaryConstants.PHYSICIAN));
-		Dictionary.setSpecimens(dictionaryDao.getWords(DictionaryConstants.SPECIMEN));
+		ListPanel path = mainMenu.getContentPanel().getPanel(TitleConstants.PATHOLOGISTS);
+		ListPanel phys = mainMenu.getContentPanel().getPanel(TitleConstants.PHYSICIANS);
+		ListPanel spec = mainMenu.getContentPanel().getPanel(TitleConstants.SPECIMENS);
+		Dictionary.setPathologists(dictionaryDao.getWords(DictionaryConstants.PATHOLOGIST, path.getStart(),
+				path.getRange()));
+		Dictionary.setPhysicians(dictionaryDao.getWords(DictionaryConstants.PHYSICIAN, phys.getStart(),
+				phys.getRange()));
+		Dictionary.setSpecimens(dictionaryDao.getWords(DictionaryConstants.SPECIMEN, spec.getStart(), 
+				spec.getRange()));
 	}
 	
 	public void changeView(String view)
@@ -303,9 +309,11 @@ public class ProjectDriver
 	public void updateWList(int type, final String view)
 	{
 		final ListPanel listPanel = mainMenu.getContentPanel().getPanel(view);
+		System.out.println(view + " " + dictionaryDao.getCount(type));
 		listPanel.setListSize(dictionaryDao.getCount(type));
 		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
-		final DictionaryListGenerator listWorker = new DictionaryListGenerator(dictionaryDao, type);
+		final DictionaryListGenerator listWorker = new DictionaryListGenerator(dictionaryDao, type, 
+				listPanel.getStart(), listPanel.getRange());
 		listWorker.addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
@@ -549,8 +557,9 @@ public class ProjectDriver
 	
 	public void cancelCurrentForm()
 	{
-		if(((DetailPanel)detailPanel).getMode() == Constants.ActionConstants.EDIT)
+		if(detailPanel.getMode() == Constants.ActionConstants.EDIT)
 		{
+			System.out.println("Hello");
 			if(detailPanel instanceof RecordPanel)
 			{
 				Record record = (Record)detailPanel.getObject();
@@ -879,21 +888,27 @@ public class ProjectDriver
 		DictionaryPanel panel = mainMenu.getContentPanel().getDickPanel(getCurrentView());
 		String word = panel.getWord();
 		
-		if(word.replaceAll("\\s", "").length() > 0)
+		if(!word.equals(TitleConstants.DICTIONARY_HINT))
 		{
+			int type = 0;
 			switch(getCurrentView())
 			{
-			case TitleConstants.PATHOLOGISTS: dictionaryDao.add(word, 
-					DictionaryConstants.PATHOLOGIST);
+			case TitleConstants.PATHOLOGISTS: type = DictionaryConstants.PATHOLOGIST;
 			break;
-			case TitleConstants.PHYSICIANS: dictionaryDao.add(word, 
-					DictionaryConstants.PHYSICIAN);
+			case TitleConstants.PHYSICIANS: type = DictionaryConstants.PHYSICIAN;
 			break;
-			case TitleConstants.SPECIMENS: dictionaryDao.add(word, 
-					DictionaryConstants.SPECIMEN);
+			case TitleConstants.SPECIMENS: type = DictionaryConstants.SPECIMEN;
 			}
-			refresh(getCurrentView(), false);
-			panel.reset();
+			if(word.replaceAll("\\s", "").length() > 0)
+			{
+				if(dictionaryDao.isUnique(word, type))
+				{
+					dictionaryDao.add(word, type);
+					panel.reset();
+					changeView(getCurrentView());
+				}
+				else new PopupDialog(mainMenu, "Error saving word", word + " already exists", "OK").showGui();
+			}
 		}
 	}
 }

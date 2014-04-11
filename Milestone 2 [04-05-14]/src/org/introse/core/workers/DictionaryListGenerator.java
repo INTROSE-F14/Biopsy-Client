@@ -18,12 +18,15 @@ public class DictionaryListGenerator extends SwingWorker<List<ListItem>, Void> {
 	private DictionaryDao dictionaryDao;
 	private int type;
 	private EventList<String> words;
+	private int start, range;
 	
-	public DictionaryListGenerator(DictionaryDao dictionaryDao, int type)
+	public DictionaryListGenerator(DictionaryDao dictionaryDao, int type, int start, int range)
 	{
 		this.dictionaryDao = dictionaryDao;
 		this.type = type;
 		words = new BasicEventList<String>();
+		this.start = start;
+		this.range = range;
 	}
 	
 	@Override
@@ -34,7 +37,7 @@ public class DictionaryListGenerator extends SwingWorker<List<ListItem>, Void> {
 		int size = dictionaryDao.getCount(type);
 		int completed = 0;
 		
-		List<DictionaryWord> words = dictionaryDao.getAll(type);
+		List<DictionaryWord> words = dictionaryDao.getAll(type, start, range);
 		Iterator<DictionaryWord> i = words.iterator();
 		while(i.hasNext())
 		{

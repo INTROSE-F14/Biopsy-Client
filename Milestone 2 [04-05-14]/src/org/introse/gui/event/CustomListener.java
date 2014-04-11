@@ -88,10 +88,7 @@ public class CustomListener implements ActionListener, MouseListener
 				public void propertyChange(PropertyChangeEvent evt) 
 				{
 					if(evt.getPropertyName().equals("POSITIVE"))
-					{
 						projectDriver.cancelCurrentForm();
-						projectDriver.changeView(projectDriver.getPreviousView());
-					}
 				}
 			});
 			popup.showGui();
