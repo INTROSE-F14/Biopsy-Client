@@ -111,20 +111,17 @@ public class Record  extends ListItem implements Printable
 	
 	public void initializePanel()
 	{	
-		setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.35), 
-				(int)(Preferences.getScreenHeight() * 0.17)));
+		setPreferredSize(new Dimension((450), 120));
 
 		Patient patient = (Patient)getAttribute(RecordTable.PATIENT);
 		String patientName = patient.getAttribute(PatientTable.LAST_NAME) + 
 				", " + patient.getAttribute(PatientTable.FIRST_NAME) + " " +
 				patient.getAttribute(PatientTable.MIDDLE_NAME);
-		
 		JLabel irnLabel = new JLabel("Internal Reference Number"), 
 				pathologistLabel = new JLabel("Pathologist"), 
 				specimenLabel = new JLabel("Specimen"), 
 				physicianLabel = new JLabel("Physician"),
 				patientLabel = new JLabel("Patient");
-		
 		String  label2 = (String)getAttribute(RecordTable.PATHOLOGIST), 
 				label3 = (String)getAttribute(RecordTable.SPECIMEN), 
 				label4 = (String)getAttribute(RecordTable.PHYSICIAN),
@@ -148,7 +145,7 @@ public class Record  extends ListItem implements Printable
 			{
 				label1 = "0" + label1;
 			}
-			label1 = (String)getAttribute(RecordTable.RECORD_TYPE) + 
+			label1 = ""+(char)getAttribute(RecordTable.RECORD_TYPE) + 
 				getAttribute(RecordTable.RECORD_YEAR) + "-" + label1;
 		}
 		

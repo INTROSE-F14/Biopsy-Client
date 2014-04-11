@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -18,6 +19,7 @@ import org.introse.Constants.RecordTable;
 import org.introse.core.CustomCalendar;
 import org.introse.core.CustomDocument;
 import org.introse.core.CytologyRecord;
+import org.introse.core.Dictionary;
 import org.introse.core.GynecologyRecord;
 import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
@@ -27,10 +29,14 @@ import org.introse.gui.event.CustomListener;
 import org.introse.gui.form.PatientForm;
 import org.introse.gui.window.LoginWindow;
 
+import ca.odell.glazedlists.GlazedLists;
+import ca.odell.glazedlists.swing.AutoCompleteSupport;
+
 public class RecordOverview extends JPanel 
 {
 
-	private JTextField specimenValue, physicianValue, pathologistValue, roomValue;
+	private JComboBox<String> specimenValue, physicianValue, pathologistValue;
+	private JTextField roomValue;
 	private JLabel refNumberLabel,  refNumberValue, specimenLabel, physicianLabel, pathologistLabel, dateReceivedLabel,
 	dateCompletedLabel, roomLabel;
 	private DatePicker receivedDate, completedDate;
@@ -55,22 +61,19 @@ public class RecordOverview extends JPanel
 		specimenLabel = new JLabel("*Specimen(s)");
 		physicianLabel = new JLabel("*Physician");
 		pathologistLabel = new JLabel("*Pathologist");
-		dateReceivedLabel = new JLabel("Date Recieved");
+		dateReceivedLabel = new JLabel("Date Received");
 		dateCompletedLabel = new JLabel("Date Completed");
 		roomLabel = new JLabel("Patient's Room");
 		refNumberValue= new JLabel();
-		specimenValue= new JTextField(30);
-		physicianValue= new JTextField(30);
-		pathologistValue= new JTextField(30);
-		roomValue = new JTextField(30);
+		physicianValue= new JComboBox<String>();
+		pathologistValue= new JComboBox<String>();
+		specimenValue = new JComboBox<String>();
+		roomValue = new JTextField(20);
 		
 		refNumberValue.setHorizontalAlignment(JTextField.CENTER);
 		refNumberValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Font.BOLD).deriveFont(Constants.StyleConstants.SUBHEADER));
-		specimenValue.setHorizontalAlignment(JTextField.CENTER);
 		specimenValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-		physicianValue.setHorizontalAlignment(JTextField.CENTER);
 		physicianValue.setFont(specimenValue.getFont());
-		pathologistValue.setHorizontalAlignment(JTextField.CENTER);
 		pathologistValue.setFont(specimenValue.getFont());
 		roomValue.setFont(specimenValue.getFont());
 		roomValue.setHorizontalAlignment(JTextField.CENTER);
@@ -84,10 +87,17 @@ public class RecordOverview extends JPanel
 		completedDate.setPickerFont(specimenValue.getFont());
 		receivedDate.setPickerFont(specimenValue.getFont());
 		
-		specimenValue.setDocument(new CustomDocument(RecordConstants.SPECIMEN_LENGTH));
-		physicianValue.setDocument(new CustomDocument(RecordConstants.PHYSICIAN_LENGTH));
-		pathologistValue.setDocument(new CustomDocument(RecordConstants.PATHOLOGIST_LENGTH));
+//		specimenValue.setDocument(new CustomDocument(RecordConstants.SPECIMEN_LENGTH));
+//		physicianValue.setDocument(new CustomDocument(RecordConstants.PHYSICIAN_LENGTH));
+//		pathologistValue.setDocument(new CustomDocument(RecordConstants.PATHOLOGIST_LENGTH));
 		roomValue.setDocument(new CustomDocument(RecordConstants.ROOM_LENGTH));
+		specimenValue.setEditable(true);
+		pathologistValue.setEditable(true);
+		physicianValue.setEditable(true);
+		AutoCompleteSupport.install(specimenValue, GlazedLists.eventList(Dictionary.specimens));
+		AutoCompleteSupport.install(pathologistValue, GlazedLists.eventList(Dictionary.pathologists));
+		AutoCompleteSupport.install(physicianValue, GlazedLists.eventList(Dictionary.physicians));
+		
 	}
 	
 	private void layoutComponents()
@@ -207,11 +217,11 @@ public class RecordOverview extends JPanel
 			refNumberValue.setText(refNumber);
 		else refNumberValue.setText("Waiting for Completion");
 		if(specimen != null)
-			specimenValue.setText(specimen);
+			specimenValue.setSelectedItem(specimen);
 		if(physician != null)
-			physicianValue.setText(physician);
+			physicianValue.setSelectedItem(physician);
 		if(pathologist != null)
-			pathologistValue.setText(pathologist);
+			pathologistValue.setSelectedItem(pathologist);
 		if(room!= null)
 			roomValue.setText(room);
 		
@@ -238,9 +248,9 @@ public class RecordOverview extends JPanel
 	{
 		receivedDate.setEnabled(isEditable);
 		completedDate.setEnabled(isEditable);
-		specimenValue.setEditable(isEditable);
-		physicianValue.setEditable(isEditable);
-		pathologistValue.setEditable(isEditable);
+		specimenValue.setEnabled(isEditable);
+		physicianValue.setEnabled(isEditable);
+		pathologistValue.setEnabled(isEditable);
 		roomValue.setEditable(isEditable);
 	}
 	
@@ -253,73 +263,85 @@ public class RecordOverview extends JPanel
 	{
 		boolean isValid = true;
 		JTextField defaultTextField = new JTextField();
-		if(!(specimenValue.getText().length() > 0) || 
-				specimenValue.getText().length() > RecordConstants.SPECIMEN_LENGTH)
+		System.out.println("$"+specimenValue.getSelectedItem());
+		if(!(((String)specimenValue.getSelectedItem()) != null) || 
+				((String)specimenValue.getSelectedItem()).length() > RecordConstants.SPECIMEN_LENGTH)
 		{
 			specimenValue.setBorder(BorderFactory.createLineBorder(Color.red));
 			isValid = false;
 		}
 		else specimenValue.setBorder(defaultTextField.getBorder());
-		if(!(physicianValue.getText().length() > 0) || 
-				physicianValue.getText().length() > RecordConstants.PHYSICIAN_LENGTH)
+		if(!(((String)physicianValue.getSelectedItem()) != null) || 
+				((String)physicianValue.getSelectedItem()).length() > RecordConstants.PHYSICIAN_LENGTH)
 		{
 			physicianValue.setBorder(BorderFactory.createLineBorder(Color.red));
 			isValid = false;
 		}
 		else physicianValue.setBorder(defaultTextField.getBorder());
-		if(!(pathologistValue.getText().length() > 0) ||
-				pathologistValue.getText().length() > RecordConstants.PATHOLOGIST_LENGTH)
+		if(!(((String)pathologistValue.getSelectedItem()) != null) ||
+				((String)pathologistValue.getSelectedItem()).length() > RecordConstants.PATHOLOGIST_LENGTH)
 		{
 			pathologistValue.setBorder(BorderFactory.createLineBorder(Color.red));
 			isValid = false;
 		}
 		else pathologistValue.setBorder(defaultTextField.getBorder());
-                if(receivedDate.getYear()>completedDate.getYear())
+		
+                if(receivedDate.getYear()>completedDate.getYear() || 
+                        patientForm.returnYear()>receivedDate.getYear() || 
+                        patientForm.returnYear()>completedDate.getYear())
                 {
                         receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                         completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                         isValid = false;
                 }
-                else if(receivedDate.getYear() == completedDate.getYear())
+                else if(receivedDate.getYear() == completedDate.getYear() && 
+                        patientForm.returnYear() == receivedDate.getYear() && 
+                        patientForm.returnYear() == completedDate.getYear())
                 {
-                        if(receivedDate.getMonth()>completedDate.getMonth())
+                        if(receivedDate.getMonth() > completedDate.getMonth() || 
+                                patientForm.returnMonth() > receivedDate.getMonth() || 
+                                patientForm.returnMonth() > completedDate.getMonth())
                         {
                             receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                             completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                             isValid = false;
                         }
-                        else if (receivedDate.getMonth()==completedDate.getMonth())
+                        else if (receivedDate.getMonth() == completedDate.getMonth() && 
+                                patientForm.returnMonth() == receivedDate.getMonth() && 
+                                patientForm.returnMonth() == completedDate.getMonth())
                         {
-                            if (receivedDate.getDay()>completedDate.getDay())
+                            if (receivedDate.getDay() > completedDate.getDay() ||
+                                    patientForm.returnDay() > receivedDate.getDay() ||
+                                    patientForm.returnDay() > completedDate.getDay())
                             {
                                 receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                                 completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
                                 isValid = false;
                             }
-                            else if (receivedDate.getDay()==completedDate.getDay())
+                            else if (receivedDate.getDay() == completedDate.getDay() && 
+                                    patientForm.returnDay() == receivedDate.getDay() && 
+                                    patientForm.returnDay() == completedDate.getDay())
                             {
-                                receivedDate.setBorder(defaultTextField.getBorder());
-                                completedDate.setBorder(defaultTextField.getBorder());
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                                 isValid = true;
                             }
                             else 
                             {    
-                                receivedDate.setBorder(defaultTextField.getBorder());
-                                completedDate.setBorder(defaultTextField.getBorder());
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                isValid = true;
                             }
                         }
                         else 
                         {
-                            receivedDate.setBorder(defaultTextField.getBorder());
-                            completedDate.setBorder(defaultTextField.getBorder());
+                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                            completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+                            isValid = true;
                         }
                 }
-                else 
-                {    
-                    receivedDate.setBorder(defaultTextField.getBorder());
-                    completedDate.setBorder(defaultTextField.getBorder());
-                }
-		if(patientForm.returnYear()>receivedDate.getYear() || 
+        
+                /*else if(patientForm.returnYear()>receivedDate.getYear() || 
                         patientForm.returnYear()>completedDate.getYear())
                 {
                         receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
@@ -349,28 +371,29 @@ public class RecordOverview extends JPanel
                             else if (patientForm.returnDay() == receivedDate.getDay() || 
                                     patientForm.returnDay() == completedDate.getDay())
                             {
-                                receivedDate.setBorder(defaultTextField.getBorder());
-                                completedDate.setBorder(defaultTextField.getBorder());
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                                 isValid = true;
                             }
                             else 
                             {    
-                                receivedDate.setBorder(defaultTextField.getBorder());
-                                completedDate.setBorder(defaultTextField.getBorder());
+                                receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                                completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                             }
                         }
                         else 
                         {
-                            receivedDate.setBorder(defaultTextField.getBorder());
-                            completedDate.setBorder(defaultTextField.getBorder());
+                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                            completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
                         }
-                }
+                }*/
                 else 
                 {    
-                    receivedDate.setBorder(defaultTextField.getBorder());
-                    completedDate.setBorder(defaultTextField.getBorder());
+                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                    completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
+                    isValid = true;
                 }
-                if(!patientForm.areFieldsValid())
+		if(!patientForm.areFieldsValid())
 			isValid = false;
 		return isValid;
 	}
@@ -401,9 +424,9 @@ public class RecordOverview extends JPanel
 			String year = Calendar.getInstance().get(Calendar.YEAR)+"";
 			record.putAttribute(RecordTable.RECORD_YEAR, Integer.parseInt(year.substring(2, 4)));
 		}
-		record.putAttribute(RecordTable.SPECIMEN.toString(), specimenValue.getText());
-		record.putAttribute(RecordTable.PATHOLOGIST.toString(), pathologistValue.getText());
-		record.putAttribute(RecordTable.PHYSICIAN.toString(), physicianValue.getText());
+		record.putAttribute(RecordTable.SPECIMEN.toString(), (String)specimenValue.getSelectedItem());
+		record.putAttribute(RecordTable.PATHOLOGIST.toString(), (String)pathologistValue.getSelectedItem());
+		record.putAttribute(RecordTable.PHYSICIAN.toString(), (String)physicianValue.getSelectedItem());
 		
 		if(roomValue.getText().replaceAll("\\s", "").length() > 0)
 			record.putAttribute(RecordTable.ROOM, roomValue.getText());

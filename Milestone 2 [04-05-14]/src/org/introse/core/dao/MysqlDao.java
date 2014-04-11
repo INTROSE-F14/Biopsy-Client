@@ -9,11 +9,18 @@ import org.introse.core.Preferences;
 
 public abstract class MysqlDao
 {	
+	
+	private Connection conn;
+	
 	public Connection createConnection() throws ClassNotFoundException, SQLException 
 	{
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection(Preferences.serverAddress +
-				Preferences.databaseName, Preferences.username, Preferences.password);
+		if(conn == null)
+		{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(Preferences.serverAddress +
+					Preferences.databaseName, Preferences.username, Preferences.password);
+		}
 		return conn;
 	}
+	
 }

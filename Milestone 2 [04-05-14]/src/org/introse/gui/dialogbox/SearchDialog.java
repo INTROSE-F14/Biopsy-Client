@@ -1,7 +1,5 @@
 package org.introse.gui.dialogbox;
 
-import java.awt.Dialog.ModalityType;
-
 import javax.swing.JDialog;
 
 import org.introse.gui.event.CustomListener;

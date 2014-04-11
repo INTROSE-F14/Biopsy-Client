@@ -124,7 +124,7 @@ public class HistopathologyForm extends JPanel implements RecordForm
 		microNoteValue.setWrapStyleWord(true);
 		remarksValue.setLineWrap(true);
 		remarksValue.setWrapStyleWord(true);
-		
+
 		diagnosisScroller = new JScrollPane(diagnosisValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		remarksScroller = new JScrollPane(remarksValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 

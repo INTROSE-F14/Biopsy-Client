@@ -323,27 +323,27 @@ public class PatientForm extends JPanel implements Form
 		return isValid;
 	}
 	
-        public int returnYear()
-        {
-            int val = 0;
-            val = birthday.getYear();
-            return val;
-        }        
-        
-        public int returnMonth()
-        {
-            int val = 0;
-            val = birthday.getMonth();
-            return val;
-        }
-        
-        public int returnDay()
-        {
-            int val = 0;
-            val = birthday.getDay();
-            return val;
-        }
-        
+    public int returnYear()
+    {
+        int val = 0;
+        val = birthday.getYear();
+        return val;
+    }        
+    
+    public int returnMonth()
+    {
+        int val = 0;
+        val = birthday.getMonth();
+        return val;
+    }
+    
+    public int returnDay()
+    {
+        int val = 0;
+        val = birthday.getDay();
+        return val;
+    }
+
 	public void addListener(CustomListener listener)
 	{
 		loadExisting.addActionListener(listener);

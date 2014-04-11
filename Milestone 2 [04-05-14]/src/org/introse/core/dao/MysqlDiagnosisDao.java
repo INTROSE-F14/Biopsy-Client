@@ -39,7 +39,7 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 			{
 				int recordNumber = (int)record.getAttribute(Constants.RecordTable.RECORD_NUMBER);
 				int recordYear = (int)record.getAttribute(RecordTable.RECORD_YEAR);
-				char recordType = ((String)record.getAttribute(RecordTable.RECORD_TYPE)).charAt(0);
+				char recordType = ((char)record.getAttribute(RecordTable.RECORD_TYPE));
 				int category = result.getInt(DiagnosisTable.CATEGORY_ID);
 				String value = result.getString(DiagnosisTable.VALUE);
 				Diagnosis diagnosis = new Diagnosis(category, value, recordType,
@@ -56,8 +56,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return matches;
@@ -94,8 +92,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 	}
@@ -126,8 +122,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 	}
@@ -169,8 +163,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return diagnosis;
@@ -219,8 +211,6 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return match;
@@ -258,10 +248,7 @@ public class MysqlDiagnosisDao extends MysqlDao implements DiagnosisDao {
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
-		
 	}
 }

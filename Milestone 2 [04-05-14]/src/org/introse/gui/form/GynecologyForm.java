@@ -17,7 +17,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -68,22 +67,24 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 	private JRadioButton unsatisfactory;
 	private JTextField unsatisfactoryDueTo;
 	
-	private JCheckBox nilm, eca, omn;
-	private JCheckBox organisms;
+	private ButtonGroup mainCategory;
+	private JRadioButton nilm, eca, omn;
+	private ButtonGroup nilmGroup;
+	private JRadioButton organisms;
 	private ButtonGroup organismsGroup;
 	private JRadioButton org1, org2, org3, org4, org5;
-	private JCheckBox onf;
+	private JRadioButton onf;
 	private ButtonGroup onfGroup;
 	private JRadioButton onf1, onf2, onf3;
 	private JComboBox<String> onf1Box;
-	private JCheckBox other;
+	private JRadioButton other;
 	private ButtonGroup otherGroup;
 	private JRadioButton other1;
-	private JCheckBox squamousCell;
+	private JRadioButton squamousCell;
 	private ButtonGroup squamousGroup;
 	private JRadioButton squamous1, squamous2, squamous3, squamous4;
 	private JComboBox<String> squamous1Box, squamous3Box;
-	private JCheckBox glandularCell;
+	private JRadioButton glandularCell;
 	private ButtonGroup glandularGroup;
 	private JRadioButton glandular1, glandular2, glandular3;
 	private JComboBox<String> glandular1Box, glandular3Box;
@@ -296,7 +297,7 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		previousButton.setOpaque(true);
 		previousButton.setBackground(Color.white);
 		previousButton.setVisible(false);
-		pageLabel = new JLabel("1");
+		pageLabel = new JLabel("1 of 2");
 		pageLabel.setOpaque(true);
 		pageLabel.setBackground(Color.white);
 		pageLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -338,12 +339,17 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		remarksValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		grossDescValue.setFont(remarksValue.getFont());
 		microNoteValue.setFont(remarksValue.getFont());
-		nilm = new JCheckBox(TitleConstants.NILM);
-		eca = new JCheckBox(TitleConstants.ECA);
-		omn = new JCheckBox(TitleConstants.OMN);
+		
+		//mainCategory = new ButtonGroup();
+		nilm = new JRadioButton(TitleConstants.NILM);
+		eca = new JRadioButton(TitleConstants.ECA);
+		omn = new JRadioButton(TitleConstants.OMN);
 		nilm.setBackground(Color.white);
 		eca.setBackground(Color.white);
 		omn.setBackground(Color.white);
+		//mainCategory.add(nilm);
+		//mainCategory.add(eca);
+		//mainCategory.add(omn);
 		
 		specimenTypeLabel = new JLabel(TitleConstants.SPEC_TYPE);
 		specGroup = new ButtonGroup();
@@ -365,9 +371,14 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		unsatisfactory.setBackground(Color.white);
 		unsatisfactoryDueTo = new JTextField(35);
 		saGroup.add(satisfactory);
-		saGroup.add(unsatisfactory);
+		saGroup.add(unsatisfactory);		
 		
-		organisms = new JCheckBox(TitleConstants.ORGANISMS);
+		nilmGroup = new ButtonGroup();
+		nilmGroup.add(organisms);
+		nilmGroup.add(onf);
+		nilmGroup.add(other);		
+		
+		organisms = new JRadioButton(TitleConstants.ORGANISMS);
 		organismsGroup = new ButtonGroup();
 		org1 = new JRadioButton(TitleConstants.ORG1);
 		org2 = new JRadioButton(TitleConstants.ORG2);
@@ -386,7 +397,7 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		org4.setBackground(Color.white);
 		org5.setBackground(Color.white);
 		
-		onf = new JCheckBox(TitleConstants.ONF);
+		onf = new JRadioButton(TitleConstants.ONF);
 		onfGroup = new ButtonGroup();
 		onf1 = new JRadioButton(TitleConstants.ONF1);
 		onf2 = new JRadioButton(TitleConstants.ONF2);
@@ -401,14 +412,14 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		onf2.setBackground(Color.white);
 		onf3.setBackground(Color.white);
 		
-		other = new JCheckBox(TitleConstants.OTHER);
+		other = new JRadioButton(TitleConstants.OTHER);
 		otherGroup = new ButtonGroup();
 		other1 = new JRadioButton(TitleConstants.OTHER1);
 		otherGroup.add(other1);
 		other.setBackground(Color.white);
 		other1.setBackground(Color.white);
 		
-		squamousCell = new JCheckBox(TitleConstants.SQUAMOUS_CELL);
+		squamousCell = new JRadioButton(TitleConstants.SQUAMOUS_CELL);
 		squamousGroup = new ButtonGroup();
 		squamous1 = new JRadioButton(TitleConstants.SQUAMOUS1);
 		squamous2 = new JRadioButton(TitleConstants.SQUAMOUS2);
@@ -430,7 +441,7 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		squamous1Box.setBorder(null);
 		squamous3Box.setBorder(null);
 		
-		glandularCell = new JCheckBox(TitleConstants.GLANDULAR_CELL);
+		glandularCell = new JRadioButton(TitleConstants.GLANDULAR_CELL);
 		glandularGroup = new ButtonGroup();
 		glandular1 = new JRadioButton(TitleConstants.GLANDULAR1);
 		glandular2 = new JRadioButton(TitleConstants.GLANDULAR2);
@@ -797,7 +808,7 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 			{
 				CardLayout cl = (CardLayout)cardPanel.getLayout();
 				cl.last(cardPanel);
-				pageLabel.setText("2");
+				pageLabel.setText("2 of 2");
 				nextButton.setVisible(false);
 				previousButton.setVisible(true);
 			}
@@ -810,7 +821,7 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 				cl.first(cardPanel);
 				nextButton.setVisible(true);
 				previousButton.setVisible(false);
-				pageLabel.setText("1");
+				pageLabel.setText("1 of 2");
 			}
 		});
 	}

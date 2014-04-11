@@ -4,25 +4,26 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
-import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
+import org.introse.Constants.ActionConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.Preferences;
@@ -30,28 +31,67 @@ import org.introse.gui.window.LoginWindow;
 
 public class ListPanel extends JPanel
 {
-	private JPanel listPanel;
-	private JPanel emptyPanel;
-	private JPanel refreshPanel;
-	private JScrollPane listScroller;
-	private MouseListener listener;
-	private List<ListItem> list;
-	private int orientation;
+	protected JPanel cardPanel;
+	protected JPanel listPanel;
+	protected JPanel emptyPanel;
+	protected JPanel refreshPanel;
+	protected JPanel buttonPanel;
+	protected JScrollPane listScroller;
+	protected MouseListener listener;
+	protected List<ListItem> list;
+	protected int orientation;
+	protected JButton next,previous;
+	private int start, range, size, rows;
+	private JLabel currentRange;
 	
-	public ListPanel(int orientation)
+	public ListPanel(int orientation, int range, int rows)
 	{
-		super(new CardLayout());
+		super(new GridBagLayout());
+		start = 0;
+		this.rows = rows;
+		this.range = range;
 		setBackground(Color.white);
 		initUI();
 		this.orientation = orientation;
+		size = 0;
 		list  = new Vector<ListItem>();
-		add(TitleConstants.LIST_PANEL, listScroller);
-		add(TitleConstants.EMPTY_PANEL, emptyPanel);
-		add(TitleConstants.REFRESH_PANEL, refreshPanel);
+		cardPanel.add(TitleConstants.LIST_PANEL, listScroller);
+		cardPanel.add(TitleConstants.EMPTY_PANEL, emptyPanel);
+		cardPanel.add(TitleConstants.REFRESH_PANEL, refreshPanel);
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		add(cardPanel, c);
+		c.gridy = 1;
+		c.weighty = 0.0;
+		add(buttonPanel, c);
+		updateButton();
 	}
 	
-	private void initUI()
+	protected void initUI()
 	{
+		currentRange = new JLabel();
+		currentRange.setOpaque(true);
+		currentRange.setBackground(Color.white);
+		currentRange.setHorizontalAlignment(SwingConstants.CENTER);
+		currentRange.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
+		next = new JButton();
+		previous = new JButton();
+		next.setContentAreaFilled(false);
+		next.setBorderPainted(false);
+		previous.setContentAreaFilled(false);
+		previous.setBorderPainted(false);
+		next.setIcon(new ImageIcon(getClass().getResource("/res/icons/next.png")));
+		next.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/next_rollover.png")));
+		previous.setIcon(new ImageIcon(getClass().getResource("/res/icons/previous.png")));
+		previous.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/previous_rollover.png")));
+		cardPanel = new JPanel(new CardLayout());
+		buttonPanel = new JPanel(new GridLayout(1, 3));
+		buttonPanel.setBackground(Color.white);
+		buttonPanel.add(previous);
+		buttonPanel.add(currentRange);
+		buttonPanel.add(next);
 		listPanel = new JPanel(new GridBagLayout());
 		emptyPanel = new JPanel(new GridBagLayout());
 		refreshPanel = new JPanel(new GridBagLayout());
@@ -79,7 +119,7 @@ public class ListPanel extends JPanel
 				(int)(image.getHeight() * scaleHeight), 
 				Image.SCALE_DEFAULT);
 		
-		JLabel emptyLabel = new JLabel("No records found");
+		JLabel emptyLabel = new JLabel(TitleConstants.EMPTY_PANEL);
 		emptyLabel.setIcon(new ImageIcon(scaledImage));
 		emptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		emptyLabel.setHorizontalTextPosition(JLabel.CENTER);
@@ -110,86 +150,33 @@ public class ListPanel extends JPanel
 		listPanel.setBackground(Color.white);
 		emptyPanel.setBackground(Color.white);
 		refreshPanel.setBackground(Color.white);
-		listPanel.setBorder(new EmptyBorder(5,0,5,5));
+		listPanel.setBorder(new EmptyBorder(0,0,0,0));
 	}
 	
-	public void addListener(MouseListener listener)
+	public void addMouseListener(MouseListener listener)
 	{
 		this.listener = listener;
 	}
 	
-	public void updateList(List<ListItem> list)
+	public void addButtonListener(ActionListener listener)
 	{
-		this.list = list;
-		final List<ListItem> _list = list;
-		listPanel.removeAll();
-		
-		if(orientation == SwingConstants.VERTICAL)
-		{
-			SwingWorker generatorWorker = new SwingWorker()
-			{
-
-				@Override
-				protected Object doInBackground() throws Exception {
-					generateVerticalList(_list);
-					return null;
-				}
-				@Override
-				protected void done()
-				{
-					firePropertyChange("DONE", null, null);
-				}
-			};
-			generatorWorker.addPropertyChangeListener(new PropertyChangeListener() {
-				
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if(evt.getPropertyName().equals("DONE"))
-					{
-						listPanel.revalidate();
-						listScroller.revalidate();
-						revalidate();
-					}
-					
-				}
-			});
-			generatorWorker.execute();
-		}
-		else if(orientation == SwingConstants.HORIZONTAL)
-		{
-			SwingWorker generatorWorker = new SwingWorker()
-			{
-
-				@Override
-				protected Object doInBackground() throws Exception {
-					generateHorizontalList(_list);
-					return null;
-				}
-				@Override
-				protected void done()
-				{
-					firePropertyChange("DONE", null, null);
-				}
-			};
-			generatorWorker.addPropertyChangeListener(new PropertyChangeListener() {
-				
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if(evt.getPropertyName().equals("DONE"))
-					{
-						listPanel.revalidate();
-						listScroller.revalidate();
-						revalidate();
-					}
-					
-				}
-			});
-			generatorWorker.execute();
-		}
-		
+		next.addActionListener(listener);
+		next.setActionCommand(ActionConstants.NEXT);
+		previous.addActionListener(listener);
+		previous.setActionCommand(ActionConstants.PREVIOUS);
 	}
 	
-	private void generateVerticalList(List<ListItem> items)
+	public void updateViewable(List<ListItem> list)
+	{
+		this.list = list;
+		listPanel.removeAll();
+		if(orientation == SwingConstants.VERTICAL)
+			generateVerticalList(list);
+		else if(orientation == SwingConstants.HORIZONTAL)
+			generateHorizontalList(list);
+	}
+	
+	protected void generateVerticalList(List<ListItem> items)
 	{
 		Iterator<ListItem> i = items.iterator();
 		final GridBagConstraints c = new GridBagConstraints();
@@ -210,7 +197,7 @@ public class ListPanel extends JPanel
 		}
 	}
 	
-	private void generateHorizontalList(List<ListItem> items)
+	protected void generateHorizontalList(List<ListItem> items)
 	{
 		Iterator<ListItem> i = items.iterator();
 		final GridBagConstraints c = new GridBagConstraints();
@@ -228,11 +215,11 @@ public class ListPanel extends JPanel
 			c.insets = new Insets(5,5,0,0);
 			if(!i.hasNext())
 				c.weightx = 1.0;
-			if(y == 3 || (list.size() < 4 && !i.hasNext()))
+			if(y == (rows-1) || (list.size() < rows && !i.hasNext()))
 				c.weighty = 1.0;
 			else c.weighty = 0.0;
 			
-			if(y + 1 > 3)
+			if(y + 1 > (rows-1))
 			{
 				y = 0;
 				x++;
@@ -242,11 +229,6 @@ public class ListPanel extends JPanel
 		}
 	}
 	
-	public List<ListItem> getList()
-	{
-		return list;
-	}
-	
 	public JScrollPane getScroller()
 	{
 		return listScroller;
@@ -254,7 +236,67 @@ public class ListPanel extends JPanel
 	
 	public void showPanel(String view)
 	{
-		CardLayout cl = (CardLayout)getLayout();
-		cl.show(this, view);
+		CardLayout cl = (CardLayout)cardPanel.getLayout();
+		cl.show(cardPanel, view);
+	}
+	
+	public int getListSize()
+	{
+		return size;
+	}
+	
+	public void setListSize(int size)
+	{
+		this.size = size;
+		if(size > range)
+		{
+			buttonPanel.setVisible(true);
+			updateButton();
+		}
+		else buttonPanel.setVisible(false);
+	}
+	
+	public void next()
+	{
+		if(start + range < size)
+			start += range;
+		updateButton();
+	}
+	
+	public void updateButton()
+	{
+		if(start > 0)
+			previous.setVisible(true);
+		else previous.setVisible(false);
+		
+		if(start + range <  size)
+			next.setVisible(true);
+		else next.setVisible(false);
+		int max = start + range;
+		if(max > size)
+			max = size;
+		currentRange.setText((start+1) + "-" + max);
+		
+	}
+	public void previous()
+	{
+		if(start - range >= 0)
+			start -= range;
+		updateButton();
+	}
+	
+	public int getStart()
+	{
+		return start;
+	}
+	
+	public int getRange()
+	{
+		return range;
+	}
+	
+	public void setStart(int start)
+	{
+		this.start = start;
 	}
 }

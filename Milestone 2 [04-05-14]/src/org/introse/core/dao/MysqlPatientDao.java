@@ -1,7 +1,6 @@
 package org.introse.core.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,7 +12,6 @@ import org.introse.Constants;
 import org.introse.Constants.PatientTable;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
-import org.introse.core.Preferences;
 
 public class MysqlPatientDao extends MysqlDao implements PatientDao
 {
@@ -72,8 +70,8 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+		//		if(conn != null)
+		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return p;
@@ -108,14 +106,14 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+		//		if(conn != null)
+		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 	}
 
 	@Override
-	public List<Patient> search(Patient patient) 
+	public List<Patient> search(Patient patient, int start, int range) 
 	{
 		List<Patient> matches = new Vector<Patient>();
 		Connection conn = null;
@@ -203,6 +201,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 			sql = sql.concat(bdayString);
 			whereCount++;
 		}
+		sql = sql.concat(" LIMIT " + start + ", " + range);
 		
 		try 
 		{
@@ -239,8 +238,8 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+		//		if(conn != null)
+		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return matches;
@@ -281,19 +280,19 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+		//		if(conn != null)
+		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 	}
 
 	@Override
-	public List<Patient> getAll() {
+	public List<Patient> getAll(int start, int range) {
 		
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
-		String sql = "Select * from patients ORDER BY " + PatientTable.LAST_NAME;
+		String sql = "Select * from patients ORDER BY " + PatientTable.LAST_NAME + " LIMIT " + start +", " + range;
 		List<Patient> patients = new Vector<Patient>();
 		try 
 		{
@@ -332,8 +331,8 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+		//		if(conn != null)
+		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return null;
@@ -382,10 +381,158 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-				if(conn != null)
-					conn.close();
+		//		if(conn != null)
+		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		
+	}
+	
+	public int getCount()
+	{
+		int count = 0;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet result = null;
+			
+		String sql = "Select count(*) from patients ";
+		
+		try 
+		{
+			conn = createConnection();
+			stmt = conn.createStatement();
+			result = stmt.executeQuery(sql);
+			if(result.next())
+				count = result.getInt("count(*)");
+		} catch (ClassNotFoundException | SQLException e) 
+		{e.printStackTrace();}  
+		finally
+		{
+			try
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+		//		if(conn != null)
+		//			conn.close();
+			} catch (SQLException e) {e.printStackTrace();}
+		}
+		return count;
+	}
+
+
+	@Override
+	public int getCount(Patient patient) 
+	{
+		int count = 0;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet result = null;
+		int whereCount = 0;
+			
+		String sql = "Select count(*) from patients WHERE ";
+		
+		String lastName;
+		if((lastName = (String)patient.getAttribute(Constants.PatientTable.LAST_NAME)) != null)
+		{
+			lastName = lastName.replace("%", "\\%");
+			sql = sql.concat(PatientTable.LAST_NAME + " LIKE \"%" + lastName + "%\"");
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		
+		String firstName;
+		if((firstName = (String)patient.getAttribute(Constants.PatientTable.FIRST_NAME)) != null)
+		{
+			firstName = firstName.replace("%", "\\%");
+			sql = sql.concat(PatientTable.FIRST_NAME + " LIKE \"%" + firstName +"%\"");
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		String middleName;
+		if((middleName = (String)patient.getAttribute(Constants.PatientTable.MIDDLE_NAME)) != null)
+		{
+			middleName.replace("%", "\\%");
+			sql = sql.concat(PatientTable.MIDDLE_NAME + " LIKE \"%" + middleName + "%\"");
+			whereCount++;
+		}
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		String gender;
+		if((gender= (String)patient.getAttribute(Constants.PatientTable.GENDER)) != null)
+		{
+			sql = sql.concat(PatientTable.GENDER + " = \"" + gender + "\"");
+			whereCount++;
+		}	
+		if(whereCount > 0)
+		{
+			sql = sql.concat(" AND ");
+			whereCount--;
+		}
+		
+		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(Constants.PatientTable.BIRTHDAY);
+		if(birthday!= null)
+		{
+			String bdayString = PatientTable.BIRTHDAY + " LIKE \"";
+			if(birthday.getYear() != -1)
+				bdayString = bdayString.concat("" + birthday.getYear() + "-");
+			else bdayString = bdayString.concat("%-");
+			if(birthday.getMonth() != -1)
+			{
+				if(birthday.getMonth() > 9)
+				bdayString = bdayString.concat("" + birthday.getMonth() + "-");
+				else bdayString = bdayString.concat("0" + birthday.getMonth() + "-");
+			}
+			else bdayString = bdayString.concat("%-");
+			if(birthday.getDay() != -1)
+			{
+				if(birthday.getDay() > 9)
+					bdayString = bdayString.concat("" + birthday.getDay() + "\"");
+				else bdayString = bdayString.concat("0" + birthday.getDay() + "\"");
+			}
+			else bdayString = bdayString.concat("%\"");
+			if(whereCount > 0)
+			{
+				sql = sql.concat(" AND ");
+				whereCount--;
+			}
+			sql = sql.concat(bdayString);
+			whereCount++;
+		}
+		
+		try 
+		{
+			conn = createConnection();
+			stmt = conn.createStatement();
+			result = stmt.executeQuery(sql);
+			if(result.next())
+				count = result.getInt("count(*)");
+		} catch (ClassNotFoundException | SQLException e) 
+		{e.printStackTrace();}  
+		finally
+		{
+			try
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+		//		if(conn != null)
+		//			conn.close();
+			} catch (SQLException e) {e.printStackTrace();}
+		}
+		return count;
 	}
 }

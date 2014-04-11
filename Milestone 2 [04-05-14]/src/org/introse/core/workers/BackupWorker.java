@@ -46,7 +46,7 @@ public class BackupWorker extends SwingWorker<Void, String>
 	@Override
 	protected Void doInBackground() throws Exception 
 	{
-		List<Patient> patients = patientDao.getAll();
+		List<Patient> patients = patientDao.getAll(0, patientDao.getCount());
 		List<Record> records = recordDao.getAll();
 		List<Diagnosis> diagnosis = diagnosisDao.getAll();
 

@@ -63,6 +63,11 @@ public class ToolsPanel extends JPanel
 		backupViewButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/backup.png")));
 		restoreViewButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/restore.png")));
 		exportViewButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/export.png")));
+		
+		backupViewButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/backupHover.png")));
+		restoreViewButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/restoreHover.png")));
+		exportViewButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/exportHover.png")));
+		
 		backupViewButton.setVerticalTextPosition(SwingConstants.BOTTOM);
 		backupViewButton.setIconTextGap(10);
 		restoreViewButton.setIconTextGap(10);
