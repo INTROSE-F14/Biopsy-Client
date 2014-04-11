@@ -248,6 +248,7 @@ public abstract class Constants
 		public static final String GENDER_LABEL = "SEX: ";
 		public static final String SPECIMEN_LABEL = "SPECIMEN: ";
 		public static final String PHYSICIAN_LABEL = "PHYSICIAN: Dr. ";
+		public static final String PATHOLOGIST_LABEL = "PATHOLOGIST";
 		public static final String DATE_RECEIVED_LABEL = "DATE RECEIVED: ";
 		public static final String DATE_COMPLETED_LABEL = "DATE COMPLETED: ";
 		public static final String HISTOPATHOLOGY_TITLE = "HISPATHOLOGY REPORT";

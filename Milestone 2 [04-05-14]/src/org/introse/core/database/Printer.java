@@ -279,6 +279,15 @@ public class Printer implements Printable{
 		
 	}
 	
+	private void addSignature(){
+		String pathologistLabel = Constants.PrintConstants.PATHOLOGIST_LABEL;
+		String pathologist = (String) record.getAttribute(Constants.RecordTable.PATHOLOGIST);
+		al_lines.add(new PrintedLine("_____________________", 2));
+		al_lines.add(new PrintedLine(pathologist, 2));
+		al_lines.add(new PrintedLine(pathologistLabel, 2));
+	}
+	
+	
 	private void addHistoCytoDiagnosis(List<Diagnosis> l_diagnosis, FontMetrics metrics, PageFormat pf){
 		String diagnosis = l_diagnosis.get(0).getValue();
 		String[] a_diagnosis = diagnosis.split("\n");
@@ -464,6 +473,7 @@ public class Printer implements Printable{
         if (pageBreaks == null) {
         	this.addHeader();
             this.initRecord(metrics, pf);
+            this.addSignature();
             int linesPerPage = (int)(pf.getImageableHeight()/lineHeight);
             int numBreaks = (al_lines.size()-1)/linesPerPage;
             pageBreaks = new int[numBreaks];
