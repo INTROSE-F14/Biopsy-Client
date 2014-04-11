@@ -26,7 +26,9 @@ public class Printer implements Printable{
 	}
 	
 	private ArrayList<String> parseString(ArrayList<String> list_strings, FontMetrics metrics, PageFormat pf){
-		int width = (int) pf.getImageableWidth();
+		
+		int margins = 36;
+		int width = (int) pf.getImageableWidth() - margins;
 		
 		String temp = list_strings.get(list_strings.size()-1);
 		if(metrics.charsWidth(temp.toCharArray(), 0, temp.toCharArray().length) <= width)
@@ -64,6 +66,16 @@ public class Printer implements Printable{
 		return i;
 	}
 
+	private PageFormat setMargin(PrinterJob printJob) {
+		PageFormat pf0 = printJob.defaultPage();
+		PageFormat pf1 = (PageFormat) pf0.clone();
+		Paper p = pf0.getPaper();
+		p.setImageableArea(72, 72,pf0.getWidth()-72, pf0.getHeight()-72);
+		pf1.setPaper(p);
+		PageFormat pf2 = printJob.validatePage(pf1);
+		return pf2;     
+	}
+	
 	private void addHeader(){
 		al_lines.add(null);
 		al_lines.add(new PrintedLine("MANILA DOCTOR'S HOSPITAL", 1));
@@ -74,9 +86,10 @@ public class Printer implements Printable{
 	}
 	
 	private void initRecord(FontMetrics metrics, PageFormat pf){
+		int margins = 36;
 		String spaceString = " ";
 		int space = metrics.charsWidth(spaceString.toCharArray(), 0, spaceString.toCharArray().length);
-		int width = (int) pf.getImageableWidth();
+		int width = (int) pf.getImageableWidth() - margins;
 		
 		//constants	
 		String numberLabel;
@@ -453,7 +466,7 @@ public class Printer implements Printable{
 		this.al_lines.clear();
 		this.record = record;
 		PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(this);
+        job.setPrintable(this, setMargin(job));
 		 boolean ok = job.printDialog();
          if (ok) {
              try {
