@@ -144,7 +144,7 @@ public class Printer implements Printable{
 			{
 				refNumber = "0" + refNumber;
 			}
-			String number = (String) this.record.getAttribute(Constants.RecordTable.RECORD_TYPE) + (String) this.record.getAttribute(Constants.RecordTable.RECORD_YEAR) + "-" + refNumber;
+			String number = (char)this.record.getAttribute(Constants.RecordTable.RECORD_TYPE) + (String) this.record.getAttribute(Constants.RecordTable.RECORD_YEAR) + "-" + refNumber;
 			
 			String room;
 			if(this.record.getAttribute(Constants.RecordTable.ROOM) == null){
