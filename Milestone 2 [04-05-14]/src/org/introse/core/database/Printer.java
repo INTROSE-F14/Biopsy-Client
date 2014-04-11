@@ -323,7 +323,7 @@ public class Printer implements Printable{
 			case Constants.CategoriesConstants.GC: 		
 			case Constants.CategoriesConstants.OMN: 
 				if(category == Constants.CategoriesConstants.ORGANISMS||category == Constants.CategoriesConstants.ONF||category == Constants.CategoriesConstants.OTHER){
-					diagnosis.concat("[X] " + Constants.PrintConstants.NILM);
+					diagnosis = diagnosis + "[X] " + Constants.PrintConstants.NILM;
 					cat = 0;
 					if(category == Constants.CategoriesConstants.ORGANISMS){
 						diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.ORGANISMS;
