@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
@@ -12,6 +13,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -31,10 +33,12 @@ public class Server
 	public static final String DB_NAME = "database";
 	public static final int DB_PORT = 3306;
 	private int status;
+	private Date lastUpdate;
 	
 	public Server()
 	{
 		status = INACTIVE;
+		lastUpdate = new Date();
 	}
 	
 	private InetAddress findBroadcastAddress() throws SocketException 
@@ -57,32 +61,38 @@ public class Server
 	{
 		byte[] b = new byte[256];
 		DatagramPacket broadcastPacket = new DatagramPacket(b, b.length, broadcastAddress, PORT);
-		DatagramSocket broadcastSocket = new DatagramSocket(PORT);
-		broadcastSocket.setBroadcast(true);
-		while(status == ACTIVE)
+		try(DatagramSocket broadcastSocket = new DatagramSocket(null);)
 		{
-			broadcastSocket.send(broadcastPacket);
-			Thread.sleep(1000);
-		}	
-		broadcastSocket.close();
+			broadcastSocket.setReuseAddress(true);
+			broadcastSocket.bind(new InetSocketAddress(PORT));
+			broadcastSocket.setBroadcast(true);
+			while(status == ACTIVE)
+			{
+				broadcastSocket.send(broadcastPacket);
+				Thread.sleep(3000);
+			}
+			broadcastSocket.close();
+		}
 	}	
 	
 	private void acceptConnections() throws IOException
 	{
-		ServerSocket serverSocket = new ServerSocket(PORT);
-		serverSocket.setSoTimeout(SOCKET_TIMEOUT);
-		while(status == ACTIVE)
+		try(ServerSocket serverSocket = new ServerSocket(PORT);)
 		{
-			try
+			serverSocket.setSoTimeout(SOCKET_TIMEOUT);
+			while(status == ACTIVE)
 			{
-				Socket hostSocket = serverSocket.accept();
-				ClientProtocol tempCP = new ClientProtocol(hostSocket);
-				Thread temp = new Thread(tempCP);
-				temp.start();
+				try
+				{
+					Socket hostSocket = serverSocket.accept();
+					ClientProtocol tempCP = new ClientProtocol(hostSocket, this);
+					Thread temp = new Thread(tempCP);
+					temp.start();
+				}
+				catch(SocketTimeoutException ste){}
 			}
-			catch(SocketTimeoutException ste){}
+			serverSocket.close();
 		}
-		serverSocket.close();
 	}
 	
 	private synchronized void setStatus(int status)
@@ -97,30 +107,31 @@ public class Server
 	
 	public boolean openServer()
 	{
-		setStatus(Server.ACTIVE);
 		try 
 		{
 			final InetAddress address = findBroadcastAddress();
 			if(address != null)
 			{
+				setStatus(Server.ACTIVE);
 				new Thread(new Runnable()
-							{
-								public void run()
-								{
-									try {startBroadcast(address);}
-									catch (IOException | InterruptedException e) {e.printStackTrace();}
-							}}).start();
+				{
+					public void run()
+					{
+						try {startBroadcast(address);}
+						catch (IOException | InterruptedException e) {e.printStackTrace();}
+				}}).start();
 				new Thread(new Runnable()
-							{
-								public void run()
-								{
-									try {acceptConnections();}
-									catch (IOException e) {e.printStackTrace();}
-								}}).start();	
+				{
+					public void run()
+					{
+						try {acceptConnections();}
+						catch (IOException e) {e.printStackTrace();}
+					}}).start();
 				return true;
 			}
 			else
 			{
+				System.out.println("broadcast address not found");
 				setStatus(Server.INACTIVE);
 				return false;
 			}
@@ -130,5 +141,15 @@ public class Server
 			setStatus(Server.INACTIVE);
 			return false;
 		}
+	}
+	
+	public void setLastUpdate(Date date)
+	{
+		this.lastUpdate = date;
+	}
+	
+	public Date getLastUpdate()
+	{
+		return lastUpdate;
 	}
 }

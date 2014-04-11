@@ -40,7 +40,7 @@ public class ServerController implements ItemListener
 		JPanel logPanel = new JPanel(new GridBagLayout());
 		logPanel.setBorder(new EmptyBorder(20,20,20,20));
 		JLabel serverIPLabel = new JLabel("Server IP: ");
-		JLabel serverIP = new JLabel(InetAddress.getLocalHost().toString());
+		JLabel serverIP = new JLabel(InetAddress.getLocalHost().getHostAddress());
 		JLabel serverStatusLabel = new JLabel("Status: ");
 		String[] serverStatuses = {"Inactive", "Active"};
 		statusBox = new JComboBox<String>(serverStatuses);
