@@ -577,7 +577,11 @@ public class ProjectDriver
 			}
 			detailPanel.setMode(Constants.ActionConstants.VIEW);
 		}
-		else removeDetailsPanel();
+		else 
+		{
+			removeDetailsPanel();
+			changeView(getPreviousView());
+		}
 	}
 	
 	public void printCurrentForm()
@@ -707,6 +711,7 @@ public class ProjectDriver
 		final JFileChooser chooser = new JFileChooser(FileHelper.getBackupDirectory());
 		FileNameExtensionFilter backupFilter = new FileNameExtensionFilter("BCB file", "bcb");
 		chooser.setFileFilter(backupFilter);
+		chooser.setAcceptAllFileFilterUsed(false);
 		int returnVal = chooser.showOpenDialog(mainMenu.getContentPanel());
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -724,10 +729,14 @@ public class ProjectDriver
 		JFileChooser chooser = new JFileChooser();
 		chooser.setSelectedFile(FileHelper.createBackupFile());
 		chooser.setFileFilter(backupFilter);
+		chooser.setAcceptAllFileFilterUsed(false);
 		int returnVal = chooser.showDialog(mainMenu.getContentPanel(), "Create backup");
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			backupPanel.setBackupPath(chooser.getSelectedFile().getAbsolutePath());
+			String path = chooser.getSelectedFile().getAbsolutePath();
+			if(!path.endsWith(".bcb"))
+				path = path.concat(".bcb");
+			backupPanel.setBackupPath(path);
 			backupPanel.setStatus(StatusConstants.PREPARING);
 			backup();
 		}
@@ -740,10 +749,14 @@ public class ProjectDriver
 		JFileChooser exportFileChooser = new JFileChooser();
 		exportFileChooser.setSelectedFile(FileHelper.createExportFile());
 		exportFileChooser.setFileFilter(exportFilter);
+		exportFileChooser.setAcceptAllFileFilterUsed(false);
 		int returnVal = exportFileChooser.showDialog(mainMenu.getContentPanel(), "Export patient");
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			exportPanel.setExportPath(exportFileChooser.getSelectedFile().getAbsolutePath());
+			String exportPath = exportFileChooser.getSelectedFile().getAbsolutePath();
+			if(!exportPath.endsWith(".csv"))
+				exportPath = exportPath.concat(".csv");
+			exportPanel.setExportPath(exportPath);
 			exportPanel.setStatus(StatusConstants.PREPARING);
 			export();
 		}
@@ -753,6 +766,7 @@ public class ProjectDriver
 	{
 		final BackupPanel backupPanel = mainMenu.getContentPanel().getToolsPanel().getBackupPanel();
 		String backupPath = backupPanel.getBackupPath();
+		File backup = new File(backupPath);
 		final BackupWorker backupWorker = new BackupWorker(new File(backupPath), backupPanel);
 		backupWorker.addPropertyChangeListener(new PropertyChangeListener(){
 
@@ -773,15 +787,38 @@ public class ProjectDriver
 			}
 			
 		});
-		backupWorker.execute();
-		backupPanel.setStatus(StatusConstants.ONGOING);
+		if(backup.exists())
+		{
+			PopupDialog popup = new PopupDialog(mainMenu, "Confirm backup", 
+					"This will overwrite existing file, do you want to continue?","Yes","No");
+			popup.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) 
+				{
+					if(evt.getPropertyName().equals("POSITIVE"))
+					{
+						backupWorker.execute();
+						backupPanel.setStatus(StatusConstants.ONGOING);
+					}
+					else backupPanel.setStatus(StatusConstants.DEFAULT);
+				}
+			});
+			popup.showGui();
+		}
+		else
+		{
+			backupWorker.execute();
+			backupPanel.setStatus(StatusConstants.ONGOING);
+		}
 	}
 	
 	public void export()
 	{
 		final ExportPanel exportPanel = mainMenu.getContentPanel().getToolsPanel().getExportPanel();
 		String exportPath = exportPanel.getExportPath();
-		final ExportWorker exportWorker = new ExportWorker(new File(exportPath), exportPanel);
+		File exportFile = new File(exportPath);
+		final ExportWorker exportWorker = new ExportWorker(exportFile, exportPanel);
 		exportWorker.addPropertyChangeListener(new PropertyChangeListener(){
 
 			@Override
@@ -801,8 +838,30 @@ public class ProjectDriver
 			}
 			
 		});
-		exportWorker.execute();
-		exportPanel.setStatus(StatusConstants.ONGOING);
+		if(exportFile.exists())
+		{
+			PopupDialog popup = new PopupDialog(mainMenu, "Confirm export",
+					"This will overwrite existing file, do you want to continue?","Yes","No");
+			popup.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getPropertyName().equals("POSITIVE"))
+					{
+						exportWorker.execute();
+						exportPanel.setStatus(StatusConstants.ONGOING);
+					}
+					else exportPanel.setStatus(StatusConstants.DEFAULT);
+				}
+			});
+			popup.showGui();
+		}
+		else
+		{
+			exportWorker.execute();
+			exportPanel.setStatus(StatusConstants.ONGOING);
+		}
+		
 	}
 	
 	public void restore()

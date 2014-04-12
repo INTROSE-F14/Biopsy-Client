@@ -56,7 +56,7 @@ public abstract class Constants
 		public static final String DICTIONARY = "Dictionary";
 		public static final String DISCARD_CHANGES_MESSAGE = "All changes made will be discarded, do you want to continue?";
 		public static final String REFRESH_PANEL = "Refresh";
-		public static final String EMPTY_PANEL = "Ooops...it's empty";
+		public static final String EMPTY_PANEL = "No records found.";
 		public static final String LIST_PANEL = "List";
 		public static final String LOGIN_WINDOW = "Login - Biopsy Client";
 		public static final String ALL="ALL";

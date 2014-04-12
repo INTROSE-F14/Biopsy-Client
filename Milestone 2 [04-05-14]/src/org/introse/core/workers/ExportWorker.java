@@ -1,6 +1,7 @@
 package org.introse.core.workers;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
@@ -23,7 +24,6 @@ public class ExportWorker extends SwingWorker<Void, String>
 	
 	public ExportWorker(File exportFile, ExportPanel exportPanel)
 	{
-		//this.healthDataFile = healthDataFile;
 		this.exportFile = exportFile;
 		this.healthDataDao = new MysqlHealthDataDao();
 		this.exportPanel = exportPanel;
@@ -47,7 +47,7 @@ public class ExportWorker extends SwingWorker<Void, String>
 		int completed = 0;
 		try
 		{
-			writer = new PrintWriter(exportFile);
+			writer = new PrintWriter(new FileWriter(exportFile, false));
 			writer.println("Patient ID,Last Name,First Name,Middle Name,Birthdate,Gender,Record ID,Pathologist,Physician,"
 					+ "Specimen,Remarks,Room,Gross Description,Microscopic Notes,Date Received,Date Completed,Category ID,Diagnosis");
 			Iterator<HealthData> i = hdList.iterator();
