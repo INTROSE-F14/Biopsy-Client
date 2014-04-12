@@ -42,7 +42,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 	public PrintDialog(Record record){
 	
 		setTitle("Print Dialog");
-		setSize(800,630);
+		setSize(650,630);
 
 		//Center
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -66,21 +66,21 @@ public class PrintDialog extends JDialog implements ActionListener{
 		this.tp_textpane.setMargin(new Insets(72, 72,72, 72));
 		
 		this.sp_scrollpane = new JScrollPane( this.tp_textpane );
-        this.sp_scrollpane.setPreferredSize( new Dimension(730, 450));
-		this.sp_scrollpane.setSize(730,450);
+        this.sp_scrollpane.setPreferredSize( new Dimension(585, 450));
+		this.sp_scrollpane.setSize(585,450);
 		this.sp_scrollpane.setLocation(30,30);
 		this.sp_scrollpane.setBorder(BorderFactory.createLoweredBevelBorder());
         this.add( this.sp_scrollpane );
 		
 		this.btn_print = new JButton("Print");
 		this.btn_print.setSize(150,25);
-		this.btn_print.setLocation(610,485);
+		this.btn_print.setLocation(250,485);
 		this.btn_print.addActionListener(this);
 		this.add(this.btn_print);
 
-		this.btn_exit = new JButton("Back to Main Menu");
-		this.btn_exit.setSize(160,25);
-		this.btn_exit.setLocation(320,535);
+		this.btn_exit = new JButton("Close Dialog");
+		this.btn_exit.setSize(150,25);
+		this.btn_exit.setLocation(250,535);
 		this.btn_exit.addActionListener(this);
 		this.add(this.btn_exit);
 		
@@ -276,7 +276,6 @@ public class PrintDialog extends JDialog implements ActionListener{
 		int space = fm.charWidth(' ');
 		int numSpaces = ((width-length1-length2-length3)/2)/space;
 		String longSpace = "";
-		System.out.println("Width: " + width + "\nLength 1: " + length1 + "\nLength 2: " + length2 + "\nNumSpaces: " + numSpaces);
 		for(int i=0; i<numSpaces;i++){
 			longSpace = longSpace + " ";
 		}
