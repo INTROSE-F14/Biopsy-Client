@@ -65,14 +65,12 @@ public class Printer implements Printable{
 	}
 
 	private PageFormat setFormat(PrinterJob printJob) {
-		PageFormat pf0 = printJob.defaultPage();
-		PageFormat pf1 = (PageFormat) pf0.clone();
-		Paper p = pf0.getPaper();
+		PageFormat pf = printJob.defaultPage();
+		Paper p = pf.getPaper();
 		p.setSize(8.5 * 72, 11 * 72);
-		p.setImageableArea(72, 72,pf0.getWidth()-144, pf0.getHeight()-144);
-		pf1.setPaper(p);
-		PageFormat pf2 = printJob.validatePage(pf1);
-		return pf2;     
+		p.setImageableArea(72, 72,pf.getWidth()-144, pf.getHeight()-144);
+		pf.setPaper(p);
+		return pf;     
 	}
 	
 	private void addHeader(){
