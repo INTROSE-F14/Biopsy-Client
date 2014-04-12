@@ -68,7 +68,7 @@ public class Printer implements Printable{
 		PageFormat pf = printJob.defaultPage();
 		Paper p = pf.getPaper();
 		p.setSize(8.5 * 72, 11 * 72);
-		p.setImageableArea(72, 72,pf.getWidth()-144, pf.getHeight()-144);
+		p.setImageableArea(72, 72,p.getWidth()-144, p.getHeight()-144);
 		pf.setPaper(p);
 		return pf;     
 	}
