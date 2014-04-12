@@ -59,7 +59,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 
 		this.tp_textpane= new JTextPane();
 		this.sd_doc = this.tp_textpane.getStyledDocument();
-		this.tp_textpane.setFont(Font.decode("monospaced-12"));
+		this.tp_textpane.setFont(new Font("Courier", Font.PLAIN, 12));
 		this.tp_textpane.setEditable(false);
 
 		this.sp_scrollpane = new JScrollPane( this.tp_textpane );
