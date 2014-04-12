@@ -12,10 +12,12 @@ import org.introse.gui.panel.ListItem;
 public class PatientListGenerator extends SwingWorker<List<ListItem>, ListItem> {
 
 	private List<Patient> patients;
+	private boolean deleteEnabled;
 	
-	public PatientListGenerator(List<Patient> patients)
+	public PatientListGenerator(List<Patient> patients, boolean deleteEnabled)
 	{
 		this.patients = patients;
+		this.deleteEnabled = deleteEnabled;
 	}
 	@Override
 	protected List<ListItem> doInBackground() throws Exception 
@@ -26,6 +28,7 @@ public class PatientListGenerator extends SwingWorker<List<ListItem>, ListItem> 
 		{	
 			ListItem listItem = i.next();
 			listItem.initializePanel();
+			listItem.setDeleteEnabled(deleteEnabled);
 			patientList.add(listItem);
 		}
 		return patientList;

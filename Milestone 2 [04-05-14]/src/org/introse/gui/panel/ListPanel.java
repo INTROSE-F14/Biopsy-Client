@@ -37,7 +37,8 @@ public class ListPanel extends JPanel
 	protected JPanel refreshPanel;
 	protected JPanel buttonPanel;
 	protected JScrollPane listScroller;
-	protected MouseListener listener;
+	protected MouseListener mouseListener;
+	protected ActionListener buttonListener;
 	protected List<ListItem> list;
 	protected int orientation;
 	protected JButton next,previous;
@@ -153,16 +154,17 @@ public class ListPanel extends JPanel
 		listPanel.setBorder(new EmptyBorder(0,0,0,0));
 	}
 	
-	public void addMouseListener(MouseListener listener)
+	public void addMouseListener(MouseListener mouseListener)
 	{
-		this.listener = listener;
+		this.mouseListener = mouseListener;
 	}
 	
-	public void addButtonListener(ActionListener listener)
+	public void addButtonListener(ActionListener buttonListener)
 	{
-		next.addActionListener(listener);
+		this.buttonListener = buttonListener;
+		next.addActionListener(buttonListener);
 		next.setActionCommand(ActionConstants.NEXT);
-		previous.addActionListener(listener);
+		previous.addActionListener(buttonListener);
 		previous.setActionCommand(ActionConstants.PREVIOUS);
 	}
 	
@@ -188,7 +190,8 @@ public class ListPanel extends JPanel
 		{
 			final ListItem listItem = i.next();
 			listItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-			listItem.addListener(listener);
+			listItem.addListener(mouseListener);
+			listItem.addButtonListener(buttonListener);
 			c.gridy = y++;
 			c.insets = new Insets(0,5,5,5);
 			if(!i.hasNext())
@@ -209,7 +212,8 @@ public class ListPanel extends JPanel
 		{				
 			final ListItem listItem = i.next();
 			listItem.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-			listItem.addListener(listener);
+			listItem.addListener(mouseListener);
+			listItem.addButtonListener(buttonListener);
 			c.gridy = y;
 			c.gridx = x;
 			c.insets = new Insets(5,5,0,0);

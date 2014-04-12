@@ -32,10 +32,6 @@ public abstract class Constants
 		public static final int OTHERS = 3;
 		public static final int RECORD = 0;
 		public static final int DIAGNOSIS = 1;
-		
-		public static final int SPECIMEN_LENGTH = 50;
-		public static final int PHYSICIAN_LENGTH = 100;
-		public static final int PATHOLOGIST_LENGTH = 100;
 		public static final int REMARKS_LENGTH = 2000;
 		public static final int ROOM_LENGTH = 15;
 		public static final int DIAGNOSIS_LENGTH = 2000;
@@ -52,11 +48,14 @@ public abstract class Constants
 
 	public abstract class TitleConstants
 	{
+		public static final String CONFIRM_DELETE_WORD =  "Are you sure you want to delete this word?";
+		public static final String CONFIRM_DELETE_RECORD = "Are you sure you want to delete this record?";
+		public static final String CONFIRM_DELETE_PATIENT = "Are you sure you want to delete this patient? This will also delete all records associated to this patient";
 		public static final String DICTIONARY_HINT = "Add words, phrases, or names";
 		public static final String DICTIONARY = "Dictionary";
 		public static final String DISCARD_CHANGES_MESSAGE = "All changes made will be discarded, do you want to continue?";
 		public static final String REFRESH_PANEL = "Refresh";
-		public static final String EMPTY_PANEL = "No records found.";
+		public static final String EMPTY_PANEL = "Ooops...it's empty";
 		public static final String LIST_PANEL = "List";
 		public static final String LOGIN_WINDOW = "Login - Biopsy Client";
 		public static final String ALL="ALL";
@@ -131,6 +130,7 @@ public abstract class Constants
 	
 	public abstract class ActionConstants
 	{
+		public static final String DELETE = "Delete";
 		public static final String ADD_WORD = "Add word";
 		public static final String SELECT_EXPORT = "Select export";
 		public static final String SELECT_RESTORE = "Select restore";
@@ -279,6 +279,7 @@ public abstract class Constants
 	
 	public abstract class DictionaryConstants
 	{
+		public static final int WORD_LENGTH = 100;
 		public static final int SPECIMEN = 0;
 		public static final int PATHOLOGIST = 1;
 		public static final int PHYSICIAN = 2;

@@ -98,7 +98,7 @@ public class Patient extends ListItem
 	@Override
 	public void initializePanel() 
 	{
-		setPreferredSize(new Dimension((400), 100));
+		setPreferredSize(new Dimension((450), 100));
 		String label1 = getAttribute(PatientTable.LAST_NAME) + ", " + getAttribute(PatientTable.FIRST_NAME) + 
 				" " + getAttribute(PatientTable.MIDDLE_NAME);
 		String label2 = "";
@@ -140,11 +140,15 @@ public class Patient extends ListItem
 		add(nameLabel, c);
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(0,0,0,0);
-		c.weightx = 1.0;
+		c.insets = new Insets(0,0,0,50);
 		c.gridy = y++;
 		c.gridx = 1;
 		add(nameValue, c);
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.EAST;
+		c.insets = new Insets(0,0,0,0);
+		add(deleteButton, c);
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.NONE;
@@ -163,7 +167,7 @@ public class Patient extends ListItem
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.NONE;
-		c.insets = new Insets(0,20,0,20);
+		c.insets = new Insets(0,20,20,20);
 		c.weightx = 0.0;
 		c.gridx = 0;
 		c.gridy = y;
@@ -171,7 +175,7 @@ public class Patient extends ListItem
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
-		c.insets = new Insets(0,0,0,0);
+		c.insets = new Insets(0,0,20,0);
 		c.gridx = 1;
 		c.gridy = y++;
 		add(birthdayValue, c);

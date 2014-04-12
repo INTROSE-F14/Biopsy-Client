@@ -9,6 +9,7 @@ public interface RecordDao
 {
 	public void add(Record record);
 	public void delete(Record record);
+	public void delete(int patient);
 	public void update(Record record);
 	public List<Record> search(Record record, int start, int end);
 	public Record get(Record record);

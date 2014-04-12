@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.introse.Constants;
+import org.introse.Constants.DictionaryConstants;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.core.CustomCalendar;
@@ -262,128 +264,64 @@ public class RecordOverview extends JPanel
 	public boolean areFieldsValid()
 	{
 		boolean isValid = true;
-                boolean validRC = true; //Valid Date Received and Date Completed
-                boolean validPD = true; //Valid Patient Birthday
 		JTextField defaultTextField = new JTextField();
-		System.out.println("$"+specimenValue.getSelectedItem());
-		if(!(((String)specimenValue.getSelectedItem()) != null) || 
-				((String)specimenValue.getSelectedItem()).length() > RecordConstants.SPECIMEN_LENGTH)
+		if(((String)specimenValue.getSelectedItem()) == null || 
+				((String)specimenValue.getSelectedItem()).length() > DictionaryConstants.WORD_LENGTH)
 		{
 			specimenValue.setBorder(BorderFactory.createLineBorder(Color.red));
 			isValid = false;
 		}
 		else specimenValue.setBorder(defaultTextField.getBorder());
-		if(!(((String)physicianValue.getSelectedItem()) != null) || 
-				((String)physicianValue.getSelectedItem()).length() > RecordConstants.PHYSICIAN_LENGTH)
+		if(((String)physicianValue.getSelectedItem()) == null || 
+				((String)physicianValue.getSelectedItem()).length() > DictionaryConstants.WORD_LENGTH)
 		{
 			physicianValue.setBorder(BorderFactory.createLineBorder(Color.red));
 			isValid = false;
 		}
 		else physicianValue.setBorder(defaultTextField.getBorder());
-		if(!(((String)pathologistValue.getSelectedItem()) != null) ||
-				((String)pathologistValue.getSelectedItem()).length() > RecordConstants.PATHOLOGIST_LENGTH)
+		if(((String)pathologistValue.getSelectedItem()) == null ||
+				((String)pathologistValue.getSelectedItem()).length() > DictionaryConstants.WORD_LENGTH)
 		{
 			pathologistValue.setBorder(BorderFactory.createLineBorder(Color.red));
 			isValid = false;
 		}
 		else pathologistValue.setBorder(defaultTextField.getBorder());
 		
-                if(receivedDate.getYear() > completedDate.getYear())
-                {
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                        validRC = false;
-                }
-                else if(receivedDate.getYear() == completedDate.getYear())
-                {
-                    if(receivedDate.getMonth() > completedDate.getMonth())
-                    {
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                        validRC = false;
-                    }
-                    else if(receivedDate.getMonth() == completedDate.getMonth())
-                    {
-                        if(receivedDate.getDay() > completedDate.getDay())
-                        {
-                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                            completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                            validRC = false;
-                        }
-                        else if(receivedDate.getDay() <= completedDate.getDay())
-                        {
-                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                            completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                            validRC = true;
-                        }
-                    }
-                    else if(receivedDate.getMonth() < completedDate.getMonth())
-                    {
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        validRC = true;
-                    }
-                }
-                else if(receivedDate.getYear() < completedDate.getYear())
-                {
-                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                    completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                    validRC = true;
-                }
-                
-                if(receivedDate.getYear() < patientForm.returnYear())
-                {
-                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                    completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                    validPD = false;
-                }
-                else if(receivedDate.getYear() == patientForm.returnYear())
-                {
-                    if(receivedDate.getMonth() < patientForm.returnMonth())
-                    {
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                        validPD = false;
-                    }
-                    else if(receivedDate.getMonth() == patientForm.returnMonth())
-                    {
-                        if(receivedDate.getDay() < patientForm.returnDay())
-                        {
-                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                            completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
-                            validPD = false;
-                        }
-                        else if(receivedDate.getDay() <= patientForm.returnDay())
-                        {
-                            receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                            completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                            validPD = true;
-                        }
-                    }
-                    else if(receivedDate.getMonth() > patientForm.returnMonth())
-                    {
-                        receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                        validPD = true;
-                    }
-                }
-                else if(receivedDate.getYear() > patientForm.returnYear())
-                {
-                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                    completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                    validPD = true;
-                }
-                
-                if(!validRC||!validPD)
-                {
-                    isValid = false;
-                }
-                if(isValid)
-                {
-                    receivedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                    completedDate.setBorder(BorderFactory.createLineBorder(Color.white));
-                }
-                if(!patientForm.areFieldsValid())
+		int rYear = receivedDate.getYear();
+		int rMonth = receivedDate.getMonth();
+		int rDay = receivedDate.getDay();
+		Calendar rDate = Calendar.getInstance();
+		rDate.clear();
+		rDate.set(rYear, rMonth, rDay);
+		
+		int cYear = completedDate.getYear();
+		int cMonth = completedDate.getMonth();
+		int cDay = completedDate.getDay();
+		Calendar cDate = Calendar.getInstance();
+		cDate.clear();
+		cDate.set(cYear, cMonth, cDay);
+		
+		int pYear = patientForm.returnYear();
+		int pMonth = patientForm.returnMonth();
+		int pDay = patientForm.returnDay();
+		Calendar pDate = Calendar.getInstance();
+		pDate.clear();
+		pDate.set(pYear, pMonth, pDay);
+		
+		if(cDate.before(rDate) || cDate.before(pDate))
+		{
+			isValid = false;
+			completedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
+		else completedDate.setBorder(null);
+		if(rDate.before(pDate))
+		{
+			isValid = false;
+			receivedDate.setBorder(BorderFactory.createLineBorder(Color.red));
+		}
+		else receivedDate.setBorder(null);
+		
+		if(!patientForm.areFieldsValid())
 			isValid = false;
 		return isValid;
 	}

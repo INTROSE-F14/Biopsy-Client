@@ -10,6 +10,8 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.JButton;
+
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.TitleConstants;
@@ -165,6 +167,8 @@ public class CustomListener implements ActionListener, MouseListener
        case ActionConstants.ADD_WORD: projectDriver.addCurrentWord();
        break;
        case ActionConstants.PRINT: projectDriver.printCurrentForm();
+       break;
+       case ActionConstants.DELETE: projectDriver.delete(((JButton)e.getSource()).getParent());
 		}
 	}
 

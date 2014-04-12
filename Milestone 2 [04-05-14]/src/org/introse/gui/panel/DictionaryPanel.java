@@ -6,6 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -13,13 +15,19 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.introse.Constants.ActionConstants;
+import org.introse.Constants.DictionaryConstants;
 import org.introse.Constants.TitleConstants;
+import org.introse.core.CustomDocument;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.event.ListListener;
 
 public class DictionaryPanel extends JPanel implements FocusListener
 {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTextField textField;
 	private JButton addButton;
 	private ListPanel wordPanel;
@@ -34,11 +42,33 @@ public class DictionaryPanel extends JPanel implements FocusListener
 	
 	private void initUI()
 	{
-		textField = new JTextField(TitleConstants.DICTIONARY_HINT, 50);
+		textField = new JTextField(50);
 		textField.setForeground(Color.GRAY);
 		textField.addFocusListener(this);
 		addButton = new JButton("add");
 		wordPanel = new ListPanel(SwingConstants.HORIZONTAL, 30, 15);
+		textField.setDocument(new CustomDocument(DictionaryConstants.WORD_LENGTH));
+		textField.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {}
+			
+			@Override
+			public void keyReleased(KeyEvent e) 
+			{
+				if(e.getKeyCode() == KeyEvent.VK_ENTER)
+				{
+					addButton.doClick();
+					textField.setText("");
+					textField.requestFocusInWindow();
+					textField.setForeground(Color.BLACK);
+				}
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {}
+		});
+		textField.setText(TitleConstants.DICTIONARY_HINT);
 	}
 	
 	private void layoutComponents()

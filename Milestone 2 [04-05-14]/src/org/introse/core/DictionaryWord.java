@@ -3,6 +3,7 @@ package org.introse.core;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -34,10 +35,12 @@ public class DictionaryWord extends ListItem {
 		wordLabel.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
 		wordLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1.0;
-		c.anchor = GridBagConstraints.CENTER;
+		c.insets = new Insets(0,20,0,0);
 		add(wordLabel, c);
+		c.anchor = GridBagConstraints.EAST;
+		c.weightx = 1.0;
+		c.fill = GridBagConstraints.NONE;
+		add(deleteButton, c);
 	}
 	
 	public String getWord()

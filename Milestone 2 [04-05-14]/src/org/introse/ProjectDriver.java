@@ -27,6 +27,7 @@ import org.introse.Constants.TitleConstants;
 import org.introse.core.CytologyRecord;
 import org.introse.core.Diagnosis;
 import org.introse.core.Dictionary;
+import org.introse.core.DictionaryWord;
 import org.introse.core.GynecologyRecord;
 import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
@@ -397,7 +398,7 @@ public class ProjectDriver
 		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
 		
 
-		final PatientListGenerator listWorker = new PatientListGenerator(list);
+		final PatientListGenerator listWorker = new PatientListGenerator(list, true);
 		listWorker.addPropertyChangeListener(new PropertyChangeListener()
 		{
 			@Override
@@ -949,6 +950,83 @@ public class ProjectDriver
 				}
 				else new PopupDialog(mainMenu, "Error saving word", word + " already exists", "OK").showGui();
 			}
+		}
+	}
+	
+	public void delete(final Object object)
+	{
+		PopupDialog dialog = null;
+		System.out.println("HELLO");
+		if(object instanceof Record)
+		{
+			final Record r = (Record) object;
+			dialog = new PopupDialog(mainMenu, "Confirm delete",
+					TitleConstants.CONFIRM_DELETE_RECORD, "Yes", "No");
+			dialog.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getPropertyName().equals("POSITIVE"))
+					{
+						diagnosisDao.delete(r);
+						recordDao.delete(r);
+						changeView(getCurrentView());
+					}
+					
+				}
+			});
+			dialog.showGui();
+		}
+		else if(object instanceof Patient)
+		{
+			final Patient p = (Patient)object;
+			dialog= new PopupDialog(mainMenu, "Confirm delete", 
+					TitleConstants.CONFIRM_DELETE_PATIENT,
+					"Yes","No");
+			dialog.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getPropertyName().equals("POSITIVE"))
+					{
+						Record r = new Record();
+						int patientId =  (int)p.getAttribute(PatientTable.PATIENT_ID);
+						r.putAttribute(RecordTable.PATIENT_ID,patientId);
+						List<Record> records = recordDao.search(r, 0, recordDao.getCount(r));
+						Iterator<Record> i = records.iterator();
+						while(i.hasNext())
+						{
+							Record curRecord = i.next();
+							diagnosisDao.delete(curRecord);
+						}
+						recordDao.delete(patientId);
+						patientDao.delete(p);
+						changeView(getCurrentView());
+					}
+					
+				}
+			});
+			dialog.showGui();
+		}
+		else if(object instanceof DictionaryWord)
+		{
+			final DictionaryWord word = (DictionaryWord)object;
+			dialog = new PopupDialog(mainMenu, "Confirm delete",
+					TitleConstants.CONFIRM_DELETE_WORD, 
+					"Yes","No");
+			dialog.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getPropertyName().equals("POSITIVE"))
+					{
+						dictionaryDao.delete(word.getWord(), word.getType());
+						changeView(getCurrentView());
+					}
+					
+				}
+			});
+			dialog.showGui();
 		}
 	}
 }

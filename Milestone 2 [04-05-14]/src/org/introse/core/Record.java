@@ -4,11 +4,8 @@ package org.introse.core;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.awt.print.PageFormat;
-import java.awt.print.Printable;
 import java.util.HashMap;
 
 import javax.swing.JLabel;
@@ -20,7 +17,7 @@ import org.introse.Constants.StyleConstants;
 import org.introse.gui.panel.ListItem;
 import org.introse.gui.window.LoginWindow;
 
-public class Record  extends ListItem implements Printable
+public class Record  extends ListItem
 {
 	protected HashMap<String, Object> attributes;
 	
@@ -183,11 +180,14 @@ public class Record  extends ListItem implements Printable
 		add(irnLabel, c);
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(20,0,0,20);
-		c.weightx = 1.0;
+		c.insets = new Insets(20,0,0,0);
 		c.gridy = y++;
 		c.gridx = 1;
 		add(irnValue, c);
+		c.fill = GridBagConstraints.NONE;
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.EAST;
+		add(deleteButton, c);
 		
 		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.NONE;
@@ -248,11 +248,5 @@ public class Record  extends ListItem implements Printable
 		c.gridx = 1;
 		c.gridy = y++;
 		add(physicianValue, c);
-	}
-	
-	@Override
-	public int print(Graphics g, PageFormat pf, int page)
-	{
-		return 0;
 	}
 }

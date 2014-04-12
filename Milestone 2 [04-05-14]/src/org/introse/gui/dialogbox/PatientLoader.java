@@ -55,7 +55,7 @@ public class PatientLoader extends JDialog implements ActionListener
 		c.insets = new Insets(10,10,10,10);
 		pane.add(listPanel, c);
 		setContentPane(pane);
-		setPreferredSize(new Dimension(470, 
+		setPreferredSize(new Dimension(520, 
 				(int)(Preferences.getScreenHeight() * 0.8)));
 	}
 	
@@ -72,7 +72,7 @@ public class PatientLoader extends JDialog implements ActionListener
 		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
 		
 
-		final PatientListGenerator listWorker = new PatientListGenerator(patientList);
+		final PatientListGenerator listWorker = new PatientListGenerator(patientList, false);
 		listWorker.addPropertyChangeListener(new PropertyChangeListener()
 		{
 			@Override
