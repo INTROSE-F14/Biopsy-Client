@@ -70,7 +70,8 @@ public class Printer implements Printable{
 		p.setSize(8.5 * 72, 11 * 72);
 		p.setImageableArea(0.5 * 72, 0.0 * 72, 7.5 * 72, 10.5 * 72);
 		pf.setPaper(p);
-		return pf;     
+		PageFormat pf0 = printJob.validatePage(pf);
+		return pf0;     
 	}
 	
 	private void addHeader(){
