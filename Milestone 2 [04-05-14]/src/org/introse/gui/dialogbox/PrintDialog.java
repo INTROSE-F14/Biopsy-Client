@@ -255,7 +255,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 	
 	private String getSpaces(String s1, String s2){
 		FontMetrics fm = this.tp_textpane.getFontMetrics(tp_textpane.getFont());
-		int width = (int) getFormat().getImageableWidth() - 108;
+		int width = (int) getFormat().getImageableWidth() - 120;
 		int length1 = fm.stringWidth(s1);
 		int length2 = fm.stringWidth(s2);
 		int space = fm.charWidth(' ');
@@ -269,7 +269,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 	
 	private String getSpaces(String s1, String s2, String s3){
 		FontMetrics fm = this.tp_textpane.getFontMetrics(tp_textpane.getFont());
-		int width = (int) getFormat().getImageableWidth() - 108;
+		int width = (int) getFormat().getImageableWidth() - 120;
 		int length1 = fm.stringWidth(s1);
 		int length2 = fm.stringWidth(s2);
 		int length3 = fm.stringWidth(s3);
