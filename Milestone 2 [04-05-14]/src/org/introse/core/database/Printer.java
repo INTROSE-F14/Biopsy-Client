@@ -26,9 +26,8 @@ public class Printer implements Printable{
 	}
 	
 	private ArrayList<String> parseString(ArrayList<String> list_strings, FontMetrics metrics, PageFormat pf){
-		
-		int margins = 36;
-		int width = (int) pf.getImageableWidth() - margins;
+
+		int width = (int) pf.getImageableWidth();
 		
 		String temp = list_strings.get(list_strings.size()-1);
 		if(metrics.charsWidth(temp.toCharArray(), 0, temp.toCharArray().length) <= width)
@@ -53,9 +52,8 @@ public class Printer implements Printable{
 	}
 	
 	private int getIndexOfFittingString (String[] a_string, FontMetrics metrics, PageFormat pf){
-		
-		int margins = 36;
-		int width = (int) pf.getImageableWidth() - margins;
+
+		int width = (int) pf.getImageableWidth();
 		int i = 0;
 		String temp = a_string[i];
 		while(metrics.charsWidth(temp.toCharArray(), 0, temp.toCharArray().length) <= width){
@@ -66,11 +64,11 @@ public class Printer implements Printable{
 		return i;
 	}
 
-	private PageFormat setMargin(PrinterJob printJob) {
+	private PageFormat setFormat(PrinterJob printJob) {
 		PageFormat pf0 = printJob.defaultPage();
 		PageFormat pf1 = (PageFormat) pf0.clone();
 		Paper p = pf0.getPaper();
-		p.setImageableArea(72, 72,pf0.getWidth()-72, pf0.getHeight()-72);
+		p.setImageableArea(72, 72,pf0.getWidth()-144, pf0.getHeight()-144);
 		pf1.setPaper(p);
 		PageFormat pf2 = printJob.validatePage(pf1);
 		return pf2;     
@@ -86,10 +84,9 @@ public class Printer implements Printable{
 	}
 	
 	private void initRecord(FontMetrics metrics, PageFormat pf){
-		int margins = 36;
 		String spaceString = " ";
 		int space = metrics.charsWidth(spaceString.toCharArray(), 0, spaceString.toCharArray().length);
-		int width = (int) pf.getImageableWidth() - margins;
+		int width = (int) pf.getImageableWidth();
 		
 		//constants	
 		String numberLabel;
@@ -300,7 +297,6 @@ public class Printer implements Printable{
 		al_lines.add(new PrintedLine(pathologistLabel, 2));
 	}
 	
-	
 	private void addHistoCytoDiagnosis(List<Diagnosis> l_diagnosis, FontMetrics metrics, PageFormat pf){
 		String diagnosis = l_diagnosis.get(0).getValue();
 		String[] a_diagnosis = diagnosis.split("\n");
@@ -466,7 +462,7 @@ public class Printer implements Printable{
 		this.al_lines.clear();
 		this.record = record;
 		PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(this, setMargin(job));
+        job.setPrintable(this, setFormat(job));
 		 boolean ok = job.printDialog();
          if (ok) {
              try {
