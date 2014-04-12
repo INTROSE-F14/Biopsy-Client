@@ -63,7 +63,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 		this.sd_doc = this.tp_textpane.getStyledDocument();
 		this.tp_textpane.setFont(new Font("Courier", Font.PLAIN, 12));
 		this.tp_textpane.setEditable(false);
-		this.tp_textpane.setMargin(new Insets(72, 72,72, 72));
+		this.tp_textpane.setMargin(new Insets(72, 144,72, 144));
 		
 		this.sp_scrollpane = new JScrollPane( this.tp_textpane );
         this.sp_scrollpane.setPreferredSize( new Dimension(730, 450));
@@ -255,7 +255,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 	
 	private String getSpaces(String s1, String s2){
 		FontMetrics fm = this.tp_textpane.getFontMetrics(tp_textpane.getFont());
-		int width = (int) getFormat().getImageableWidth();
+		int width = (int) getFormat().getImageableWidth() - 72;
 		int length1 = fm.stringWidth(s1);
 		int length2 = fm.stringWidth(s2);
 		int space = fm.charWidth(' ');
@@ -269,7 +269,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 	
 	private String getSpaces(String s1, String s2, String s3){
 		FontMetrics fm = this.tp_textpane.getFontMetrics(tp_textpane.getFont());
-		int width = (int) getFormat().getImageableWidth();
+		int width = (int) getFormat().getImageableWidth() - 72;
 		int length1 = fm.stringWidth(s1);
 		int length2 = fm.stringWidth(s2);
 		int length3 = fm.stringWidth(s3);
