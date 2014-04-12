@@ -48,6 +48,7 @@ import org.introse.core.workers.RecordListGenerator;
 import org.introse.core.workers.RestoreWorker;
 import org.introse.gui.dialogbox.PatientLoader;
 import org.introse.gui.dialogbox.PopupDialog;
+import org.introse.gui.dialogbox.PrintDialog;
 import org.introse.gui.dialogbox.SearchDialog;
 import org.introse.gui.dialogbox.SearchPatientDialog;
 import org.introse.gui.dialogbox.SearchRecordDialog;
@@ -590,7 +591,7 @@ public class ProjectDriver
 		Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
 		List<Diagnosis> diagnosis = diagnosisDao.getDiagnosis(r);
 		r.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
-		printer.startPrint(r);
+		PrintDialog pd = new PrintDialog(r);
 	}
 
 	public void createNew(int type)
