@@ -10,8 +10,6 @@ import java.awt.event.ActionListener;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -44,7 +42,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 	public PrintDialog(Record record){
 	
 		setTitle("Print Dialog");
-		setSize(660,630);
+		setSize(800,630);
 
 		//Center
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -65,24 +63,24 @@ public class PrintDialog extends JDialog implements ActionListener{
 		this.sd_doc = this.tp_textpane.getStyledDocument();
 		this.tp_textpane.setFont(new Font("Courier", Font.PLAIN, 12));
 		this.tp_textpane.setEditable(false);
-		this.tp_textpane.setMargin(new Insets(20, 20, 20, 20));
+		this.tp_textpane.setMargin(new Insets(72, 72,72, 72));
 		
 		this.sp_scrollpane = new JScrollPane( this.tp_textpane );
-        this.sp_scrollpane.setPreferredSize( new Dimension(600, 450));
-		this.sp_scrollpane.setSize(600,450);
+        this.sp_scrollpane.setPreferredSize( new Dimension(730, 450));
+		this.sp_scrollpane.setSize(730,450);
 		this.sp_scrollpane.setLocation(30,30);
 		this.sp_scrollpane.setBorder(BorderFactory.createLoweredBevelBorder());
         this.add( this.sp_scrollpane );
 		
 		this.btn_print = new JButton("Print");
 		this.btn_print.setSize(150,25);
-		this.btn_print.setLocation(450,485);
+		this.btn_print.setLocation(610,485);
 		this.btn_print.addActionListener(this);
 		this.add(this.btn_print);
 
 		this.btn_exit = new JButton("Back to Main Menu");
 		this.btn_exit.setSize(160,25);
-		this.btn_exit.setLocation(250,535);
+		this.btn_exit.setLocation(320,535);
 		this.btn_exit.addActionListener(this);
 		this.add(this.btn_exit);
 		
