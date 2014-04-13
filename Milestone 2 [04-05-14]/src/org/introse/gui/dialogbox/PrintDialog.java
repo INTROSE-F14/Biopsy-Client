@@ -227,11 +227,11 @@ public class PrintDialog extends JDialog implements ActionListener{
 				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + specimenLabel + specimen),null);
 				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + physicianLabel + physician + getSpaces(physicianLabel+physician,roomLabel+room) + roomLabel + room), null);
 				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + dateReceivedLabel + dateReceived + getSpaces(dateReceivedLabel+dateReceived,dateCompletedLabel+dateCompleted) + dateCompletedLabel + dateCompleted), null);
-				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				this.centerAlign();
-				sd_doc.insertString(sd_doc.getLength(), "\n"+title, mas_boldunderline);
-				this.leftAlign();
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
+				sd_doc.insertString(sd_doc.getLength(), "\n"+title, mas_boldunderline);
+				sd_doc.insertString(sd_doc.getLength(), "\n", null);
+				this.leftAlign();
 				switch((char)record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
 				case 'G': this.addGynecologyDiagnosis(l_diagnosis);
 						break;
