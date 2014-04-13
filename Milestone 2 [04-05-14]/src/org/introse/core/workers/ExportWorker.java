@@ -44,7 +44,6 @@ public class ExportWorker extends SwingWorker<Void, String>
 		List<HealthData> hdList = healthDataDao.getData();
 		PrintWriter writer = null;
 		int total = hdList.size();
-		int completed = 0;
 		try
 		{
 			writer = new PrintWriter(new FileWriter(exportFile, false));

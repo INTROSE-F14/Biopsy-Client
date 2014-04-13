@@ -133,6 +133,7 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
 	{
 		pack();
 		setResizable(false);
+		setLocationRelativeTo(null);
 		setVisible(true);
 	}
    

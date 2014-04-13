@@ -40,10 +40,16 @@ import org.introse.core.dao.MysqlRecordDao;
 import org.introse.core.database.FileHelper;
 import org.introse.core.network.Client;
 import org.introse.core.workers.BackupWorker;
+import org.introse.core.workers.DiagnosisRetrieveWorker;
+import org.introse.core.workers.DiagnosisUpdateWorker;
 import org.introse.core.workers.DictionaryListGenerator;
 import org.introse.core.workers.ExportWorker;
 import org.introse.core.workers.PatientListGenerator;
+import org.introse.core.workers.PatientRetrieveWorker;
+import org.introse.core.workers.PatientUpdateWorker;
 import org.introse.core.workers.RecordListGenerator;
+import org.introse.core.workers.RecordRetrieveWorker;
+import org.introse.core.workers.RecordUpdateWorker;
 import org.introse.core.workers.RestoreWorker;
 import org.introse.gui.dialogbox.PatientLoader;
 import org.introse.gui.dialogbox.PopupDialog;
@@ -207,7 +213,6 @@ public class ProjectDriver
 		patientDao = new MysqlPatientDao();
 		diagnosisDao = new MysqlDiagnosisDao();
 		dictionaryDao = new MysqlDictionaryDao();
-		
 		SwingUtilities.invokeLater(new Runnable()
 		{
 			public void run()
@@ -351,53 +356,63 @@ public class ProjectDriver
 			listPanel.setStart(0);
 		listPanel.setListSize(recordDao.getCount(record));
 		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
-		final RecordListGenerator listWorker = new RecordListGenerator(recordDao.search(record, listPanel.getStart(), 
-				listPanel.getRange()), patientDao);
-		listWorker.addPropertyChangeListener(new PropertyChangeListener()
-		{
+		
+		final RecordRetrieveWorker recordWorker = new RecordRetrieveWorker(recordDao, 
+				record, listPanel.getStart(), listPanel.getRange());
+		recordWorker.addPropertyChangeListener(new PropertyChangeListener() {
+			
 			@Override
-			public void propertyChange(PropertyChangeEvent evt) 
-			{
+			public void propertyChange(PropertyChangeEvent evt) {
 				if(evt.getPropertyName().equals("DONE"))
 				{
+					List<Record> records;
 					try 
 					{
-						List<ListItem> list = listWorker.get();
-						listPanel.updateViewable(list);
-						if(list.size() < 1)
-							listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-						else listPanel.showPanel(TitleConstants.LIST_PANEL);
-					} catch (InterruptedException | ExecutionException e) 
-					{e.printStackTrace();}
+						records = (List<Record>)recordWorker.get();
+						final RecordListGenerator listWorker = new RecordListGenerator(records, patientDao);
+						listWorker.addPropertyChangeListener(new PropertyChangeListener()
+						{
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) 
+							{
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									try 
+									{
+										List<ListItem> list = listWorker.get();
+										listPanel.updateViewable(list);
+										if(list.size() < 1)
+											listPanel.showPanel(TitleConstants.EMPTY_PANEL);
+										else listPanel.showPanel(TitleConstants.LIST_PANEL);
+									} catch (InterruptedException | ExecutionException e) 
+									{e.printStackTrace();}
+								}
+							}
+						});
+						listWorker.execute();
+					} catch (InterruptedException | ExecutionException e1) 
+					{e1.printStackTrace();}
 				}
+				
 			}
 		});
-		listWorker.execute();
+		recordWorker.execute();
 	}
 	
 	public void updatePList(Patient p, final String view, boolean reset)
 	{
-		List<Patient> list;
 		final ListPanel listPanel = 
 				mainMenu.getContentPanel().getPanel(view);
+		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
+		if(p == null)
+		listPanel.setListSize(patientDao.getCount());
+		else listPanel.setListSize(patientDao.getCount(p));
 		if(reset)
 			listPanel.setStart(0);
-		if(p == null)
-		{
-			listPanel.setListSize(patientDao.getCount());
-			list = patientDao.getAll(listPanel.getStart(), listPanel.getRange());
-		}
-		else
-		{
-			listPanel.setListSize(patientDao.getCount(p));
-			list = patientDao.search(p, listPanel.getStart(), listPanel.getRange());
-		}
-		
-		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
-		
-
-		final PatientListGenerator listWorker = new PatientListGenerator(list, true);
-		listWorker.addPropertyChangeListener(new PropertyChangeListener()
+		final PatientRetrieveWorker worker = new 
+				PatientRetrieveWorker(patientDao, p, listPanel.getStart(), 
+						listPanel.getRange());
+		worker.addPropertyChangeListener(new PropertyChangeListener() 
 		{
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) 
@@ -406,18 +421,35 @@ public class ProjectDriver
 				{
 					try 
 					{
-						
-							List<ListItem> list = listWorker.get();
-							listPanel.updateViewable(list);
-							if(list.size() < 1)
-								listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-							else listPanel.showPanel(TitleConstants.LIST_PANEL);
+						List<Patient> list = (List<Patient>)worker.get();
+						final PatientListGenerator listWorker = new PatientListGenerator(list, true);
+						listWorker.addPropertyChangeListener(new PropertyChangeListener()
+						{
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) 
+							{
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									try 
+									{
+										
+										List<ListItem> list = listWorker.get();
+										listPanel.updateViewable(list);
+										if(list.size() < 1)
+											listPanel.showPanel(TitleConstants.EMPTY_PANEL);
+										else listPanel.showPanel(TitleConstants.LIST_PANEL);
+									} catch (InterruptedException | ExecutionException e) 
+									{e.printStackTrace();}
+								}
+							}
+						});
+						listWorker.execute();
 					} catch (InterruptedException | ExecutionException e) 
 					{e.printStackTrace();}
 				}
 			}
 		});
-		listWorker.execute();
+		worker.execute();
 	}
 	
 	public void viewItem(ListItem listItem)
@@ -445,32 +477,64 @@ public class ProjectDriver
 		}
 	}
 	
-	public void showDetails(Object object)
+	public void showDetails(final Object object)
 	{
 		if(object instanceof Record)
 		{
-			Record record = (Record)object;
+			final Record record = (Record)object;
 			Patient patient = new Patient();
 			patient.putAttribute(PatientTable.PATIENT_ID, 
 					record.getAttribute(Constants.RecordTable.PATIENT_ID));
-			patient = (Patient)patientDao.get(patient);
 			
-			RecordForm recordForm = null;
-			List<Diagnosis> diagnosis = diagnosisDao.getDiagnosis(record);
-			record.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
-			record.putAttribute(RecordTable.PATIENT, patient);
-			
-			if(object instanceof HistopathologyRecord)
-				recordForm = new HistopathologyForm();
-			else if(object instanceof GynecologyRecord)
-				recordForm = new GynecologyForm();
-			else if(object instanceof CytologyRecord)
-				recordForm = new CytologyForm();
-			
-			recordForm.setFields(record, patient);
-			
-			detailPanel = new RecordPanel((JPanel)recordForm, Constants.ActionConstants.VIEW);
-			detailPanel.addListener(listener);
+			final PatientRetrieveWorker patientWorker = new PatientRetrieveWorker(patientDao, patient, 0, 0);
+			patientWorker.addPropertyChangeListener(new PropertyChangeListener() 
+			{	
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) 
+				{
+					try 
+					{
+						final Patient p = (Patient)patientWorker.get();
+						final DiagnosisRetrieveWorker diagnosisWorker = new DiagnosisRetrieveWorker(diagnosisDao, record);
+						diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
+							
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) {
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									RecordForm recordForm = null;
+									List<Diagnosis> diagnosis;
+									try {
+										diagnosis = (List<Diagnosis>)diagnosisWorker.get();
+										record.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
+										record.putAttribute(RecordTable.PATIENT, p);
+										
+										if(object instanceof HistopathologyRecord)
+											recordForm = new HistopathologyForm();
+										else if(object instanceof GynecologyRecord)
+											recordForm = new GynecologyForm();
+										else if(object instanceof CytologyRecord)
+											recordForm = new CytologyForm();
+										
+										recordForm.setFields(record, p);
+										detailPanel = new RecordPanel((JPanel)recordForm, Constants.ActionConstants.VIEW);
+										detailPanel.addListener(listener);
+										mainMenu.getContentPanel().setDetailsPanel(detailPanel);
+										mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
+									} catch (InterruptedException
+											| ExecutionException e) 
+									{e.printStackTrace();}
+								}
+							}
+						});
+						diagnosisWorker.execute();
+					
+					} catch (InterruptedException | ExecutionException e) 
+					{e.printStackTrace();}
+					
+				}
+			});
+			patientWorker.execute();
 		}
 		
 		else if(object instanceof Patient)
@@ -480,9 +544,10 @@ public class ProjectDriver
 			form.setFields(patient);
 			detailPanel = new PatientPanel(form, Constants.ActionConstants.VIEW);
 			detailPanel.addListener(listener);
+			mainMenu.getContentPanel().setDetailsPanel(detailPanel);
+			mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
 		}
-		mainMenu.getContentPanel().setDetailsPanel(detailPanel);
-		mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
+		
 	}
 	
 	public void editCurrentForm()
@@ -494,62 +559,178 @@ public class ProjectDriver
 	{
 		if(detailPanel.areFieldsValid())
 		{
-			if(detailPanel instanceof RecordPanel)
+			SwingWorker bigWorker = new SwingWorker()
 			{
-				Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
-				Patient p = ((RecordPanel)detailPanel).getRecordForm().getPatient();
-				DetailPanel rP = (DetailPanel)detailPanel;
-				r.putAttribute(Constants.RecordTable.PATIENT_ID, 
-						 p.getAttribute(PatientTable.PATIENT_ID));				
-				switch(rP.getMode())
+
+				@Override
+				protected void done()
 				{
-				case Constants.ActionConstants.NEW: int recordNumber = recordDao.generateRecordNumber(r);
-													System.out.println(recordNumber);
-													if(recordNumber == -1 || recordNumber > 9999)
-													{
-														PopupDialog dialog = new PopupDialog(mainMenu, 
-																"Error Saving record", "Record number full", "OK");
-														dialog.showGui();
-														return;
-													}
-													else
-													{	
-														 r.putAttribute(RecordTable.RECORD_NUMBER, recordNumber);
-														 if(patientDao.get(p) == null)
-														 	patientDao.add(p);
-														 recordDao.add(r);
-													}
-													 break;
-				case Constants.ActionConstants.EDIT: recordDao.update(r);
-													 break;
+					this.firePropertyChange("DONE", null, null);
 				}
-				diagnosisDao.delete(r);
-				List<Diagnosis> diagnosis = (List<Diagnosis>)r.getAttribute(RecordTable.DIAGNOSIS);
-				if(diagnosis != null)
+				@Override
+				protected Object doInBackground() throws Exception 
 				{
-					Iterator<Diagnosis> i = diagnosis.iterator();
-					while(i.hasNext())
+				if(detailPanel instanceof RecordPanel)
+				{
+					final Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
+					final Patient p = ((RecordPanel)detailPanel).getRecordForm().getPatient();
+					DetailPanel rP = (DetailPanel)detailPanel;
+					int patientID = (int)p.getAttribute(PatientTable.PATIENT_ID);
+					if(patientID != -1)
+						r.putAttribute(RecordTable.PATIENT_ID, patientID);
+					
+					final DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, r);
+					diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() 
 					{
-						Diagnosis d = i.next();
-						d.setReferenceNumber(((char)r.getAttribute(RecordTable.RECORD_TYPE)),
-								(int)r.getAttribute(RecordTable.RECORD_YEAR), (int)r.getAttribute(RecordTable.RECORD_NUMBER));
-						diagnosisDao.add(d);
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) 
+						{
+							if(evt.getPropertyName().equals("DONE"))
+							{
+								List<Diagnosis> diagnosis = (List<Diagnosis>)r.getAttribute(RecordTable.DIAGNOSIS);
+								if(diagnosis != null)
+								{
+									Iterator<Diagnosis> i = diagnosis.iterator();
+									while(i.hasNext())
+									{
+										Diagnosis d = i.next();
+										d.setReferenceNumber(((char)r.getAttribute(RecordTable.RECORD_TYPE)),
+												(int)r.getAttribute(RecordTable.RECORD_YEAR), (int)r.getAttribute(RecordTable.RECORD_NUMBER));
+									}
+									final DiagnosisUpdateWorker addWorker = new DiagnosisUpdateWorker(diagnosisDao, diagnosis);
+									addWorker.addPropertyChangeListener(new PropertyChangeListener()
+									{	
+										@Override
+										public void propertyChange(PropertyChangeEvent evt) 
+										{
+											if(evt.getPropertyName().equals("DONE"))
+											{
+												((RecordPanel)detailPanel).getRecordForm().setFields(r, p);
+											}	
+										}
+									});
+									addWorker.execute();
+								}
+								else ((RecordPanel)detailPanel).getRecordForm().setFields(r, p);
+							}
+						}
+					});
+					
+					switch(rP.getMode())
+					{
+					case Constants.ActionConstants.NEW:  if(patientID == -1)
+														 {
+															final PatientUpdateWorker worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.ADD);
+															worker.addPropertyChangeListener(new PropertyChangeListener() 
+															{
+																@Override
+																public void propertyChange(PropertyChangeEvent evt) {
+																	if(evt.getPropertyName().equals("DONE"))
+																	{
+																		 try 
+																		 {
+																			int pID = worker.get();
+																			r.putAttribute(RecordTable.PATIENT_ID, pID);
+																			final RecordUpdateWorker recordWorker = new 
+																					RecordUpdateWorker(recordDao, r, RecordUpdateWorker.ADD);
+																			recordWorker.addPropertyChangeListener(new PropertyChangeListener() {
+																				
+																				@Override
+																				public void propertyChange(PropertyChangeEvent evt) {
+																					if(evt.getPropertyName().equals("DONE"))
+																					{
+																						try 
+																						{
+																							int recordNumber = recordWorker.get();
+																							r.putAttribute(RecordTable.RECORD_NUMBER, recordNumber);
+																							diagnosisWorker.execute();
+																						} catch (
+																								InterruptedException
+																								| ExecutionException e) 
+																						{e.printStackTrace();}
+																					}
+																				}
+																			});
+																			recordWorker.execute();
+																		} catch (
+																				InterruptedException
+																				| ExecutionException e) 
+																		{e.printStackTrace();}
+																	}
+																}
+															});
+															worker.execute();
+														 }
+														 else 
+														 {
+															 final RecordUpdateWorker recordWorker = new 
+																		RecordUpdateWorker(recordDao, r, RecordUpdateWorker.ADD);
+															 recordWorker.addPropertyChangeListener(new PropertyChangeListener() {
+																	
+																	@Override
+																	public void propertyChange(PropertyChangeEvent evt) {
+																		if(evt.getPropertyName().equals("DONE"))
+																		{
+																			try 
+																			{
+																				int recordNumber = recordWorker.get();
+																				r.putAttribute(RecordTable.RECORD_NUMBER, recordNumber);
+																				diagnosisWorker.execute();
+																			} catch (
+																					InterruptedException
+																					| ExecutionException e) 
+																			{e.printStackTrace();}
+																		}
+																	}
+																});
+																recordWorker.execute();
+														 }
+														 break;
+					case Constants.ActionConstants.EDIT: final RecordUpdateWorker recordWorker = new 
+															RecordUpdateWorker(recordDao, r, RecordUpdateWorker.UPDATE);
+															recordWorker.addPropertyChangeListener(new PropertyChangeListener() {
+																
+																@Override
+																public void propertyChange(PropertyChangeEvent evt) {
+																	if(evt.getPropertyName().equals("DONE"))
+																	{
+																		diagnosisWorker.execute();
+																	}
+																	
+																}
+															});
+															recordWorker.execute();
+														 break;
 					}
 				}
-				((RecordPanel)detailPanel).getRecordForm().setFields(r, p);
-			}
-			else if(detailPanel instanceof PatientPanel)
-			{
-				Patient p = (Patient)detailPanel.getObject();
-				DetailPanel rP = (DetailPanel)detailPanel;
-				switch(rP.getMode())
+				else if(detailPanel instanceof PatientPanel)
 				{
-				case ActionConstants.NEW:	patientDao.add(p);
-											break;
-				case ActionConstants.EDIT:	patientDao.update(p);
+					PatientUpdateWorker worker = null;
+					Patient p = (Patient)detailPanel.getObject();
+					DetailPanel rP = (DetailPanel)detailPanel;
+					switch(rP.getMode())
+					{
+					case ActionConstants.NEW:	worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.ADD);
+												break;
+					case ActionConstants.EDIT:	worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.UPDATE);
+					}
+					if(worker != null)
+						worker.execute();
 				}
-			}
-			detailPanel.setMode(Constants.ActionConstants.VIEW);
+				return null;
+				}
+				
+			};
+			bigWorker.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getPropertyName().equals("DONE"))
+						detailPanel.setMode(Constants.ActionConstants.VIEW);
+				}
+			});
+			bigWorker.execute();
+			
 		}
 		else new PopupDialog(mainMenu, "Save Error", "Please fill up all required fields.", "OK").showGui();
 	}
@@ -558,23 +739,93 @@ public class ProjectDriver
 	{
 		if(detailPanel.getMode() == Constants.ActionConstants.EDIT)
 		{
-			System.out.println("Hello");
 			if(detailPanel instanceof RecordPanel)
 			{
 				Record record = (Record)detailPanel.getObject();
-				record = (Record)recordDao.get(record);
-				List<Diagnosis> diagnosis = diagnosisDao.getDiagnosis(record);
-				record.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
-				Patient patient = new Patient();
-				patient.putAttribute(PatientTable.PATIENT_ID, record.getAttribute(RecordTable.PATIENT_ID));
-				patient = (Patient)patientDao.get(patient);
-				((RecordPanel)detailPanel).getRecordForm().setFields(record, patient);
+				
+				final RecordRetrieveWorker recordWorker = new RecordRetrieveWorker(recordDao, record, 0, 0);
+				recordWorker.addPropertyChangeListener(new PropertyChangeListener() {
+					
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if(evt.getPropertyName().equals("DONE"))
+						{
+							try 
+							{
+								final Record actualRecord = (Record)recordWorker.get();
+								final DiagnosisRetrieveWorker diagnosisWorker = new DiagnosisRetrieveWorker(diagnosisDao, actualRecord);
+								diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() 
+								{	
+									@Override
+									public void propertyChange(PropertyChangeEvent evt) {
+										if(evt.getPropertyName().equals("DONE"))
+										{
+											List<Diagnosis> diagnosis;
+											try 
+											{
+												diagnosis = (List<Diagnosis>)diagnosisWorker.get();
+												actualRecord.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
+												Patient patient = new Patient();
+												patient.putAttribute(PatientTable.PATIENT_ID, actualRecord.getAttribute(RecordTable.PATIENT_ID));
+												
+												final PatientRetrieveWorker patientWorker = new PatientRetrieveWorker(patientDao, patient, 0, 0);
+												patientWorker.addPropertyChangeListener(new PropertyChangeListener()
+												{	
+													@Override
+													public void propertyChange(PropertyChangeEvent evt) 
+													{
+														if(evt.getPropertyName().equals("DONE"))
+														{
+															try 
+															{
+																((RecordPanel)detailPanel).getRecordForm().setFields(actualRecord, (Patient)patientWorker.get());
+																detailPanel.setMode(Constants.ActionConstants.VIEW);
+															} catch (InterruptedException | ExecutionException e) 
+															{e.printStackTrace();}
+														}
+													}
+												});
+												patientWorker.execute();
+											} catch (InterruptedException
+													| ExecutionException e1) 
+											{e1.printStackTrace();}
+										}
+									}
+								});
+								diagnosisWorker.execute();
+							} catch (InterruptedException | ExecutionException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						}
+						
+					}
+				});
+				recordWorker.execute();
+				
+				
 			}
 			else if(detailPanel instanceof PatientPanel)
 			{
-				((PatientPanel)detailPanel).getPatientForm().setFields((Patient)patientDao.get((Patient)detailPanel.getObject()));
+				final PatientRetrieveWorker patientWorker = new PatientRetrieveWorker(patientDao, (Patient)detailPanel.getObject(), 0, 0);
+				patientWorker.addPropertyChangeListener(new PropertyChangeListener() {
+					
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if(evt.getPropertyName().equals("DONE"))
+						{
+							try 
+							{
+								((PatientPanel)detailPanel).getPatientForm().setFields((Patient)patientWorker.get());
+								detailPanel.setMode(Constants.ActionConstants.VIEW);
+							} catch (InterruptedException | ExecutionException e) 
+							{e.printStackTrace();}
+						}
+						
+					}
+				});
+				patientWorker.execute();
 			}
-			detailPanel.setMode(Constants.ActionConstants.VIEW);
 		}
 		else 
 		{
@@ -585,10 +836,26 @@ public class ProjectDriver
 	
 	public void printCurrentForm()
 	{
-		Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
-		List<Diagnosis> diagnosis = diagnosisDao.getDiagnosis(r);
-		r.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
-		PrintDialog pd = new PrintDialog(r);
+		final Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
+		final DiagnosisRetrieveWorker diagnosisWorker = new DiagnosisRetrieveWorker(diagnosisDao, r);
+		diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(evt.getPropertyName().equals("DONE"))
+				{
+					List<Diagnosis> diagnosis;
+					try 
+					{
+						diagnosis = (List<Diagnosis>)diagnosisWorker.get();
+						r.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
+						PrintDialog pd = new PrintDialog(r);
+					} catch (InterruptedException | ExecutionException e) 
+					{e.printStackTrace();}
+				}
+			}
+		});
+		diagnosisWorker.execute();
 	}
 
 	public void createNew(int type)
@@ -597,13 +864,12 @@ public class ProjectDriver
 		JPanel recordForm = null;
 		JPanel patientForm = null;
 		Record record;
-		Patient patient;
+		Patient patient = new Patient();
+		patient.putAttribute(PatientTable.PATIENT_ID, -1);
 		switch(type)
 		{
 		case Constants.RecordConstants.HISTOPATHOLOGY_RECORD:	
 											record = new HistopathologyRecord();
-											patient = new Patient();
-											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getCount() + 1);
 											recordForm = new HistopathologyForm();
 											((RecordForm)recordForm).setFields(record, patient);
 											panel = new RecordPanel(recordForm, Constants.ActionConstants.NEW);
@@ -611,8 +877,6 @@ public class ProjectDriver
 											break;
 		case Constants.RecordConstants.GYNECOLOGY_RECORD:		
 											record = new GynecologyRecord();
-											patient = new Patient();
-											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getCount() + 1);
 											recordForm = new GynecologyForm();
 											((RecordForm)recordForm).setFields(record, patient);
 											panel = new RecordPanel(recordForm, Constants.ActionConstants.NEW);
@@ -620,16 +884,12 @@ public class ProjectDriver
 											break;
 		case Constants.RecordConstants.CYTOLOGY_RECORD:			
 											record = new CytologyRecord();
-											patient = new Patient();
-											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getCount() + 1);
 											recordForm = new CytologyForm();
 											((RecordForm)recordForm).setFields(record, patient);
 											panel = new RecordPanel(recordForm, Constants.ActionConstants.NEW);
 											((DetailPanel)panel).addListener(listener);
 											break;
 		case Constants.RecordConstants.PATIENT:			
-											patient = new Patient();
-											patient.putAttribute(PatientTable.PATIENT_ID, patientDao.getCount() + 1);
 											patientForm = new PatientForm();
 											((Form)patientForm).setFields(patient);
 											panel = new PatientPanel(patientForm, Constants.ActionConstants.NEW);
@@ -700,7 +960,8 @@ public class ProjectDriver
 	
 	public void openPatientLoad()
 	{
-		loader = new PatientLoader(patientDao, listListener);
+		loader = new PatientLoader(patientDao);
+		loader.addListListener(listListener);
 		loader.showGUI();
 	}
 	
@@ -966,9 +1227,22 @@ public class ProjectDriver
 				public void propertyChange(PropertyChangeEvent evt) {
 					if(evt.getPropertyName().equals("POSITIVE"))
 					{
-						diagnosisDao.delete(r);
-						recordDao.delete(r);
-						changeView(getCurrentView());
+						final DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, r);
+						diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
+							
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) {
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									final RecordUpdateWorker recordWorker = new 
+											RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
+									recordWorker.execute();
+									changeView(getCurrentView());
+								}
+								
+							}
+						});
+						diagnosisWorker.execute();
 					}
 					
 				}
@@ -981,27 +1255,61 @@ public class ProjectDriver
 			dialog= new PopupDialog(mainMenu, "Confirm delete", 
 					TitleConstants.CONFIRM_DELETE_PATIENT,
 					"Yes","No");
-			dialog.addPropertyChangeListener(new PropertyChangeListener() {
-				
+			dialog.addPropertyChangeListener(new PropertyChangeListener() 
+			{	
 				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
+				public void propertyChange(PropertyChangeEvent evt) 
+				{
 					if(evt.getPropertyName().equals("POSITIVE"))
 					{
-						Record r = new Record();
-						int patientId =  (int)p.getAttribute(PatientTable.PATIENT_ID);
+						final Record r = new Record();
+						final int patientId =  (int)p.getAttribute(PatientTable.PATIENT_ID);
 						r.putAttribute(RecordTable.PATIENT_ID,patientId);
-						List<Record> records = recordDao.search(r, 0, recordDao.getCount(r));
-						Iterator<Record> i = records.iterator();
-						while(i.hasNext())
-						{
-							Record curRecord = i.next();
-							diagnosisDao.delete(curRecord);
-						}
-						recordDao.delete(patientId);
-						patientDao.delete(p);
-						changeView(getCurrentView());
+						final RecordRetrieveWorker recordWorker = new RecordRetrieveWorker(recordDao,r, 0, recordDao.getCount(r));
+						recordWorker.addPropertyChangeListener(new PropertyChangeListener() 
+						{							
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) 
+							{
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									List<Record> records;
+									try 
+									{
+										records = (List<Record>)recordWorker.get();
+										Iterator<Record> i = records.iterator();
+										while(i.hasNext())
+										{
+											Record curRecord = i.next();
+											DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, curRecord);
+											diagnosisWorker.execute();
+										}
+										final RecordUpdateWorker updateWorker = new 
+												RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
+										updateWorker.addPropertyChangeListener(new PropertyChangeListener() 
+										{	
+											@Override
+											public void propertyChange(PropertyChangeEvent evt) 
+											{
+												if(evt.getPropertyName().equals("DONE"))
+												{
+													PatientUpdateWorker worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.DELETE);
+													worker.execute();
+													changeView(getCurrentView());
+												}
+											}
+										});
+										updateWorker.execute();
+										
+									} catch (InterruptedException
+											| ExecutionException e) 
+									{e.printStackTrace();}
+								}
+								
+							}
+						});
+						recordWorker.execute();
 					}
-					
 				}
 			});
 			dialog.showGui();

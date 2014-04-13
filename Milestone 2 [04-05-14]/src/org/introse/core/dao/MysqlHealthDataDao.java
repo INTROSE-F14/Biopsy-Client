@@ -26,7 +26,10 @@ public class MysqlHealthDataDao extends MysqlDao
 		ResultSet result = null;
 		Connection conn = null;
 		String sql = "SELECT * FROM patients AS pat, records AS rec, diagnosis AS dia "
-				+ "WHERE (pat.patientID = rec.patientID) AND (rec.recordYear = dia.recordYear) AND (rec.recordType = dia.recordType);";
+				+ "WHERE pat.patientID = rec.patientID AND " +
+				"rec.recordYear = dia.recordYear AND " +
+				"rec.recordType = dia.recordType AND " +
+				"rec.recordNumber = dia.recordNumber";
 
 		try 
 		{

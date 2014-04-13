@@ -10,6 +10,7 @@ import java.util.Vector;
 
 import org.introse.Constants;
 import org.introse.Constants.PatientTable;
+import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
 
@@ -238,16 +239,14 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-		//		if(conn != null)
-		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return matches;
 	}
 	
-	public void add(Patient patient)
+	public int add(Patient patient)
 	{
-		int patientId = (int)patient.getAttribute(PatientTable.PATIENT_ID);
+		int patientId = -1;
 		String lastName = ((String)patient.getAttribute(PatientTable.LAST_NAME)).replace("\"", "\\\"");
 		lastName = "\""+lastName+"\"";
 		String firstName = ((String)patient.getAttribute(PatientTable.FIRST_NAME)).replace("\"", "\\\"");
@@ -259,18 +258,23 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
 		String bDay = "\"" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "\"";
 		
-		String sql = "Insert into Patients(" + PatientTable.PATIENT_ID + ", " + PatientTable.LAST_NAME  +
+		String sql = "Insert into Patients(" + PatientTable.LAST_NAME  +
 				", " + PatientTable.FIRST_NAME + ", " + PatientTable.MIDDLE_NAME + ", " + PatientTable.GENDER + 
-				", " + PatientTable.BIRTHDAY + ") value (" + patientId + ", " +
+				", " + PatientTable.BIRTHDAY + ") value (" +
 				lastName + ", " + firstName + ", " + middleName + ", " + gender + ", " + bDay + ")";
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
+		ResultSet key = null;
 		try 
 		{
 			conn = createConnection();
 			stmt = conn.createStatement();
-			stmt.executeUpdate(sql);
+			stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			key = stmt.getGeneratedKeys();
+			key.first();
+			patientId = key.getInt(1);
+			System.out.println(patientId);
 		} catch (ClassNotFoundException | SQLException e) {e.printStackTrace();}  
 		finally
 		{
@@ -280,10 +284,9 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-		//		if(conn != null)
-		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
+		return patientId;
 	}
 
 	@Override
@@ -331,8 +334,6 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-		//		if(conn != null)
-		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return null;
@@ -381,8 +382,6 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-		//		if(conn != null)
-		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		
@@ -529,10 +528,71 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-		//		if(conn != null)
-		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return count;
+	}
+
+
+	@Override
+	public List<Patient> get(char start, char end) 
+	{
+		List<Patient> patients = new Vector<Patient>();
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet result = null;
+		String sql = "Select * from patients WHERE ";
+		boolean hasPrevious = false;
+		
+		while(start <= end)
+		{
+			String lastName = "\"" + start + "%\"";
+			if(hasPrevious)
+				sql = sql.concat(" OR ");
+			sql = sql.concat(PatientTable.LAST_NAME + " LIKE " + lastName);
+			start++;
+			hasPrevious = true;
+		}
+		System.out.println(sql);
+		
+		try 
+		{
+			conn = createConnection();
+			stmt = conn.createStatement();
+			result = stmt.executeQuery(sql);
+			
+			while(result.next())
+			{
+				Patient p = new Patient();
+				p.putAttribute(PatientTable.PATIENT_ID.toString(),
+						result.getInt(PatientTable.PATIENT_ID.toString()));
+				p.putAttribute(PatientTable.LAST_NAME.toString(), 
+						result.getString(PatientTable.LAST_NAME.toString()));
+				p.putAttribute(PatientTable.FIRST_NAME.toString(), 
+						result.getString(PatientTable.FIRST_NAME.toString()));
+				p.putAttribute(PatientTable.MIDDLE_NAME.toString(), 
+						result.getString(PatientTable.MIDDLE_NAME.toString()));
+				Calendar bday = Calendar.getInstance();
+				bday.setTime(result.getDate(PatientTable.BIRTHDAY.toString()));
+				CustomCalendar calendar = new CustomCalendar();
+				calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
+				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				p.putAttribute(PatientTable.GENDER.toString(), 
+						result.getString(PatientTable.GENDER.toString()));
+				patients.add(p);
+			}
+		} catch (ClassNotFoundException | SQLException e) 
+		{e.printStackTrace();}  
+		finally
+		{
+			try
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+			} catch (SQLException e) {e.printStackTrace();}
+		}
+		return patients;
 	}
 }

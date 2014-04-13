@@ -454,12 +454,12 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 	}
 	
 	@Override
-	public void add(Record record)
+	public int add(Record record)
 	{
+		int recordNumber = -1;
 		int patientId = (int)record.getAttribute(Constants.RecordTable.PATIENT_ID);
 		String recordType = "\""+(char)record.getAttribute(Constants.RecordTable.RECORD_TYPE)+"\"";
 		int recordYear = (int)record.getAttribute(RecordTable.RECORD_YEAR);
-		int recordNumber = (int)record.getAttribute(RecordTable.RECORD_NUMBER);
 		String specimen = ((String)record.getAttribute(Constants.RecordTable.SPECIMEN)).replace("\"", "\\\"");
 		specimen =	"\""+specimen+"\"";
 		String pathologist = ((String)record.getAttribute(Constants.RecordTable.PATHOLOGIST)).replace("\"", "\\\"");
@@ -489,11 +489,11 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		
 		
 		String sql = "Insert into Records(" + Constants.RecordTable.PATIENT_ID + ", "+ Constants.RecordTable.RECORD_YEAR+", "+
-					RecordTable.RECORD_NUMBER + ", " + Constants.RecordTable.SPECIMEN + ", " + Constants.RecordTable.PATHOLOGIST + ", " +
+					Constants.RecordTable.SPECIMEN + ", " + Constants.RecordTable.PATHOLOGIST + ", " +
 					Constants.RecordTable.PHYSICIAN + ", " + Constants.RecordTable.REMARKS + ", " + 
 					Constants.RecordTable.DATE_RECEIVED +", " + Constants.RecordTable.DATE_COMPLETED + ", " + 
 					Constants.RecordTable.RECORD_TYPE + ", " + RecordTable.ROOM + ", " + RecordTable.SPEC_TYPE + ", " + 
-					RecordTable.GROSS_DESC + ", " + RecordTable.MICRO_NOTE + ") value (" + patientId + ", " + recordYear + ", " + recordNumber + ", " + specimen + ", " + pathologist + ", " + 
+					RecordTable.GROSS_DESC + ", " + RecordTable.MICRO_NOTE + ") value (" + patientId + ", " + recordYear + ", " + specimen + ", " + pathologist + ", " + 
 					physician + ", " + remarks + ", " + dateReceived + ", "+ dateCompleted + "," + recordType + 
 					", " + room + ", " + specimenType +", " + grossdesc + ", " + micronote + ")";
 		Connection conn = null;
@@ -504,7 +504,10 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			System.out.println(sql);
 			conn = createConnection();
 			stmt = conn.createStatement();
-			stmt.executeUpdate(sql);
+			stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			result = stmt.getGeneratedKeys();
+			result.first();
+			recordNumber = result.getInt(1);
 		} catch (ClassNotFoundException | SQLException e) {e.printStackTrace();}  
 		finally
 		{
@@ -516,6 +519,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					stmt.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
+		return recordNumber;
 	}
 
 	@Override
@@ -586,52 +590,6 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 					stmt.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
-	}
-	
-	public int generateRecordNumber(Record record)
-	{
-		Connection conn = null;
-		Statement stmt = null;
-		Statement stmt2 = null;
-		ResultSet result = null;
-		ResultSet result2 = null;
-		int max = -1;
-		int count = 0;
-		String sql1 = "SELECT MAX(" + RecordTable.RECORD_NUMBER + ") FROM " + TitleConstants.RECORDS + " WHERE " + 
-		RecordTable.RECORD_TYPE + " = \"" + record.getAttribute(RecordTable.RECORD_TYPE) + "\" " + 
-		" AND " + RecordTable.RECORD_YEAR + " = " + record.getAttribute(RecordTable.RECORD_YEAR);
-		String sql2 = "SELECT COUNT(*) FROM " + TitleConstants.RECORDS + " WHERE " + 
-				RecordTable.RECORD_TYPE + " = \"" + record.getAttribute(RecordTable.RECORD_TYPE) + "\" " + 
-				" AND " + RecordTable.RECORD_YEAR + " = " + record.getAttribute(RecordTable.RECORD_YEAR);
-		
-		try 
-		{
-			System.out.println(sql1);
-			conn = createConnection();
-			stmt = conn.createStatement();
-			stmt2 = conn.createStatement();
-			result = stmt.executeQuery(sql1);
-			result2 = stmt2.executeQuery(sql2);
-			if(result.next() && result2.next())
-			{
-				max = result.getInt("MAX(" + RecordTable.RECORD_NUMBER + ")");
-				count = result2.getInt("COUNT(*)");
-				if(count > 0)
-					max++;
-			}
-			
-		} catch (ClassNotFoundException | SQLException e) {e.printStackTrace();}  
-		finally
-		{
-			try
-			{
-				if(result != null)
-					result.close();
-				if(stmt != null)
-					stmt.close();
-			} catch (SQLException e) {e.printStackTrace();}
-		}
-		return max;
 	}
 
 	@Override

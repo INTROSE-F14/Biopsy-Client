@@ -7,6 +7,7 @@ import java.util.Vector;
 import javax.swing.SwingWorker;
 
 import org.introse.core.Patient;
+import org.introse.core.dao.PatientDao;
 import org.introse.gui.panel.ListItem;
 
 public class PatientListGenerator extends SwingWorker<List<ListItem>, ListItem> {

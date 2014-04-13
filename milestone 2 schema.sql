@@ -11,31 +11,21 @@ CREATE TABLE Patients
 	birthday DATE NOT NULL,
 	gender CHAR(1) NOT NULL,
 	PRIMARY KEY(patientID)
-);
-
-DROP TABLE IF EXISTS Changelog;
-CREATE TABLE Changelog
-(
-	patientID INT UNSIGNED AUTO_INCREMENT NOT NULL,
-	dateEdited TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-	changesMade VARCHAR(100),
-	PRIMARY KEY(dateEdited, patientID),
-	FOREIGN KEY(patientID) REFERENCES Patients(patientID)
-);
+)ENGINE = MyISAM;
 
 
 DROP TABLE IF EXISTS Records;
 CREATE TABLE Records
 (
-	recordYear INT(2) NOT NULL,
-	recordNumber INT(4) NOT NULL,
-	recordType CHAR(1) NOT NULL,
+	recordYear TINYINT NOT NULL,
+	recordNumber SMALLINT NOT NULL AUTO_INCREMENT,
+	recordType ENUM('G','H','C') NOT NULL,
 	patientID INT UNSIGNED NOT NULL,
 	physician VARCHAR(100) NOT NULL,
 	pathologist VARCHAR(100) NOT NULL,
 	dateReceived DATETIME NOT NULL,
 	dateCompleted DATETIME NOT NULL,
-	specimen VARCHAR(50) NOT NULL,
+	specimen VARCHAR(100) NOT NULL,
 	specimenType VARCHAR (30) NOT NULL,
 	room VARCHAR(15),
 	remarks VARCHAR(2000),
@@ -43,7 +33,7 @@ CREATE TABLE Records
 	microscopicNotes VARCHAR(2000),
 	PRIMARY KEY(recordType, recordYear, recordNumber),
 	FOREIGN KEY(patientID) REFERENCES Patients(patientID)
-);
+) ENGINE = MyISAM;
 
 DROP TABLE IF EXISTS Dictionary;
 CREATE TABLE Dictionary
@@ -51,7 +41,7 @@ CREATE TABLE Dictionary
 	word varchar(100) NOT NULL,
 	wordType int(1) NOT NULL,
 	PRIMARY KEY(word, wordtype)
-);
+)ENGINE = MyISAM;
 
 DROP TABLE IF EXISTS Categories;
 CREATE TABLE Categories
@@ -60,20 +50,20 @@ CREATE TABLE Categories
 	category_name varchar(100) NOT NULL,
 	parent_category INT DEFAULT NULL,
 	PRIMARY KEY(category_id)
-);
+)ENGINE = MyISAM;
 
 DROP TABLE IF EXISTS Diagnosis;
 CREATE TABLE Diagnosis
 (
 	category_id INT UNSIGNED NOT NULL,
-	recordYear INT(2) NOT NULL,
-	recordNumber INT(4) NOT NULL,
-	recordType CHAR(1) NOT NULL,
+	recordYear TINYINT NOT NULL,
+	recordNumber SMALLINT NOT NULL,
+	recordType ENUM('G','H','C') NOT NULL,
 	diagnosis_value VARCHAR(2000) NOT NULL,
 	PRIMARY KEY(category_id, recordYear, recordNumber, recordType),
 	FOREIGN KEY(category_id) REFERENCES Categories(category_id),
 	FOREIGN KEY(recordType, recordYear, recordNumber) REFERENCES Records(recordType, recordYear, recordNumber)
-);
+) ENGINE = MyISAM;
 
 
 insert into categories values

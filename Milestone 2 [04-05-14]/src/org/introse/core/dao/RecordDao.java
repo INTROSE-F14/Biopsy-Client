@@ -7,13 +7,12 @@ import org.introse.core.Record;
 
 public interface RecordDao 
 {
-	public void add(Record record);
+	public int add(Record record);
 	public void delete(Record record);
 	public void delete(int patient);
 	public void update(Record record);
 	public List<Record> search(Record record, int start, int end);
 	public Record get(Record record);
 	public List<Record> getAll();
-	public int generateRecordNumber(Record record);
 	public int getCount(Record record);
 }

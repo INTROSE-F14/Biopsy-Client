@@ -153,6 +153,7 @@ public class SearchPatientDialog extends SearchDialog implements ActionListener
     {
         pack();
         setResizable(false);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 

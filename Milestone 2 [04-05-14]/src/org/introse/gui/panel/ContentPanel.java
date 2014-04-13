@@ -285,6 +285,7 @@ public class ContentPanel extends JPanel
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
 									  countLabel.setText(patientList.getListSize()+"");
+									  newButton.setActionCommand(ActionConstants.NEW_PATIENT);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_PATIENT);
 									  searchButton.setVisible(true);
 									  newButton.setVisible(true);
