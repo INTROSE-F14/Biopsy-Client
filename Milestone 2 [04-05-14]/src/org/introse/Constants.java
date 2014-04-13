@@ -51,7 +51,7 @@ public abstract class Constants
 		public static final String CONFIRM_DELETE_WORD =  "Are you sure you want to delete this word?";
 		public static final String CONFIRM_DELETE_RECORD = "Are you sure you want to delete this record?";
 		public static final String CONFIRM_DELETE_PATIENT = "Are you sure you want to delete this patient? This will also delete all records associated to this patient";
-		public static final String DICTIONARY_HINT = "Add words, phrases, or names";
+		public static final String DICTIONARY_HINT = "Add words, phrases, or names (eg 'Juan dela Cruz' (Dr and MD is provided on printout))";
 		public static final String DICTIONARY = "Dictionary";
 		public static final String DISCARD_CHANGES_MESSAGE = "All changes made will be discarded, do you want to continue?";
 		public static final String REFRESH_PANEL = "Refresh";

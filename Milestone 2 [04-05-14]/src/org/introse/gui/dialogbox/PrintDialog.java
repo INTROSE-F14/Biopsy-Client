@@ -1,5 +1,6 @@
 package org.introse.gui.dialogbox;
 
+import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,6 +15,7 @@ import java.awt.print.PrinterException;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
@@ -42,8 +44,9 @@ public class PrintDialog extends JDialog implements ActionListener{
 		
 	public PrintDialog(Record record){
 	
-		setTitle("Print Dialog");
+		setTitle("Print Preview");
 		setSize(650,630);
+		getContentPane().setBackground(Color.WHITE);
 
 		//Center
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -71,18 +74,28 @@ public class PrintDialog extends JDialog implements ActionListener{
         this.sp_scrollpane.setPreferredSize( new Dimension(585, 450));
 		this.sp_scrollpane.setSize(585,450);
 		this.sp_scrollpane.setLocation(30,30);
-		this.sp_scrollpane.setBorder(BorderFactory.createLoweredBevelBorder());
+		this.sp_scrollpane.setBorder(BorderFactory.createLineBorder(Color.decode("#bdc3c7")));
         this.add( this.sp_scrollpane );
 		
-		this.btn_print = new JButton("Print");
-		this.btn_print.setSize(150,25);
-		this.btn_print.setLocation(250,485);
+		this.btn_print = new JButton();
+		this.btn_print.setIcon(new ImageIcon(getClass().getResource("/res/icons/print2.png")));
+		this.btn_print.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/print2Hover.png")));
+		this.btn_print.setSize(100,50);
+		this.btn_print.setLocation(220,520);
+		this.btn_print.setBorderPainted(false);
+		this.btn_print.setContentAreaFilled(false);
+		this.btn_print.setRequestFocusEnabled(false);
 		this.btn_print.addActionListener(this);
 		this.add(this.btn_print);
 
-		this.btn_exit = new JButton("Close Dialog");
-		this.btn_exit.setSize(150,25);
-		this.btn_exit.setLocation(250,535);
+		this.btn_exit = new JButton();
+		this.btn_exit.setIcon(new ImageIcon(getClass().getResource("/res/icons/close.png")));
+		this.btn_exit.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/closeHover.png")));
+		this.btn_exit.setSize(100,50);
+		this.btn_exit.setLocation(330,520);
+		this.btn_exit.setBorderPainted(false);
+		this.btn_exit.setContentAreaFilled(false);
+		this.btn_exit.setRequestFocusEnabled(false);
 		this.btn_exit.addActionListener(this);
 		this.add(this.btn_exit);
 		
@@ -469,7 +482,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 		
 		try{
 			sd_doc.insertString(sd_doc.getLength(), "\n", null);
-			sd_doc.insertString(sd_doc.getLength(), "\n" + "_____________________", null);
+			sd_doc.insertString(sd_doc.getLength(), "\n" + "__________________________", null);
 			sd_doc.insertString(sd_doc.getLength(), "\n" + pathologist + ", MD", null);
 			sd_doc.insertString(sd_doc.getLength(), "\n" + pathologistLabel, null);
 		}
