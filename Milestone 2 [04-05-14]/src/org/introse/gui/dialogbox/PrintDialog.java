@@ -469,7 +469,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 		
 		try{
 			sd_doc.insertString(sd_doc.getLength(), "\n", null);
-			sd_doc.insertString(sd_doc.getLength(), "\n" + "_____________________", null);
+			sd_doc.insertString(sd_doc.getLength(), "\n" + "_____________________, MD", null);
 			sd_doc.insertString(sd_doc.getLength(), "\n" + pathologist, null);
 			sd_doc.insertString(sd_doc.getLength(), "\n" + pathologistLabel, null);
 		}
