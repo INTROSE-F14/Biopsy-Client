@@ -70,4 +70,18 @@ public class CustomCalendar
 	{
 		return months[month] + " " + day + ", " + year;
 	}
+	
+	public String toNumericFormat()
+	{
+		String monthfinal = month + "";
+		String dayfinal = day + "";
+		if(month < 10){
+			monthfinal = "0" + monthfinal;
+		}
+		if(day < 10){
+			dayfinal = "0" + dayfinal;
+		}
+		return monthfinal + "/" + dayfinal + "/" + year;
+	}
+	
 }

@@ -205,8 +205,8 @@ public class PrintDialog extends JDialog implements ActionListener{
 			
 			String pathologist = (String) record.getAttribute(Constants.RecordTable.PATHOLOGIST);
 			String physician = (String) record.getAttribute(Constants.RecordTable.PHYSICIAN);
-			String dateReceived =  record.getAttribute(Constants.RecordTable.DATE_RECEIVED).toString();;
-			String dateCompleted = record.getAttribute(Constants.RecordTable.DATE_COMPLETED).toString();
+			String dateReceived =  ((CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED)).toNumericFormat();;
+			String dateCompleted = ((CustomCalendar) record.getAttribute(Constants.RecordTable.DATE_COMPLETED)).toNumericFormat();
 			
 			List<Diagnosis> l_diagnosis = (List)record.getAttribute(RecordTable.DIAGNOSIS);
 			
