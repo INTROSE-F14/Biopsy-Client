@@ -239,7 +239,12 @@ public class PrintDialog extends JDialog implements ActionListener{
 				}
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				sd_doc.insertString(sd_doc.getLength(),"\n" + commentsLabel, mas_boldunderline);
-				sd_doc.insertString(sd_doc.getLength(), "\n" + comments, null);
+				if(comments == null){
+					sd_doc.insertString(sd_doc.getLength(), "\n", null);
+				}
+				else{
+					sd_doc.insertString(sd_doc.getLength(), "\n" + comments, null);
+				}
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				sd_doc.insertString(sd_doc.getLength(), "\n" + descriptionLabel, mas_boldunderline);
 				sd_doc.insertString(sd_doc.getLength(), "\n" + description, null);
@@ -324,9 +329,14 @@ public class PrintDialog extends JDialog implements ActionListener{
 					break;
 			default: break;
 			}
-		sd_doc.insertString(sd_doc.getLength(), "\n" + diagnosisLabel, mas_boldunderline);
-		sd_doc.insertString(sd_doc.getLength(), "\n", null);
-		sd_doc.insertString(sd_doc.getLength(), "\n" + l_diagnosis.get(0).getValue(), null);
+			sd_doc.insertString(sd_doc.getLength(), "\n" + diagnosisLabel, mas_boldunderline);
+			sd_doc.insertString(sd_doc.getLength(), "\n", null);
+			if(l_diagnosis.get(0) != null){
+				sd_doc.insertString(sd_doc.getLength(), "\n" + l_diagnosis.get(0).getValue(), null);
+			}
+			else{
+				sd_doc.insertString(sd_doc.getLength(), "\n", null);
+			}
 		}
 		catch(Exception e){
 			
