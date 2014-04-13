@@ -38,7 +38,6 @@ import org.introse.core.dao.MysqlDictionaryDao;
 import org.introse.core.dao.MysqlPatientDao;
 import org.introse.core.dao.MysqlRecordDao;
 import org.introse.core.database.FileHelper;
-import org.introse.core.database.Printer;
 import org.introse.core.network.Client;
 import org.introse.core.workers.BackupWorker;
 import org.introse.core.workers.DictionaryListGenerator;
@@ -90,7 +89,6 @@ public class ProjectDriver
 	private static final ProjectDriver driver = new ProjectDriver();
 	private static final CustomListener listener =  new CustomListener(driver);
 	private static final ListListener listListener = new ListListener(driver);
-	private Printer printer;
 	
 	public static void main(String[] args) 
 	{
@@ -209,7 +207,6 @@ public class ProjectDriver
 		patientDao = new MysqlPatientDao();
 		diagnosisDao = new MysqlDiagnosisDao();
 		dictionaryDao = new MysqlDictionaryDao();
-		printer = new Printer();
 		
 		SwingUtilities.invokeLater(new Runnable()
 		{

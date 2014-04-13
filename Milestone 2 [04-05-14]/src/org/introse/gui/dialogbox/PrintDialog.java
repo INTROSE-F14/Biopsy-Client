@@ -1,5 +1,6 @@
 package org.introse.gui.dialogbox;
 
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -56,7 +57,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 
 		setLocation(x, y);
 		setResizable(false);
-		setModal(true);
+		setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		setLayout(null);
 
 		this.tp_textpane= new JTextPane();
