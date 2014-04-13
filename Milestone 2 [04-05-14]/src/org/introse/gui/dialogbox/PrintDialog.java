@@ -63,9 +63,10 @@ public class PrintDialog extends JDialog implements ActionListener{
 		this.sd_doc = this.tp_textpane.getStyledDocument();
 		this.tp_textpane.setFont(new Font("Courier", Font.PLAIN, 12));
 		this.tp_textpane.setEditable(false);
-		this.tp_textpane.setMargin(new Insets(72, 72,72, 72));
+		this.tp_textpane.setMargin(new Insets(36, 72,36, 72));
+		this.tp_textpane.setHighlighter(null);
 		
-		this.sp_scrollpane = new JScrollPane( this.tp_textpane );
+		this.sp_scrollpane = new JScrollPane(this.tp_textpane);
         this.sp_scrollpane.setPreferredSize( new Dimension(585, 450));
 		this.sp_scrollpane.setSize(585,450);
 		this.sp_scrollpane.setLocation(30,30);
@@ -330,7 +331,6 @@ public class PrintDialog extends JDialog implements ActionListener{
 			default: break;
 			}
 			sd_doc.insertString(sd_doc.getLength(), "\n" + diagnosisLabel, mas_boldunderline);
-			sd_doc.insertString(sd_doc.getLength(), "\n", null);
 			if(l_diagnosis.get(0) != null){
 				sd_doc.insertString(sd_doc.getLength(), "\n" + l_diagnosis.get(0).getValue(), null);
 			}
