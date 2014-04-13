@@ -235,13 +235,13 @@ public class PrintDialog extends JDialog implements ActionListener{
 				switch((char)record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
 				case 'G': this.addGynecologyDiagnosis(l_diagnosis);
 						break;
-				default: this.addHistoCytoDiagnosis(l_diagnosis);
+				default: this.addHistoCytoDiagnosis(l_diagnosis, (char)record.getAttribute(Constants.RecordTable.RECORD_TYPE));
 				}
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
-				sd_doc.insertString(sd_doc.getLength(),"\n" + commentsLabel, null);
+				sd_doc.insertString(sd_doc.getLength(),"\n" + commentsLabel, mas_boldunderline);
 				sd_doc.insertString(sd_doc.getLength(), "\n" + comments, null);
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
-				sd_doc.insertString(sd_doc.getLength(), "\n" + descriptionLabel, null);
+				sd_doc.insertString(sd_doc.getLength(), "\n" + descriptionLabel, mas_boldunderline);
 				sd_doc.insertString(sd_doc.getLength(), "\n" + description, null);
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				this.rightAlign();
@@ -311,8 +311,21 @@ public class PrintDialog extends JDialog implements ActionListener{
 	}
 }
 	
-	private void addHistoCytoDiagnosis(List<Diagnosis> l_diagnosis){
+	private void addHistoCytoDiagnosis(List<Diagnosis> l_diagnosis, char type){
+		MutableAttributeSet mas_boldunderline = new SimpleAttributeSet();
+		StyleConstants.setBold(mas_boldunderline, true);
+		StyleConstants.setUnderline(mas_boldunderline, true);
 		try{
+			String diagnosisLabel = "";
+			switch(type){
+			case 'H': diagnosisLabel = Constants.PrintConstants.DIAGNOSIS_LABEL_H;
+					break;
+			case 'C':diagnosisLabel = Constants.PrintConstants.DIAGNOSIS_LABEL_C;
+					break;
+			default: break;
+			}
+		sd_doc.insertString(sd_doc.getLength(), "\n" + diagnosisLabel, mas_boldunderline);
+		sd_doc.insertString(sd_doc.getLength(), "\n", null);
 		sd_doc.insertString(sd_doc.getLength(), "\n" + l_diagnosis.get(0).getValue(), null);
 		}
 		catch(Exception e){
