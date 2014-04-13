@@ -226,7 +226,14 @@ public class PrintDialog extends JDialog implements ActionListener{
 			List<Diagnosis> l_diagnosis = (List)record.getAttribute(RecordTable.DIAGNOSIS);
 			
 			String comments = (String) record.getAttribute(Constants.RecordTable.REMARKS);
-			String description = (String) record.getAttribute(Constants.RecordTable.GROSS_DESC) + "\n\n" + (String) record.getAttribute(Constants.RecordTable.MICRO_NOTE);				
+			String grossdesc = "";
+			String micronote = "";
+			if((String) record.getAttribute(Constants.RecordTable.GROSS_DESC) != null)
+				grossdesc = (String) record.getAttribute(Constants.RecordTable.GROSS_DESC);
+			if((String) record.getAttribute(Constants.RecordTable.MICRO_NOTE) != null)
+				micronote = (String) record.getAttribute(Constants.RecordTable.MICRO_NOTE);
+
+			String description = grossdesc + "\n\n" + micronote;				
 			
 			MutableAttributeSet mas_bold = new SimpleAttributeSet();
 			MutableAttributeSet mas_boldunderline = new SimpleAttributeSet();
