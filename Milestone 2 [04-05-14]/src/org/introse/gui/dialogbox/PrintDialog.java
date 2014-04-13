@@ -222,14 +222,14 @@ public class PrintDialog extends JDialog implements ActionListener{
 			try{
 				this.addHeader();
 				this.leftAlign();
-				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + numberLabel + number + getSpaces(numberLabel+number,roomLabel+room) + roomLabel + room), null);
+				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + numberLabel + number), null);
 				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + patientLabel + patientName + getSpaces(patientLabel+patientName,ageLabel+age, genderLabel+gender) + ageLabel + age + getSpaces(patientLabel+patientName,ageLabel+age, genderLabel+gender) + genderLabel + gender), null);
-				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + specimenLabel + specimen + getSpaces(specimenLabel+specimen,physicianLabel+physician) + physicianLabel + physician), null);
+				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + specimenLabel + specimen),null);
+				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + physicianLabel + physician + getSpaces(physicianLabel+physician,roomLabel+room) + roomLabel + room), null);
 				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + dateReceivedLabel + dateReceived + getSpaces(dateReceivedLabel+dateReceived,dateCompletedLabel+dateCompleted) + dateCompletedLabel + dateCompleted), null);
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				this.centerAlign();
 				sd_doc.insertString(sd_doc.getLength(), "\n"+title, mas_boldunderline);
-				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				this.leftAlign();
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				switch((char)record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
@@ -300,7 +300,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 		StyleConstants.setUnderline(mas_boldunderline, true);
 	try{
 		this.centerAlign();
-		sd_doc.insertString(sd_doc.getLength(), String.format("MANILA DOCTOR'S HOSPITAL"), mas_boldunderline );
+		sd_doc.insertString(sd_doc.getLength(), String.format("MANILA DOCTORS HOSPITAL"), mas_boldunderline );
 		sd_doc.insertString(sd_doc.getLength(), String.format("\nDepartment of Laboratory Medicine"), mas_bold );
 		sd_doc.insertString(sd_doc.getLength(), String.format("\n667 U.N. Ave., Ermita, Manila"), mas_bold );
 		sd_doc.insertString(sd_doc.getLength(), String.format("\nTel. No. 5288108/ 5243011 loc. 8108"), mas_bold );
