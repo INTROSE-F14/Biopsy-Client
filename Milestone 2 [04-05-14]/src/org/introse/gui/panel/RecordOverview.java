@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Calendar;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
@@ -20,10 +19,7 @@ import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.core.CustomCalendar;
 import org.introse.core.CustomDocument;
-import org.introse.core.CytologyRecord;
 import org.introse.core.Dictionary;
-import org.introse.core.GynecologyRecord;
-import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.gui.combobox.DatePicker;
@@ -37,6 +33,10 @@ import ca.odell.glazedlists.swing.AutoCompleteSupport;
 public class RecordOverview extends JPanel 
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JComboBox<String> specimenValue, physicianValue, pathologistValue;
 	private JTextField roomValue;
 	private JLabel refNumberLabel,  refNumberValue, specimenLabel, physicianLabel, pathologistLabel, dateReceivedLabel,
@@ -328,19 +328,7 @@ public class RecordOverview extends JPanel
 	
 	public Record getRecord()
 	{
-		Record record = null;
-		switch(recordType)
-		{
-		case RecordConstants.HISTOPATHOLOGY_RECORD: 
-			record = new HistopathologyRecord();
-			break;
-		case RecordConstants.GYNECOLOGY_RECORD: 
-			record = new GynecologyRecord();
-			break;
-		case RecordConstants.CYTOLOGY_RECORD: 
-			record = new CytologyRecord();
-		}
-
+		Record record = new Record();
 		record.putAttribute(RecordTable.RECORD_TYPE, recordType);
 		if(!refNumberValue.getText().equals("Waiting for Completion"))
 		{

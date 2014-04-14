@@ -33,7 +33,6 @@ import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomDocument;
 import org.introse.core.Diagnosis;
-import org.introse.core.GynecologyRecord;
 import org.introse.core.Patient;
 import org.introse.core.Preferences;
 import org.introse.core.Record;
@@ -44,6 +43,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel cardPanel;
 	private JLabel pageLabel;
 	private JPanel firstPanel, secondPanel, findingsPanel, bottomPanel;
@@ -848,7 +851,7 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 	@Override
 	public Record getRecord() 
 	{
-		Record record = (GynecologyRecord)overviewPanel.getRecord();
+		Record record = overviewPanel.getRecord();
 		String specimenType = TitleConstants.OTHERS;
 		if(conventionalSmear.isSelected())
 			specimenType = TitleConstants.CONVENTIONAL;

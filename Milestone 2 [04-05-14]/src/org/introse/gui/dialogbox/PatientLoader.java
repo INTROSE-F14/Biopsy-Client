@@ -3,7 +3,6 @@ package org.introse.gui.dialogbox;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -40,6 +39,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class PatientLoader extends JDialog implements ActionListener
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private List<ListItem> patients; 
 	private JPanel pane, emptyPanel, refreshPanel, cardPanel;
 	private PatientDao patientDao;

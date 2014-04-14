@@ -8,6 +8,10 @@ import org.introse.gui.event.CustomListener;
 
 public abstract class DetailPanel extends JPanel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected int mode;
 	
 	public DetailPanel(LayoutManager lm, int mode)

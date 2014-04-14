@@ -1,8 +1,5 @@
 package org.introse.core.workers;
 
-import java.util.List;
-import java.util.Vector;
-
 import javax.swing.SwingWorker;
 
 import org.introse.core.Record;

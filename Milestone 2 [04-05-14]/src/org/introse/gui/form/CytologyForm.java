@@ -19,7 +19,6 @@ import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomDocument;
-import org.introse.core.CytologyRecord;
 import org.introse.core.Diagnosis;
 import org.introse.core.Patient;
 import org.introse.core.Preferences;
@@ -30,6 +29,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class CytologyForm extends JPanel implements RecordForm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel findingsPanel;
 	private JTextArea diagnosisValue, remarksValue, grossDescValue, microNoteValue;
 	private JScrollPane diagnosisScroller, remarksScroller, grossDescScroller, 
@@ -214,7 +217,7 @@ public class CytologyForm extends JPanel implements RecordForm
 	@Override
 	public Record getRecord() 
 	{
-		Record record = (CytologyRecord)overviewPanel.getRecord();
+		Record record = overviewPanel.getRecord();
 		if(diagnosisValue.getText().length() > 0)
 		{
 			Diagnosis diagnosis = new Diagnosis(CategoriesConstants.OTHERS, diagnosisValue.getText());

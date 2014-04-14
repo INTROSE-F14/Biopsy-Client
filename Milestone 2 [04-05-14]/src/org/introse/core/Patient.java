@@ -19,6 +19,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class Patient extends ListItem
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HashMap<String, Object> attributes;
 	
 	public Patient()

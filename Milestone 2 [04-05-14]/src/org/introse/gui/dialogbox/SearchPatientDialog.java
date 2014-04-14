@@ -27,7 +27,11 @@ import org.introse.gui.window.LoginWindow;
 public class SearchPatientDialog extends SearchDialog implements ActionListener
 {
    
-   private JTextField tf_fname,tf_mname, tf_lname;
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+private JTextField tf_fname,tf_mname, tf_lname;
    private JLabel lbl_fname, lbl_mname, lbl_lname, lbl_birthday, lbl_gender;
    private JComboBox<String> cb_gender;
    private JPanel pane;

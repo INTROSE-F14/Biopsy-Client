@@ -12,6 +12,10 @@ import javax.swing.JButton;
 
 public class NavButton extends JButton implements MouseListener{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private boolean isSelected;
 	private String normalColor;
 	private String hoverColor;

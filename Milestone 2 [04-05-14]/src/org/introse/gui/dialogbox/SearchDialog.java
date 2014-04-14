@@ -6,6 +6,10 @@ import org.introse.gui.event.CustomListener;
 
 public abstract class SearchDialog extends JDialog
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public SearchDialog(String title)
 	{
 		super(null, title, ModalityType.APPLICATION_MODAL);

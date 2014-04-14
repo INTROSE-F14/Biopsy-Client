@@ -14,6 +14,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class ProgressPanel extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JProgressBar progressBar;
 	private JLabel mainMessage, subMessage, recordCount, patientCount;
 	

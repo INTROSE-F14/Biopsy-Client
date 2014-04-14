@@ -15,6 +15,11 @@ import javax.swing.border.EmptyBorder;
 
 public class ErrorDialog extends JDialog implements ActionListener 
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ErrorDialog(String errorTitle, String errorMessage)
 	{
 		super(null, errorTitle, ModalityType.APPLICATION_MODAL);

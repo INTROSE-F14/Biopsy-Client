@@ -4,7 +4,6 @@ public class Diagnosis
 {
 	private int categoryID;
 	private String value;
-	private String referenceNumber;
 	private char recordType;
 	private int recordYear;
 	private int recordNumber;

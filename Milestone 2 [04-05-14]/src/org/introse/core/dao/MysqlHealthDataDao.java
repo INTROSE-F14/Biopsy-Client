@@ -9,13 +9,10 @@ import java.util.List;
 import java.util.Vector;
 
 import org.introse.Constants;
-import org.introse.Constants.DiagnosisTable;
 import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordTable;
 import org.introse.core.CustomCalendar;
-import org.introse.core.Diagnosis;
 import org.introse.core.HealthData;
-import org.introse.core.Patient;
 
 public class MysqlHealthDataDao extends MysqlDao
 {

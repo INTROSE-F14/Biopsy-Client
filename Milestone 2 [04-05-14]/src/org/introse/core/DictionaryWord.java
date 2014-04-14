@@ -15,6 +15,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class DictionaryWord extends ListItem {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int type;
 	private String word;
 	

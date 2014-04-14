@@ -10,7 +10,6 @@ import java.util.Vector;
 
 import org.introse.Constants;
 import org.introse.Constants.PatientTable;
-import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Patient;
 

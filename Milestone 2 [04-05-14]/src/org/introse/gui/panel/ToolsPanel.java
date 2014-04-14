@@ -23,6 +23,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class ToolsPanel extends JPanel 
 {	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel overviewPanel;
 	private JButton backupViewButton, restoreViewButton, exportViewButton;
 	private BackupPanel backupPanel;

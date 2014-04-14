@@ -20,12 +20,15 @@ import org.introse.Constants.StatusConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.core.Preferences;
 import org.introse.gui.window.LoginWindow;
-import org.introse.gui.window.MainMenu;
 
 public class RestorePanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel lblRestore, lblDirectory, lblStatus,
-	restoreDescription1, restoreDescription2, restoreDirectory,
+	restoreDescription1, restoreDirectory,
 	restoreStatus;
 	private JButton btnRestore, btnBack;
 	

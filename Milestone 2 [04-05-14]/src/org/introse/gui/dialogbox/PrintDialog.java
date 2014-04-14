@@ -37,6 +37,10 @@ import org.introse.gui.event.CustomListener;
 
 public class PrintDialog extends JDialog implements ActionListener{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JButton btn_print, btn_exit;
 	private JTextPane tp_textpane;
 	private JScrollPane sp_scrollpane;	

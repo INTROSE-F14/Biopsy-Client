@@ -27,6 +27,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class PatientForm extends JPanel implements Form
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTextField lastNameValue, firstNameValue, middleNameValue;
 	private JComboBox<String> genderValue;
 	private JLabel _lastNameValue, _firstNameValue,_middleNameValue, _genderValue, _birthdayValue;

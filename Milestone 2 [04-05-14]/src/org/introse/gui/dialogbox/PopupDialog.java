@@ -24,7 +24,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class PopupDialog extends JDialog implements ActionListener, MouseListener
 {
-	private int popupType;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final int SIMPLE_POPUP = 0;
 	public static final int YES_NO_POPUP = 1;
 	
@@ -39,7 +42,6 @@ public class PopupDialog extends JDialog implements ActionListener, MouseListene
 			String negativeOption)
 	{
 		super(parent, title, ModalityType.TOOLKIT_MODAL);
-		popupType = YES_NO_POPUP;
 		this.parent = parent;
 		this.message = message;
 		this.title = title;
@@ -54,7 +56,6 @@ public class PopupDialog extends JDialog implements ActionListener, MouseListene
 	public PopupDialog(JFrame parent, String title, String message, String positiveOption)
 	{
 		super(parent, title, ModalityType.TOOLKIT_MODAL);
-		popupType = SIMPLE_POPUP;
 		this.parent = parent;
 		this.message = message;
 		this.title = title;

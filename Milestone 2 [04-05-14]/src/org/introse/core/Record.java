@@ -19,6 +19,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class Record  extends ListItem
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected HashMap<String, Object> attributes;
 	
 	public Record()

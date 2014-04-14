@@ -18,6 +18,10 @@ import org.introse.gui.panel.NavigationPanel;
 
 public class MainMenu extends JFrame{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel mainPanel;
 	private NavigationPanel navigationPanel;
 	private ContentPanel contentPanel;

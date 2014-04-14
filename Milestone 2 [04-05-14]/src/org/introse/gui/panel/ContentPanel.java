@@ -25,6 +25,10 @@ import org.introse.gui.window.MainMenu;
 	
 public class ContentPanel extends JPanel 
 {	
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 		private String currentView;
 		private String previousView;
 		private JPanel topPanel;

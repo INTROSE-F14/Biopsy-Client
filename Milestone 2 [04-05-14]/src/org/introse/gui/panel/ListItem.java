@@ -1,6 +1,5 @@
 package org.introse.gui.panel;
 
-import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -16,6 +15,10 @@ import org.introse.Constants.ActionConstants;
 
 public abstract class ListItem extends JPanel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected List<String> labels;
 	protected ActionListener buttonListener;
 	protected JButton deleteButton;

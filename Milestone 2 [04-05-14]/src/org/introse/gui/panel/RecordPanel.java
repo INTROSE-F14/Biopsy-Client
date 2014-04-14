@@ -16,11 +16,13 @@ import org.introse.gui.form.RecordForm;
 
 public class RecordPanel extends DetailPanel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel topPanel;
 	private JPanel recordForm;
-	private JButton editOrSaveButton;
-	private JButton printOrCancelButton;
-	private JButton backButton;
+	private JButton editOrSaveButton, printOrCancelButton, backButton;
 	
 	public RecordPanel(JPanel recordForm, int mode)
 	{

@@ -23,6 +23,10 @@ import org.introse.gui.window.LoginWindow;
 
 public class ExportPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel lblExport, lblDirectory,
 	lblStatus, exportDescription1, exportDirectory, exportStatus;
 	private JButton btnExport, btnBack;

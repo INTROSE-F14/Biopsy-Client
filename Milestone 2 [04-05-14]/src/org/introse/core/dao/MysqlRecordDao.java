@@ -9,13 +9,9 @@ import java.util.List;
 import java.util.Vector;
 
 import org.introse.Constants;
-import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
-import org.introse.core.CytologyRecord;
-import org.introse.core.GynecologyRecord;
-import org.introse.core.HistopathologyRecord;
 import org.introse.core.Record;
 
 public class MysqlRecordDao extends MysqlDao implements RecordDao
@@ -37,20 +33,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			
 			while(result.next())
 			{
-				Record record = null;
+				Record record = new Record();
 				char recordType = result.getString(Constants.RecordTable.RECORD_TYPE).charAt(0);
-				switch(recordType)
-				{
-				case RecordConstants.HISTOPATHOLOGY_RECORD: //histopathology
-					record = new HistopathologyRecord();
-					break;
-				case RecordConstants.GYNECOLOGY_RECORD: //gynecology
-					record = new GynecologyRecord();
-					break;
-				case RecordConstants.CYTOLOGY_RECORD: //cytology
-					record = new CytologyRecord();
-					break;
-				}
 				record.putAttribute(Constants.RecordTable.PATIENT_ID, 
 						result.getInt(Constants.RecordTable.PATIENT_ID));
 				record.putAttribute(Constants.RecordTable.RECORD_YEAR, 
@@ -137,20 +121,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			
 			if(result.next())
 			{
-				record = null;
+				record = new Record();
 				char recordType = result.getString(Constants.RecordTable.RECORD_TYPE).charAt(0);
-				switch(recordType)
-				{
-					case Constants.RecordConstants.HISTOPATHOLOGY_RECORD:
-						record = new HistopathologyRecord();
-						break;
-					case RecordConstants.GYNECOLOGY_RECORD:
-						record = new GynecologyRecord();
-						break;
-					case RecordConstants.CYTOLOGY_RECORD: 
-						record = new CytologyRecord();
-						break;
-				}
 				record.putAttribute(Constants.RecordTable.PATIENT_ID, 
 						result.getInt(Constants.RecordTable.PATIENT_ID));
 				record.putAttribute(Constants.RecordTable.RECORD_YEAR, 
@@ -385,19 +357,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			result = stmt.executeQuery(sql);
 			while(result.next())
 			{
+				record = new Record();
 				char _recordType = result.getString(Constants.RecordTable.RECORD_TYPE).charAt(0);
-				switch(_recordType)
-				{
-					case Constants.RecordConstants.HISTOPATHOLOGY_RECORD:
-						record = new HistopathologyRecord();
-						break;
-					case RecordConstants.GYNECOLOGY_RECORD:
-						record = new GynecologyRecord();
-						break;
-					case RecordConstants.CYTOLOGY_RECORD: 
-						record = new CytologyRecord();
-						break;
-				}
 				record.putAttribute(Constants.RecordTable.PATIENT_ID, 
 						result.getInt(Constants.RecordTable.PATIENT_ID));
 				record.putAttribute(Constants.RecordTable.RECORD_YEAR, 

@@ -13,10 +13,7 @@ import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
-import org.introse.core.CytologyRecord;
 import org.introse.core.Diagnosis;
-import org.introse.core.GynecologyRecord;
-import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.core.dao.DiagnosisDao;
@@ -169,15 +166,7 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 		String gross = curRecord[12];
 		String micro = curRecord[13];
 		
-		Record record = null;
-		switch(recordType)
-		{
-		case RecordConstants.HISTOPATHOLOGY_RECORD: record = new HistopathologyRecord();
-			break;
-		case RecordConstants.GYNECOLOGY_RECORD:record = new GynecologyRecord();
-			break;
-		case RecordConstants.CYTOLOGY_RECORD:record = new CytologyRecord();
-		}
+		Record record = new Record();
 		record.putAttribute(RecordTable.RECORD_TYPE, recordType);
 		record.putAttribute(RecordTable.RECORD_YEAR, recordYear);
 		record.putAttribute(RecordTable.RECORD_NUMBER, recordNumber);

@@ -16,6 +16,10 @@ import org.introse.core.CustomCalendar;
 
 public class DatePicker extends JPanel implements ItemListener{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static String[] monthWithWildcard =  {"Month", "January", "February", 
 		 "March", "April", "May", "June", "July", "August", 
 		 "September", "October", "November", "December"};

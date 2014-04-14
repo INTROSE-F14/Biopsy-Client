@@ -24,14 +24,10 @@ import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.StatusConstants;
 import org.introse.Constants.TitleConstants;
-import org.introse.core.CytologyRecord;
 import org.introse.core.Diagnosis;
 import org.introse.core.Dictionary;
 import org.introse.core.DictionaryWord;
-import org.introse.core.GynecologyRecord;
-import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
-import org.introse.core.Preferences;
 import org.introse.core.Record;
 import org.introse.core.dao.MysqlDiagnosisDao;
 import org.introse.core.dao.MysqlDictionaryDao;
@@ -43,7 +39,10 @@ import org.introse.core.workers.BackupWorker;
 import org.introse.core.workers.DiagnosisRetrieveWorker;
 import org.introse.core.workers.DiagnosisUpdateWorker;
 import org.introse.core.workers.DictionaryListGenerator;
+import org.introse.core.workers.DictionaryRetrieveWorker;
+import org.introse.core.workers.DictionaryUpdateWorker;
 import org.introse.core.workers.ExportWorker;
+import org.introse.core.workers.LoginWorker;
 import org.introse.core.workers.PatientListGenerator;
 import org.introse.core.workers.PatientRetrieveWorker;
 import org.introse.core.workers.PatientUpdateWorker;
@@ -80,7 +79,7 @@ import org.introse.gui.window.MainMenu;
 
 public class ProjectDriver 
 {
-	public static LoginWindow loginForm;
+	public static LoginWindow loginWindow;
 	private final Client client = new Client();
 	private MainMenu mainMenu;
 	private MysqlRecordDao recordDao;
@@ -116,99 +115,25 @@ public class ProjectDriver
 	
 	public static void createAndShowGui()
 	{
-		loginForm = new LoginWindow();
-		loginForm.addListener(listener);
-		loginForm.showGUI();
+		loginWindow = new LoginWindow();
+		loginWindow.addListener(listener);
+		loginWindow.showGUI();
 	}
 	
 	public void login()
 	{
 		if(loginWorker == null || loginWorker.isDone())
 		{
-			loginForm.setLoadingVisible(true);
-			loginForm.setLoginButtonEnabled(false);
-			loginWorker = new SwingWorker<Integer, Void>()
-			{
-				@Override
-				protected Integer doInBackground() throws Exception 
-				{
-					String password = new String(loginForm.getPassword());
-					int loginStatus = client.connectToServer(password);
-					return loginStatus;
-				}
-				
-				@Override
-				protected void done()
-				{
-					firePropertyChange("DONE", null, null);
-				}
-			};
-			loginWorker.addPropertyChangeListener(new PropertyChangeListener() 
-			{	
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if(evt.getPropertyName().equals("DONE"))
-					{
-						int loginStatus;
-						try 
-						{
-							loginStatus = (int)loginWorker.get();
-							loginForm.setLoadingVisible(false);
-							loginForm.setLoginButtonEnabled(true);
-							loginForm.setListening(2);
-							switch(loginStatus)
-							{
-								case Constants.NetworkConstants.AUTHENTICATION_SUCCESSFUL: 
-									String[] serverInfo = client.getServerInfo().split(":");
-									String dbUsername = serverInfo[0];
-									String dbPassword = serverInfo[1];
-									String dbName = serverInfo[2];
-									int port = Integer.parseInt(serverInfo[3]);
-									String ip = serverInfo[4];
-									Preferences.setDatabaseName(dbName);
-									Preferences.setDatabaseAddress(ip, port);
-									Preferences.setDatabaseUsername(dbUsername);
-									Preferences.setDatabasePassword(dbPassword);
-									loginForm.exit();
-									startMainMenu();
-									break;
-								case Constants.NetworkConstants.AUTHENTICATION_FAILED:
-									PopupDialog dialog = new PopupDialog(loginForm, "Login Failed", 
-											"You entered an invalid password.", "OK");
-									dialog.addPropertyChangeListener(new PropertyChangeListener(){
-
-										@Override
-										public void propertyChange(PropertyChangeEvent evt) 
-										{loginForm.setListening(1);}
-									});
-									dialog.showGui();
-									break;
-								case Constants.NetworkConstants.SERVER_ERROR:
-									PopupDialog dialog2 = new PopupDialog(loginForm, "Server Error", 
-											"An error occured while trying to connect to the server.", "OK");
-									dialog2.addPropertyChangeListener(new PropertyChangeListener(){
-
-										@Override
-										public void propertyChange(PropertyChangeEvent evt) 
-										{loginForm.setListening(1);}
-									});
-									dialog2.showGui();
-									break;
-							}
-						} catch (InterruptedException | ExecutionException e) 
-						{
-							e.printStackTrace();
-						}
-					}
-				}
-			});
+			loginWindow.setLoadingVisible(true);
+			loginWindow.setLoginButtonEnabled(false);
+			loginWorker = new LoginWorker(loginWindow, driver, client);
 			loginWorker.execute();
 		}
 	}
 	
-	private void startMainMenu()
+	public void startMainMenu()
 	{
-		loginForm = null;
+		loginWindow = null;
 		recordDao = new MysqlRecordDao();
 		patientDao = new MysqlPatientDao();
 		diagnosisDao = new MysqlDiagnosisDao();
@@ -231,12 +156,56 @@ public class ProjectDriver
 		ListPanel path = mainMenu.getContentPanel().getPanel(TitleConstants.PATHOLOGISTS);
 		ListPanel phys = mainMenu.getContentPanel().getPanel(TitleConstants.PHYSICIANS);
 		ListPanel spec = mainMenu.getContentPanel().getPanel(TitleConstants.SPECIMENS);
-		Dictionary.setPathologists(dictionaryDao.getWords(DictionaryConstants.PATHOLOGIST, path.getStart(),
-				path.getRange()));
-		Dictionary.setPhysicians(dictionaryDao.getWords(DictionaryConstants.PHYSICIAN, phys.getStart(),
-				phys.getRange()));
-		Dictionary.setSpecimens(dictionaryDao.getWords(DictionaryConstants.SPECIMEN, spec.getStart(), 
-				spec.getRange()));
+		final DictionaryRetrieveWorker pathologistWorker = new DictionaryRetrieveWorker
+				(dictionaryDao, path.getStart(), path.getRange(), DictionaryConstants.PATHOLOGIST);
+		pathologistWorker.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) 
+			{
+				try 
+				{
+					if(evt.getPropertyName().equals("DONE"))
+						Dictionary.setPathologists((List<String>)pathologistWorker.get());
+				} catch (InterruptedException | ExecutionException e) 
+				{e.printStackTrace();}
+			}
+		});
+		pathologistWorker.execute();
+		
+		final DictionaryRetrieveWorker physicianWorker = new DictionaryRetrieveWorker
+				(dictionaryDao, phys.getStart(), phys.getRange(), DictionaryConstants.PHYSICIAN);
+		physicianWorker.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) 
+			{
+				try 
+				{
+					if(evt.getPropertyName().equals("DONE"))
+						Dictionary.setPhysicians((List<String>)physicianWorker.get());
+				} catch (InterruptedException | ExecutionException e) 
+				{e.printStackTrace();}
+			}
+		});
+		physicianWorker.execute();
+		
+		final DictionaryRetrieveWorker specimenWorker = new DictionaryRetrieveWorker
+				(dictionaryDao, spec.getStart(), spec.getRange(), DictionaryConstants.SPECIMEN);
+		specimenWorker.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) 
+			{
+				try 
+				{
+					if(evt.getPropertyName().equals("DONE"))
+						Dictionary.setSpecimens((List<String>)specimenWorker.get());
+				} catch (InterruptedException | ExecutionException e) 
+				{e.printStackTrace();}
+			}
+		});
+		specimenWorker.execute();
 	}
 	
 	public void changeView(String view)
@@ -270,21 +239,18 @@ public class ProjectDriver
 	
 	public void refresh(String view, boolean reset)
 	{
-		Record record = null;
+		Record record = new Record();
 		switch(view)
 		{
 					case Constants.TitleConstants.HISTOPATHOLOGY: 
-						record = new HistopathologyRecord();
 						record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.HISTOPATHOLOGY_RECORD);
 						updateRList(record, view, reset);
 						break;
 					case Constants.TitleConstants.GYNECOLOGY:  
-						record = new GynecologyRecord();
 						record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.GYNECOLOGY_RECORD);
 						updateRList(record, view, reset);
 									  break;
 					case Constants.TitleConstants.CYTOLOGY:  
-						record = new CytologyRecord();
 						record.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.CYTOLOGY_RECORD);
 						updateRList(record, view, reset);
 									break;
@@ -313,7 +279,6 @@ public class ProjectDriver
 	public void updateWList(int type, final String view)
 	{
 		final ListPanel listPanel = mainMenu.getContentPanel().getPanel(view);
-		System.out.println(view + " " + dictionaryDao.getCount(type));
 		listPanel.setListSize(dictionaryDao.getCount(type));
 		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
 		final DictionaryListGenerator listWorker = new DictionaryListGenerator(dictionaryDao, type, 
@@ -393,7 +358,6 @@ public class ProjectDriver
 					} catch (InterruptedException | ExecutionException e1) 
 					{e1.printStackTrace();}
 				}
-				
 			}
 		});
 		recordWorker.execute();
@@ -509,13 +473,15 @@ public class ProjectDriver
 										record.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
 										record.putAttribute(RecordTable.PATIENT, p);
 										
-										if(object instanceof HistopathologyRecord)
-											recordForm = new HistopathologyForm();
-										else if(object instanceof GynecologyRecord)
-											recordForm = new GynecologyForm();
-										else if(object instanceof CytologyRecord)
-											recordForm = new CytologyForm();
-										
+										char recordType = (char)record.getAttribute(RecordTable.RECORD_TYPE);
+										switch(recordType)
+										{
+										case RecordConstants.HISTOPATHOLOGY_RECORD: recordForm = new HistopathologyForm();
+										break;
+										case RecordConstants.GYNECOLOGY_RECORD: recordForm = new GynecologyForm();
+										break;
+										case RecordConstants.CYTOLOGY_RECORD: recordForm = new CytologyForm();										
+										}
 										recordForm.setFields(record, p);
 										detailPanel = new RecordPanel((JPanel)recordForm, Constants.ActionConstants.VIEW);
 										detailPanel.addListener(listener);
@@ -863,27 +829,24 @@ public class ProjectDriver
 		JPanel panel = null;
 		JPanel recordForm = null;
 		JPanel patientForm = null;
-		Record record;
+		Record record = new Record();
 		Patient patient = new Patient();
 		patient.putAttribute(PatientTable.PATIENT_ID, -1);
 		switch(type)
 		{
 		case Constants.RecordConstants.HISTOPATHOLOGY_RECORD:	
-											record = new HistopathologyRecord();
 											recordForm = new HistopathologyForm();
 											((RecordForm)recordForm).setFields(record, patient);
 											panel = new RecordPanel(recordForm, Constants.ActionConstants.NEW);
 											((DetailPanel)panel).addListener(listener);
 											break;
 		case Constants.RecordConstants.GYNECOLOGY_RECORD:		
-											record = new GynecologyRecord();
 											recordForm = new GynecologyForm();
 											((RecordForm)recordForm).setFields(record, patient);
 											panel = new RecordPanel(recordForm, Constants.ActionConstants.NEW);
 											((DetailPanel)panel).addListener(listener);
 											break;
 		case Constants.RecordConstants.CYTOLOGY_RECORD:			
-											record = new CytologyRecord();
 											recordForm = new CytologyForm();
 											((RecordForm)recordForm).setFields(record, patient);
 											panel = new RecordPanel(recordForm, Constants.ActionConstants.NEW);
@@ -1185,8 +1148,8 @@ public class ProjectDriver
 	
 	public void addCurrentWord()
 	{
-		DictionaryPanel panel = mainMenu.getContentPanel().getDickPanel(getCurrentView());
-		String word = panel.getWord();
+		final DictionaryPanel panel = mainMenu.getContentPanel().getDickPanel(getCurrentView());
+		final String word = panel.getWord();
 		
 		if(!word.equals(TitleConstants.DICTIONARY_HINT))
 		{
@@ -1199,15 +1162,44 @@ public class ProjectDriver
 			break;
 			case TitleConstants.SPECIMENS: type = DictionaryConstants.SPECIMEN;
 			}
+			final int actualType = type;
 			if(word.replaceAll("\\s", "").length() > 0)
 			{
-				if(dictionaryDao.isUnique(word, type))
+				final DictionaryUpdateWorker wordChecker = new DictionaryUpdateWorker
+						(dictionaryDao, word, type, DictionaryUpdateWorker.CHECK);
+				wordChecker.addPropertyChangeListener(new PropertyChangeListener() 
 				{
-					dictionaryDao.add(word, type);
-					panel.reset();
-					changeView(getCurrentView());
-				}
-				else new PopupDialog(mainMenu, "Error saving word", word + " already exists", "OK").showGui();
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) 
+					{
+						if(evt.getPropertyName().equals("DONE"))
+						{
+							try 
+							{
+								if((boolean)wordChecker.get())
+								{
+									DictionaryUpdateWorker wordAdder =
+											new DictionaryUpdateWorker(dictionaryDao, word, actualType, DictionaryUpdateWorker.ADD);
+									wordAdder.addPropertyChangeListener(new PropertyChangeListener() 
+									{	
+										@Override
+										public void propertyChange(PropertyChangeEvent evt) {
+											if(evt.getPropertyName().equals("DONE"))
+											{
+												panel.reset();
+												changeView(getCurrentView());
+											}
+										}
+									});
+									wordAdder.execute();
+								}
+								else new PopupDialog(mainMenu, "Error saving word", word + " already exists", "OK").showGui();
+							} catch (InterruptedException | ExecutionException e) 
+							{e.printStackTrace();}
+						}
+					}
+				});
+				wordChecker.execute();
 			}
 		}
 	}
@@ -1320,16 +1312,26 @@ public class ProjectDriver
 			dialog = new PopupDialog(mainMenu, "Confirm delete",
 					TitleConstants.CONFIRM_DELETE_WORD, 
 					"Yes","No");
-			dialog.addPropertyChangeListener(new PropertyChangeListener() {
-				
+			dialog.addPropertyChangeListener(new PropertyChangeListener() 
+			{	
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) {
 					if(evt.getPropertyName().equals("POSITIVE"))
 					{
-						dictionaryDao.delete(word.getWord(), word.getType());
-						changeView(getCurrentView());
+						DictionaryUpdateWorker wordDeleter = new DictionaryUpdateWorker
+								(dictionaryDao, word.getWord(), word.getType(), DictionaryUpdateWorker.DELETE);
+						wordDeleter.addPropertyChangeListener(new PropertyChangeListener() {
+							
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) {
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									changeView(getCurrentView());
+								}
+							}
+						});
+						wordDeleter.execute();
 					}
-					
 				}
 			});
 			dialog.showGui();

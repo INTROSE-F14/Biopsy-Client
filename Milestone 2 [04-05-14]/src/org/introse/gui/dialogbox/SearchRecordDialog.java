@@ -24,9 +24,6 @@ import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
-import org.introse.core.CytologyRecord;
-import org.introse.core.GynecologyRecord;
-import org.introse.core.HistopathologyRecord;
 import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.gui.combobox.DatePicker;
@@ -35,7 +32,11 @@ import org.introse.gui.window.LoginWindow;
 
 public class SearchRecordDialog extends SearchDialog implements KeyListener, ActionListener
 {
-    private JTextField tf_refNum, tf_specimen, tf_pathologist, tf_physician, tf_room,  tf_patient;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTextField tf_refNum, tf_specimen, tf_pathologist, tf_physician, tf_room,  tf_patient;
     private JLabel lbl_refNum, lbl_specimen, lbl_dReceived, lbl_dCompleted, 
     lbl_pathologist, lbl_physician, lbl_room, lbl_dash, lbl_patient;
     private JComboBox<String> cb_type, cb_year;
@@ -300,16 +301,16 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
 		int dCDay = dC.getDay();
 		int dCYear = dC.getYear();
 		
-		Record criteria;
+		Record criteria = new Record();
 		switch(rType)
 		{
-			case ""+RecordConstants.HISTOPATHOLOGY_RECORD : criteria = new HistopathologyRecord();
+			case ""+RecordConstants.HISTOPATHOLOGY_RECORD :
 		   									   criteria.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.HISTOPATHOLOGY_RECORD);
 			   break;
-			case ""+RecordConstants.GYNECOLOGY_RECORD: criteria = new GynecologyRecord();
+			case ""+RecordConstants.GYNECOLOGY_RECORD:
 		   								   criteria.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.GYNECOLOGY_RECORD);
 			   break;
-			case ""+RecordConstants.CYTOLOGY_RECORD: criteria = new CytologyRecord();
+			case ""+RecordConstants.CYTOLOGY_RECORD:
 		   								   criteria.putAttribute(RecordTable.RECORD_TYPE, RecordConstants.CYTOLOGY_RECORD);
 		   								   break;
 			default: criteria = new Record();

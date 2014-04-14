@@ -23,8 +23,12 @@ import org.introse.gui.window.LoginWindow;
 
 public class BackupPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel lblBackup, lblDirectory, lblStatus,
-	backupDescription1, backupDescription2, backupDirectory,
+	backupDescription1, backupDirectory,
 	backupStatus;
 	private JButton btnBackup, btnBack;
 	

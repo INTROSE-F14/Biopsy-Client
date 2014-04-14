@@ -13,11 +13,14 @@ import javax.swing.SwingConstants;
 import org.introse.Constants;
 import org.introse.gui.button.NavButton;
 import org.introse.gui.window.LoginWindow;
-import org.introse.gui.window.MainMenu;
 
 
 public class NavigationPanel extends JPanel
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private NavButton histoButton;
 	private NavButton gyneButton;
 	private NavButton cytoButton;
