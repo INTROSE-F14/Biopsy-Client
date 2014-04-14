@@ -16,16 +16,6 @@ import org.introse.core.Patient;
 public class MysqlPatientDao extends MysqlDao implements PatientDao
 {
 	
-	//patient should only contain the primary key
-	//sample:
-	//Patient r = new Patient(1);
-	//Patient completePatientInfo = InstanceOfPatientDao.get(r);
-	//The whole list of data will be first checked if there 
-	//is an update and retrieved using getAll()
-	//why 1: patient to be retrieved might not be in the list anymore
-	//(deleted already by another computer prior to your selection)
-	//why 2: patient may have newer data
-	//(edited/modified by another computer prior to your selection)
 	@Override
 	public Patient get(Patient patient) 
 	{
@@ -70,18 +60,11 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-		//		if(conn != null)
-		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return p;
 	}
 
-	
-	//the whole list of data will be first checked if there 
-	//is an update and retrieved using getAll()
-	//why: patient to be deleted might not be in the list anymore
-	//(deleted already by another computer prior to your deletion)
 	@Override
 	public void delete(Patient patient) 
 	{
@@ -106,8 +89,6 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-		//		if(conn != null)
-		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 	}
@@ -412,8 +393,6 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 					result.close();
 				if(stmt != null)
 					stmt.close();
-		//		if(conn != null)
-		//			conn.close();
 			} catch (SQLException e) {e.printStackTrace();}
 		}
 		return count;
@@ -552,6 +531,69 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 			start++;
 			hasPrevious = true;
 		}
+		System.out.println(sql);
+		
+		try 
+		{
+			conn = createConnection();
+			stmt = conn.createStatement();
+			result = stmt.executeQuery(sql);
+			
+			while(result.next())
+			{
+				Patient p = new Patient();
+				p.putAttribute(PatientTable.PATIENT_ID.toString(),
+						result.getInt(PatientTable.PATIENT_ID.toString()));
+				p.putAttribute(PatientTable.LAST_NAME.toString(), 
+						result.getString(PatientTable.LAST_NAME.toString()));
+				p.putAttribute(PatientTable.FIRST_NAME.toString(), 
+						result.getString(PatientTable.FIRST_NAME.toString()));
+				p.putAttribute(PatientTable.MIDDLE_NAME.toString(), 
+						result.getString(PatientTable.MIDDLE_NAME.toString()));
+				Calendar bday = Calendar.getInstance();
+				bday.setTime(result.getDate(PatientTable.BIRTHDAY.toString()));
+				CustomCalendar calendar = new CustomCalendar();
+				calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
+				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				p.putAttribute(PatientTable.GENDER.toString(), 
+						result.getString(PatientTable.GENDER.toString()));
+				patients.add(p);
+			}
+		} catch (ClassNotFoundException | SQLException e) 
+		{e.printStackTrace();}  
+		finally
+		{
+			try
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+			} catch (SQLException e) {e.printStackTrace();}
+		}
+		return patients;
+	}
+	
+	@Override
+	public List<Patient> get(char start, char end, char gender) 
+	{
+		List<Patient> patients = new Vector<Patient>();
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet result = null;
+		String sql = "Select * from patients WHERE (";
+		boolean hasPrevious = false;
+		
+		while(start <= end)
+		{
+			String lastName = "\"" + start + "%\"";
+			if(hasPrevious)
+				sql = sql.concat(" OR ");
+			sql = sql.concat(PatientTable.LAST_NAME + " LIKE " + lastName);
+			start++;
+			hasPrevious = true;
+		}
+		sql = sql.concat(") AND " + PatientTable.GENDER + " = '" + gender + "'");
 		System.out.println(sql);
 		
 		try 

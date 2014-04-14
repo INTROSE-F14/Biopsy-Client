@@ -12,10 +12,11 @@ public class PatientRetrieveWorker extends SwingWorker<Object, Void>
 	private static final int SEARCH_BY_LETTER = 2;
 	private static final int GET_SPECIFIC = 3;
 	private static final int GET_COUNT = 4;
+	private static final int SEARCH_BY_LETTER_AND_GENDER = 5;
 	
 	private PatientDao patientDao;
 	private int start, range;
-	private char letterStart, letterEnd;
+	private char letterStart, letterEnd, gender;
 	private Patient model;
 	private int operation;
 	
@@ -24,6 +25,15 @@ public class PatientRetrieveWorker extends SwingWorker<Object, Void>
 		this.patientDao = patientDao;
 		this.model = model;
 		operation = GET_COUNT;
+	}
+	
+	public PatientRetrieveWorker(PatientDao patientDao, char start, char end, char gender)
+	{
+		this.patientDao = patientDao;
+		this.letterStart = start;
+		this.letterEnd = end;
+		this.gender = gender;
+		operation = SEARCH_BY_LETTER_AND_GENDER;
 	}
 	
 	public PatientRetrieveWorker(PatientDao patientDao, char start, char end)
@@ -59,6 +69,7 @@ public class PatientRetrieveWorker extends SwingWorker<Object, Void>
 			case GET_COUNT: if(model == null)
 								return patientDao.getCount();
 							else return patientDao.getCount(model);
+			case SEARCH_BY_LETTER_AND_GENDER: return patientDao.get(letterStart, letterEnd, gender);
 		}
 		return null;
 	}

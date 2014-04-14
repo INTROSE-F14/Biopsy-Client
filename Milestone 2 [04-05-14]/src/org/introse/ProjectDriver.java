@@ -987,7 +987,13 @@ public class ProjectDriver
 	
 	public void openPatientLoad()
 	{
-		loader = new PatientLoader(patientDao);
+		if(detailPanel != null && detailPanel instanceof RecordPanel)
+		{
+			if(((RecordPanel)detailPanel).getRecordForm() instanceof GynecologyForm)
+				loader = new PatientLoader(patientDao, PatientLoader.FEMALE);
+			else loader = new PatientLoader(patientDao, PatientLoader.ANY);
+		}
+		else loader = new PatientLoader(patientDao, PatientLoader.ANY);
 		loader.addListListener(listListener);
 		loader.showGUI();
 	}

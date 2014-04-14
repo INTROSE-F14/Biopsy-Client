@@ -45,7 +45,7 @@ public class RecordOverview extends JPanel
 	private DatePicker receivedDate, completedDate;
 	private char recordType;
 	private PatientForm patientForm;
-        private GynePatientForm gPatientForm;
+    private GynePatientForm gPatientForm;
 	private JPanel recordForm;
 	
 	public RecordOverview(char recordType)

@@ -15,4 +15,5 @@ public interface PatientDao
 	public int getCount(Patient patient);
 	public int getCount();
 	public List<Patient> get(char start, char end);
+	public List<Patient> get(char start, char end, char gender);
 }

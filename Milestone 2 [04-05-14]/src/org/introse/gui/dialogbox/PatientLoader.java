@@ -50,12 +50,15 @@ public class PatientLoader extends JDialog implements ActionListener
 	private JPanel listPanel;
 	private JScrollPane listScroller;
 	private ListListener listListener;
-	private char start, end;
-	
-	public PatientLoader(PatientDao patientDao)
+	private char start, end, gender;
+	public static final char MALE = 'M';
+	public static final char FEMALE = 'F';
+	public static final char ANY = 'A';
+	public PatientLoader(PatientDao patientDao, char gender)
 	{
 		super(null, TitleConstants.LOAD_PATIENT, ModalityType.APPLICATION_MODAL);
 		this.patientDao = patientDao;
+		this.gender = gender;
 		start = 'A';
 		end = 'C';
 		initUI();
@@ -201,7 +204,11 @@ public class PatientLoader extends JDialog implements ActionListener
 		final CardLayout cl = (CardLayout)cardPanel.getLayout();
 		cl.show(cardPanel, TitleConstants.REFRESH_PANEL);
 
-		final PatientRetrieveWorker worker = new PatientRetrieveWorker(patientDao, start, end);
+		final PatientRetrieveWorker worker;
+		if(gender == 'A')
+			worker = new PatientRetrieveWorker(patientDao, start, end);
+		else worker = new PatientRetrieveWorker(patientDao, start, end, gender);
+		
 		worker.addPropertyChangeListener(new PropertyChangeListener() 
 		{	
 			@Override
