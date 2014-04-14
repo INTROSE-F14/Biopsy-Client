@@ -24,8 +24,8 @@ import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.form.PatientForm;
 import org.introse.gui.form.GynePatientForm;
+import org.introse.gui.form.PatientForm;
 import org.introse.gui.window.LoginWindow;
 
 import ca.odell.glazedlists.GlazedLists;
@@ -73,8 +73,8 @@ public class RecordOverview extends JPanel
 		physicianValue= new JComboBox<String>();
 		pathologistValue= new JComboBox<String>();
 		specimenValue = new JComboBox<String>();
-		roomValue = new JTextField(20);
-		
+		roomValue = new JTextField(29);
+
 		refNumberValue.setHorizontalAlignment(JTextField.CENTER);
 		refNumberValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Font.BOLD).deriveFont(Constants.StyleConstants.SUBHEADER));
 		specimenValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
@@ -88,13 +88,8 @@ public class RecordOverview extends JPanel
 		Calendar c = Calendar.getInstance();
 		receivedDate.setDate(c);
 		completedDate.setDate(c);
-
 		completedDate.setPickerFont(specimenValue.getFont());
 		receivedDate.setPickerFont(specimenValue.getFont());
-		
-//		specimenValue.setDocument(new CustomDocument(RecordConstants.SPECIMEN_LENGTH));
-//		physicianValue.setDocument(new CustomDocument(RecordConstants.PHYSICIAN_LENGTH));
-//		pathologistValue.setDocument(new CustomDocument(RecordConstants.PATHOLOGIST_LENGTH));
 		roomValue.setDocument(new CustomDocument(RecordConstants.ROOM_LENGTH));
 		specimenValue.setEditable(true);
 		pathologistValue.setEditable(true);
@@ -102,6 +97,10 @@ public class RecordOverview extends JPanel
 		AutoCompleteSupport.install(specimenValue, GlazedLists.eventList(Dictionary.specimens));
 		AutoCompleteSupport.install(pathologistValue, GlazedLists.eventList(Dictionary.pathologists));
 		AutoCompleteSupport.install(physicianValue, GlazedLists.eventList(Dictionary.physicians));
+		System.out.println(specimenValue.getEditor().getEditorComponent().getClass());
+		((JTextField)specimenValue.getEditor().getEditorComponent()).setColumns(29);
+		((JTextField)pathologistValue.getEditor().getEditorComponent()).setColumns(29);
+		((JTextField)physicianValue.getEditor().getEditorComponent()).setColumns(29);
 		
 	}
 	
@@ -121,6 +120,7 @@ public class RecordOverview extends JPanel
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = y;
+		c.weightx = 0.0;
 		c.insets = new Insets(0,0,10,35);
 		recordForm.add(roomLabel, c);
 		c.gridx = 1;
