@@ -25,6 +25,7 @@ import org.introse.core.Record;
 import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.form.PatientForm;
+import org.introse.gui.form.GynePatientForm;
 import org.introse.gui.window.LoginWindow;
 
 import ca.odell.glazedlists.GlazedLists;
@@ -44,6 +45,7 @@ public class RecordOverview extends JPanel
 	private DatePicker receivedDate, completedDate;
 	private char recordType;
 	private PatientForm patientForm;
+        private GynePatientForm gPatientForm;
 	private JPanel recordForm;
 	
 	public RecordOverview(char recordType)
@@ -57,6 +59,7 @@ public class RecordOverview extends JPanel
 	private void initializeComponents()
 	{	
 		patientForm = new PatientForm();
+                gPatientForm = new GynePatientForm();
 		recordForm = new JPanel(new GridBagLayout());
 		recordForm.setBackground(Color.white);
 		refNumberLabel = new JLabel("Internal Reference Number");
@@ -181,7 +184,10 @@ public class RecordOverview extends JPanel
 		c.gridx = 0;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
-		add(patientForm, c);
+                if(recordType == 'H' || recordType == 'C'){
+                    add(patientForm, c);
+                }
+                else add(gPatientForm, c);
 		c.anchor = GridBagConstraints.NORTHEAST;
 		c.gridx = 0;
 		c.gridy = y;
@@ -243,7 +249,10 @@ public class RecordOverview extends JPanel
 	
 	public void setPatientFields(Patient patient)
 	{
-		patientForm.setFields(patient);
+		if(recordType == 'H' || recordType == 'C'){
+                    patientForm.setFields(patient);
+                }
+                else gPatientForm.setFields(patient);
 	}
 	
 	public void setRecordEditable(boolean isEditable)
@@ -258,7 +267,11 @@ public class RecordOverview extends JPanel
 	
 	public void setPatientEditable(boolean isEditable)
 	{
-		patientForm.setViewOnly(!isEditable);
+		if(recordType == 'H' || recordType == 'C')
+                {
+                    patientForm.setViewOnly(!isEditable);
+                }
+                else gPatientForm.setViewOnly(!isEditable);
 	}
 	
 	public boolean areFieldsValid()
@@ -301,9 +314,19 @@ public class RecordOverview extends JPanel
 		cDate.clear();
 		cDate.set(cYear, cMonth, cDay);
 		
-		int pYear = patientForm.returnYear();
-		int pMonth = patientForm.returnMonth();
-		int pDay = patientForm.returnDay();
+		int pYear, pMonth, pDay;
+                if(recordType == 'H' || recordType == 'C')
+                {
+                    pYear = patientForm.returnYear();
+                    pMonth = patientForm.returnMonth();
+                    pDay = patientForm.returnDay();
+                }
+                else
+                {
+                    pYear = gPatientForm.returnYear();
+                    pMonth = gPatientForm.returnMonth();
+                    pDay = gPatientForm.returnDay();
+                }
 		Calendar pDate = Calendar.getInstance();
 		pDate.clear();
 		pDate.set(pYear, pMonth, pDay);
@@ -321,8 +344,10 @@ public class RecordOverview extends JPanel
 		}
 		else receivedDate.setBorder(null);
 		
-		if(!patientForm.areFieldsValid())
+		if(!patientForm.areFieldsValid() && (recordType == 'H' || recordType == 'C'))
 			isValid = false;
+                if(!gPatientForm.areFieldsValid() && recordType == 'G')
+                        isValid = false;
 		return isValid;
 	}
 	
@@ -360,22 +385,38 @@ public class RecordOverview extends JPanel
 		record.putAttribute(RecordTable.DATE_RECEIVED.toString(), dateReceived);
 		record.putAttribute(RecordTable.DATE_COMPLETED.toString(), dateCompleted);
 		
-		record.putAttribute(RecordTable.PATIENT, patientForm.getObject());
+                if(recordType == 'H' || recordType == 'C')
+                {
+                    record.putAttribute(RecordTable.PATIENT, patientForm.getObject());
+                }
+                else record.putAttribute(RecordTable.PATIENT, gPatientForm.getObject());
 		return record;
 	}
 	
 	public Patient getPatient()
 	{
-		return (Patient)patientForm.getObject();
+		if(recordType == 'H' || recordType == 'C')
+                {
+                    return (Patient)patientForm.getObject();
+                }
+                else return (Patient)gPatientForm.getObject();
 	}
 	
 	public PatientForm getPatientForm()
 	{
-		return patientForm;
+                return patientForm;
 	}
+        public GynePatientForm getGynePatientForm()
+        {
+                return gPatientForm;
+        }
 	
 	public void addListener(CustomListener listener)
 	{
-		patientForm.addListener(listener);
+		if(recordType == 'H' || recordType == 'C')
+                {
+                    patientForm.addListener(listener);
+                }
+                else gPatientForm.addListener(listener);
 	}
 }
