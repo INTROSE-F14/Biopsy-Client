@@ -2,6 +2,7 @@ package org.introse;
 
 
 
+import java.awt.HeadlessException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -214,6 +215,11 @@ public class ProjectDriver
 		mainMenu.getContentPanel().changeView(view);
 	}
 	
+	public void setCountLabel(String view, int count)
+	{
+		mainMenu.getContentPanel().setCountLabel(view, count);
+	}
+	
 	public String getPreviousView()
 	{
 		return mainMenu.getContentPanel().getPreviousView();
@@ -276,14 +282,131 @@ public class ProjectDriver
 		detailPanel = null;
 	}
 	
-	public void updateWList(int type, final String view)
+	public void updateWList(final int type, final String view)
 	{
 		final ListPanel listPanel = mainMenu.getContentPanel().getPanel(view);
-		listPanel.setListSize(dictionaryDao.getCount(type));
 		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
-		final DictionaryListGenerator listWorker = new DictionaryListGenerator(dictionaryDao, type, 
-				listPanel.getStart(), listPanel.getRange());
-		listWorker.addPropertyChangeListener(new PropertyChangeListener() {
+		
+		final DictionaryRetrieveWorker countGetter = new DictionaryRetrieveWorker(dictionaryDao, type);
+		countGetter.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(evt.getPropertyName().equals("DONE"))
+				{
+					try 
+					{
+						listPanel.setListSize((int)countGetter.get());
+						setCountLabel(view, listPanel.getListSize());
+						final DictionaryListGenerator listWorker = new DictionaryListGenerator(dictionaryDao, type, 
+								listPanel.getStart(), listPanel.getRange());
+						listWorker.addPropertyChangeListener(new PropertyChangeListener() {
+							
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) 
+							{
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									try {
+										loadWords();
+										List<ListItem> words = listWorker.get();
+										listPanel.updateViewable(words);
+										if(words.size() > 0)
+											listPanel.showPanel(TitleConstants.LIST_PANEL);
+										else listPanel.showPanel(TitleConstants.EMPTY_PANEL);
+									} catch (InterruptedException | ExecutionException e)
+									{e.printStackTrace();}
+									
+								}
+							}
+						});
+						listWorker.execute();
+					} catch (InterruptedException | ExecutionException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		countGetter.execute();
+	}
+	
+	public void updateRList(final Record record, final String view, boolean reset)
+	{
+		final ListPanel listPanel = 
+				mainMenu.getContentPanel().getPanel(view);
+		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
+		
+		if(reset)
+			listPanel.setStart(0);
+		
+		final RecordRetrieveWorker countGetter = new RecordRetrieveWorker(recordDao, record);
+		countGetter.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(evt.getPropertyName().equals("DONE"))
+				{
+					try 
+					{
+						listPanel.setListSize((int)countGetter.get());
+						setCountLabel(view, listPanel.getListSize());
+						final RecordRetrieveWorker recordWorker = new RecordRetrieveWorker(recordDao, 
+								record, listPanel.getStart(), listPanel.getRange());
+						recordWorker.addPropertyChangeListener(new PropertyChangeListener() {
+							
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) {
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									List<Record> records;
+									try 
+									{
+										records = (List<Record>)recordWorker.get();
+										final RecordListGenerator listWorker = new RecordListGenerator(records, patientDao);
+										listWorker.addPropertyChangeListener(new PropertyChangeListener()
+										{
+											@Override
+											public void propertyChange(PropertyChangeEvent evt) 
+											{
+												if(evt.getPropertyName().equals("DONE"))
+												{
+													try 
+													{
+														List<ListItem> list = listWorker.get();
+														listPanel.updateViewable(list);
+														if(list.size() < 1)
+															listPanel.showPanel(TitleConstants.EMPTY_PANEL);
+														else listPanel.showPanel(TitleConstants.LIST_PANEL);
+													} catch (InterruptedException | ExecutionException e) 
+													{e.printStackTrace();}
+												}
+											}
+										});
+										listWorker.execute();
+									} catch (InterruptedException | ExecutionException e1) 
+									{e1.printStackTrace();}
+								}
+							}
+						});
+						recordWorker.execute();
+					} catch (InterruptedException | ExecutionException e2) 
+					{e2.printStackTrace();}
+				}	
+			}
+		});
+		countGetter.execute();
+	}
+	
+	public void updatePList(final Patient p, final String view, boolean reset)
+	{
+		final ListPanel listPanel = 
+				mainMenu.getContentPanel().getPanel(view);
+		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
+		if(reset)
+			listPanel.setStart(0);
+		final PatientRetrieveWorker countGetter = new PatientRetrieveWorker(patientDao, p);
+		countGetter.addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) 
@@ -291,51 +414,13 @@ public class ProjectDriver
 				if(evt.getPropertyName().equals("DONE"))
 				{
 					try {
-						List<ListItem> words = listWorker.get();
-						switch(view)
-						{
-						case TitleConstants.PATHOLOGISTS: Dictionary.setPathologists(listWorker.getWords());
-						break;
-						case TitleConstants.PHYSICIANS: Dictionary.setPhysicians(listWorker.getWords());
-						break;
-						case TitleConstants.SPECIMENS: Dictionary.setSpecimens(listWorker.getWords());
-						}
-						listPanel.updateViewable(words);
-						if(words.size() > 0)
-							listPanel.showPanel(TitleConstants.LIST_PANEL);
-						else listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-					} catch (InterruptedException | ExecutionException e)
-					{e.printStackTrace();}
-					
-				}
-			}
-		});
-		listWorker.execute();
-	}
+						listPanel.setListSize((int)countGetter.get());
+						setCountLabel(view, listPanel.getListSize());
 	
-	public void updateRList(Record record, String view, boolean reset)
-	{
-		final ListPanel listPanel = 
-				mainMenu.getContentPanel().getPanel(view);
-		if(reset)
-			listPanel.setStart(0);
-		listPanel.setListSize(recordDao.getCount(record));
-		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
-		
-		final RecordRetrieveWorker recordWorker = new RecordRetrieveWorker(recordDao, 
-				record, listPanel.getStart(), listPanel.getRange());
-		recordWorker.addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if(evt.getPropertyName().equals("DONE"))
-				{
-					List<Record> records;
-					try 
-					{
-						records = (List<Record>)recordWorker.get();
-						final RecordListGenerator listWorker = new RecordListGenerator(records, patientDao);
-						listWorker.addPropertyChangeListener(new PropertyChangeListener()
+						final PatientRetrieveWorker worker = new 
+								PatientRetrieveWorker(patientDao, p, listPanel.getStart(), 
+										listPanel.getRange());
+						worker.addPropertyChangeListener(new PropertyChangeListener() 
 						{
 							@Override
 							public void propertyChange(PropertyChangeEvent evt) 
@@ -344,76 +429,42 @@ public class ProjectDriver
 								{
 									try 
 									{
-										List<ListItem> list = listWorker.get();
-										listPanel.updateViewable(list);
-										if(list.size() < 1)
-											listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-										else listPanel.showPanel(TitleConstants.LIST_PANEL);
+										List<Patient> list = (List<Patient>)worker.get();
+										final PatientListGenerator listWorker = new PatientListGenerator(list, true);
+										listWorker.addPropertyChangeListener(new PropertyChangeListener()
+										{
+											@Override
+											public void propertyChange(PropertyChangeEvent evt) 
+											{
+												if(evt.getPropertyName().equals("DONE"))
+												{
+													try 
+													{
+														
+														List<ListItem> list = listWorker.get();
+														listPanel.updateViewable(list);
+														if(list.size() < 1)
+															listPanel.showPanel(TitleConstants.EMPTY_PANEL);
+														else listPanel.showPanel(TitleConstants.LIST_PANEL);
+													} catch (InterruptedException | ExecutionException e) 
+													{e.printStackTrace();}
+												}
+											}
+										});
+										listWorker.execute();
 									} catch (InterruptedException | ExecutionException e) 
 									{e.printStackTrace();}
 								}
 							}
 						});
-						listWorker.execute();
-					} catch (InterruptedException | ExecutionException e1) 
-					{e1.printStackTrace();}
+						worker.execute();
+					} catch (InterruptedException | ExecutionException e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
-		recordWorker.execute();
-	}
-	
-	public void updatePList(Patient p, final String view, boolean reset)
-	{
-		final ListPanel listPanel = 
-				mainMenu.getContentPanel().getPanel(view);
-		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
-		if(p == null)
-		listPanel.setListSize(patientDao.getCount());
-		else listPanel.setListSize(patientDao.getCount(p));
-		if(reset)
-			listPanel.setStart(0);
-		final PatientRetrieveWorker worker = new 
-				PatientRetrieveWorker(patientDao, p, listPanel.getStart(), 
-						listPanel.getRange());
-		worker.addPropertyChangeListener(new PropertyChangeListener() 
-		{
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) 
-			{
-				if(evt.getPropertyName().equals("DONE"))
-				{
-					try 
-					{
-						List<Patient> list = (List<Patient>)worker.get();
-						final PatientListGenerator listWorker = new PatientListGenerator(list, true);
-						listWorker.addPropertyChangeListener(new PropertyChangeListener()
-						{
-							@Override
-							public void propertyChange(PropertyChangeEvent evt) 
-							{
-								if(evt.getPropertyName().equals("DONE"))
-								{
-									try 
-									{
-										
-										List<ListItem> list = listWorker.get();
-										listPanel.updateViewable(list);
-										if(list.size() < 1)
-											listPanel.showPanel(TitleConstants.EMPTY_PANEL);
-										else listPanel.showPanel(TitleConstants.LIST_PANEL);
-									} catch (InterruptedException | ExecutionException e) 
-									{e.printStackTrace();}
-								}
-							}
-						});
-						listWorker.execute();
-					} catch (InterruptedException | ExecutionException e) 
-					{e.printStackTrace();}
-				}
-			}
-		});
-		worker.execute();
+		countGetter.execute();
 	}
 	
 	public void viewItem(ListItem listItem)
@@ -947,22 +998,61 @@ public class ProjectDriver
 	
 	public void selectBackupPath()
 	{
-		BackupPanel backupPanel = mainMenu.getContentPanel().getToolsPanel().getBackupPanel();
-		FileNameExtensionFilter backupFilter = new FileNameExtensionFilter("BCB file", "bcb");
-		JFileChooser chooser = new JFileChooser();
-		chooser.setSelectedFile(FileHelper.createBackupFile());
-		chooser.setFileFilter(backupFilter);
-		chooser.setAcceptAllFileFilterUsed(false);
-		int returnVal = chooser.showDialog(mainMenu.getContentPanel(), "Create backup");
-		if(returnVal == JFileChooser.APPROVE_OPTION)
+		final SwingWorker dataCountGetter = new SwingWorker<Integer, Void>()
 		{
-			String path = chooser.getSelectedFile().getAbsolutePath();
-			if(!path.endsWith(".bcb"))
-				path = path.concat(".bcb");
-			backupPanel.setBackupPath(path);
-			backupPanel.setStatus(StatusConstants.PREPARING);
-			backup();
-		}
+
+			@Override
+			protected Integer doInBackground() throws Exception 
+			{
+				int records = recordDao.getCount();
+				int patients = patientDao.getCount();
+				int words = dictionaryDao.getCount();
+				return records + patients + words;
+			}
+			
+			@Override
+			protected void done()
+			{
+				firePropertyChange("DONE", null, null);
+			}
+		};
+		dataCountGetter.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(evt.getPropertyName().equals("DONE"))
+				{
+					try 
+					{
+						if((int)dataCountGetter.get() > 0)
+						{
+							BackupPanel backupPanel = mainMenu.getContentPanel().getToolsPanel().getBackupPanel();
+							FileNameExtensionFilter backupFilter = new FileNameExtensionFilter("BCB file", "bcb");
+							JFileChooser chooser = new JFileChooser();
+							chooser.setSelectedFile(FileHelper.createBackupFile());
+							chooser.setFileFilter(backupFilter);
+							chooser.setAcceptAllFileFilterUsed(false);
+							int returnVal = chooser.showDialog(mainMenu.getContentPanel(), "Create backup");
+							if(returnVal == JFileChooser.APPROVE_OPTION)
+							{
+								String path = chooser.getSelectedFile().getAbsolutePath();
+								if(!path.endsWith(".bcb"))
+									path = path.concat(".bcb");
+								backupPanel.setBackupPath(path);
+								backupPanel.setStatus(StatusConstants.PREPARING);
+								backup();
+							}
+						}
+						else new PopupDialog(mainMenu, "Backup stopped", "There are no data to be backed up", "OK").showGui();
+					} catch (HeadlessException | InterruptedException
+							| ExecutionException e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}
+		});
+		dataCountGetter.execute();
 	}
 	
 	public void selectExportPath()
@@ -990,9 +1080,10 @@ public class ProjectDriver
 		final BackupPanel backupPanel = mainMenu.getContentPanel().getToolsPanel().getBackupPanel();
 		String backupPath = backupPanel.getBackupPath();
 		File backup = new File(backupPath);
-		final BackupWorker backupWorker = new BackupWorker(new File(backupPath), backupPanel);
-		backupWorker.addPropertyChangeListener(new PropertyChangeListener(){
-
+		final BackupWorker backupWorker = new BackupWorker(diagnosisDao, 
+				recordDao, patientDao, dictionaryDao, new File(backupPath), backupPanel);
+		backupWorker.addPropertyChangeListener(new PropertyChangeListener()
+		{
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if(evt.getPropertyName().equals("DONE"))
@@ -1006,9 +1097,7 @@ public class ProjectDriver
 						e.printStackTrace();
 					}
 				}
-				
 			}
-			
 		});
 		if(backup.exists())
 		{
@@ -1057,9 +1146,7 @@ public class ProjectDriver
 						e.printStackTrace();
 					}
 				}
-				
 			}
-			
 		});
 		if(exportFile.exists())
 		{
@@ -1084,7 +1171,6 @@ public class ProjectDriver
 			exportWorker.execute();
 			exportPanel.setStatus(StatusConstants.ONGOING);
 		}
-		
 	}
 	
 	public void restore()
@@ -1092,7 +1178,8 @@ public class ProjectDriver
 		final RestorePanel restorePanel = mainMenu.getContentPanel().getToolsPanel().getRestorePanel();
 		String restorePath = restorePanel.getRestorePath();
 		restorePanel.getProgressBar().setIndeterminate(true);
-		final RestoreWorker restoreWorker = new RestoreWorker(new File(restorePath), patientDao, recordDao, diagnosisDao, restorePanel);
+		final RestoreWorker restoreWorker = new RestoreWorker(new File(restorePath),
+				patientDao, recordDao, diagnosisDao, dictionaryDao, restorePanel);
 		restoreWorker.addPropertyChangeListener(new PropertyChangeListener()
 		{
 
@@ -1207,7 +1294,6 @@ public class ProjectDriver
 	public void delete(final Object object)
 	{
 		PopupDialog dialog = null;
-		System.out.println("HELLO");
 		if(object instanceof Record)
 		{
 			final Record r = (Record) object;
@@ -1257,50 +1343,70 @@ public class ProjectDriver
 						final Record r = new Record();
 						final int patientId =  (int)p.getAttribute(PatientTable.PATIENT_ID);
 						r.putAttribute(RecordTable.PATIENT_ID,patientId);
-						final RecordRetrieveWorker recordWorker = new RecordRetrieveWorker(recordDao,r, 0, recordDao.getCount(r));
-						recordWorker.addPropertyChangeListener(new PropertyChangeListener() 
-						{							
+						final RecordRetrieveWorker countGetter = new RecordRetrieveWorker(recordDao, r);
+						countGetter.addPropertyChangeListener(new PropertyChangeListener() 
+						{	
 							@Override
 							public void propertyChange(PropertyChangeEvent evt) 
 							{
 								if(evt.getPropertyName().equals("DONE"))
 								{
-									List<Record> records;
+									final RecordRetrieveWorker recordWorker;
 									try 
 									{
-										records = (List<Record>)recordWorker.get();
-										Iterator<Record> i = records.iterator();
-										while(i.hasNext())
-										{
-											Record curRecord = i.next();
-											DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, curRecord);
-											diagnosisWorker.execute();
-										}
-										final RecordUpdateWorker updateWorker = new 
-												RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
-										updateWorker.addPropertyChangeListener(new PropertyChangeListener() 
-										{	
+										recordWorker = new RecordRetrieveWorker(recordDao,r, 0, (int)countGetter.get());
+										recordWorker.addPropertyChangeListener(new PropertyChangeListener() 
+										{							
 											@Override
 											public void propertyChange(PropertyChangeEvent evt) 
 											{
 												if(evt.getPropertyName().equals("DONE"))
 												{
-													PatientUpdateWorker worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.DELETE);
-													worker.execute();
-													changeView(getCurrentView());
+													List<Record> records;
+													try 
+													{
+														records = (List<Record>)recordWorker.get();
+														Iterator<Record> i = records.iterator();
+														while(i.hasNext())
+														{
+															Record curRecord = i.next();
+															DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, curRecord);
+															diagnosisWorker.execute();
+														}
+														final RecordUpdateWorker updateWorker = new 
+																RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
+														updateWorker.addPropertyChangeListener(new PropertyChangeListener() 
+														{	
+															@Override
+															public void propertyChange(PropertyChangeEvent evt) 
+															{
+																if(evt.getPropertyName().equals("DONE"))
+																{
+																	PatientUpdateWorker worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.DELETE);
+																	worker.execute();
+																	changeView(getCurrentView());
+																}
+															}
+														});
+														updateWorker.execute();
+														
+													} catch (InterruptedException
+															| ExecutionException e) 
+													{e.printStackTrace();}
 												}
+												
 											}
 										});
-										updateWorker.execute();
-										
+										recordWorker.execute();
 									} catch (InterruptedException
-											| ExecutionException e) 
-									{e.printStackTrace();}
+											| ExecutionException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
 								}
-								
 							}
 						});
-						recordWorker.execute();
+						countGetter.execute();
 					}
 				}
 			});

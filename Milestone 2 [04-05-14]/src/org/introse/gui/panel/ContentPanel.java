@@ -250,7 +250,6 @@ public class ContentPanel extends JPanel
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  countLabel.setText(histopathologyList.getListSize()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_HISTOPATHOLOGY);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
 									  searchButton.setVisible(true);
@@ -260,7 +259,6 @@ public class ContentPanel extends JPanel
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  countLabel.setText(gynecologyList.getListSize()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_GYNENECOLOGY);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
 									  searchButton.setVisible(true);
@@ -270,7 +268,6 @@ public class ContentPanel extends JPanel
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel,view);
 									  headerLabel.setText(view);
-									  countLabel.setText(cytologyList.getListSize()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_CYTOTOLOGY);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
 									  searchButton.setVisible(true);
@@ -279,7 +276,6 @@ public class ContentPanel extends JPanel
 					case Constants.TitleConstants.PATHOLOGISTS:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
-									  countLabel.setText(pathPanel.getWordPanel().getListSize() + "");
 									  headerLabel.setText(view);
 									  searchButton.setVisible(false);
 									  newButton.setVisible(false);
@@ -288,7 +284,6 @@ public class ContentPanel extends JPanel
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  countLabel.setText(patientList.getListSize()+"");
 									  newButton.setActionCommand(ActionConstants.NEW_PATIENT);
 									  searchButton.setActionCommand(ActionConstants.SEARCH_PATIENT);
 									  searchButton.setVisible(true);
@@ -298,7 +293,6 @@ public class ContentPanel extends JPanel
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  countLabel.setText(physPanel.getWordPanel().getListSize() + "");
 									  searchButton.setVisible(false);
 									  newButton.setVisible(false);
 									  break;
@@ -306,7 +300,6 @@ public class ContentPanel extends JPanel
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  countLabel.setText(specPanel.getWordPanel().getListSize() + "");
 									  searchButton.setVisible(false);
 									  newButton.setVisible(false);
 									  break;
@@ -319,7 +312,6 @@ public class ContentPanel extends JPanel
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
-									  countLabel.setText(searchList.getListSize()+"");
 									  searchButton.setVisible(true);
 									  newButton.setVisible(false);
 									  break;
@@ -333,6 +325,12 @@ public class ContentPanel extends JPanel
 				if(!currentView.equals(view) && !currentView.equals(TitleConstants.DETAIL_PANEL))
 					previousView = currentView;
 				currentView = view;
+		}
+		
+		public void setCountLabel(String view, int count)
+		{
+			if(view.equals(currentView))
+				countLabel.setText("" + count);
 		}
 	
 		public String getCurrentView()

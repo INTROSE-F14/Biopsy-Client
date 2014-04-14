@@ -15,4 +15,5 @@ public interface RecordDao
 	public Record get(Record record);
 	public List<Record> getAll();
 	public int getCount(Record record);
+	public int getCount();
 }

@@ -17,6 +17,7 @@ import org.introse.core.Diagnosis;
 import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.core.dao.DiagnosisDao;
+import org.introse.core.dao.DictionaryDao;
 import org.introse.core.dao.PatientDao;
 import org.introse.core.dao.RecordDao;
 import org.introse.gui.panel.RestorePanel;
@@ -29,18 +30,21 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 	private static final String SEPARATOR = ":::";
 	private File backupFile;
 	private RestorePanel restorePanel;
-	private int patientCount, recordCount;
+	private int patientCount, recordCount, dictionaryCount;
+	private DictionaryDao dictionaryDao;
 	
 	public RestoreWorker(File backupFile, PatientDao patientDao, RecordDao recordDao,
-			DiagnosisDao diagnosisDao, RestorePanel restorePanel)
+			DiagnosisDao diagnosisDao, DictionaryDao dictionaryDao, RestorePanel restorePanel)
 	{
 		this.backupFile = backupFile;
 		this.patientDao = patientDao;
 		this.recordDao = recordDao;
 		this.diagnosisDao = diagnosisDao;
 		this.restorePanel = restorePanel;
+		this.dictionaryDao = dictionaryDao;
 		patientCount = 0;
 		recordCount = 0;
+		dictionaryCount = 0;
 	}
 	
 	@Override
@@ -83,6 +87,10 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 						{
 							currentType = RecordConstants.PATIENT;
 						}
+						else if(curLine.equals(TitleConstants.DICTIONARY))
+						{
+							currentType = RecordConstants.OTHERS;
+						}
 						else if(curLine.equals(TitleConstants.DIAGNOSIS))
 							currentType = RecordConstants.DIAGNOSIS;
 					}
@@ -96,6 +104,8 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 						case RecordConstants.RECORD:restoreRecord(curLine);
 							break;
 						case RecordConstants.DIAGNOSIS:restoreDiagnosis(curLine);
+							break;
+						case RecordConstants.OTHERS: restoreDictionary(curLine);
 						}
 					}
 					curLine = "";
@@ -138,6 +148,20 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 			patientDao.add(patient);
 		else patientDao.update(patient);
 		patientCount++;
+	}
+	
+	private void restoreDictionary(String wordInfo)
+	{
+		String[] curWord = wordInfo.split(SEPARATOR);
+		int type = Integer.parseInt(curWord[0]);
+		String word = curWord[1];
+	
+		publish("Restoring dictionary:" + word);
+		if(dictionaryDao.isUnique(word, type))
+		{
+			dictionaryDao.add(word, type);
+			dictionaryCount++;
+		}
 	}
 	
 	private void restoreRecord(String recordInfo)
@@ -222,6 +246,7 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 		restorePanel.setSubMessage(sub);
 		restorePanel.setRecordCount(recordCount);
 		restorePanel.setPatientCount(patientCount);
+		restorePanel.setDictionaryCount(dictionaryCount);
 	}
 	
 	@Override
@@ -230,5 +255,6 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 		firePropertyChange("DONE", null, null);
 		restorePanel.setRecordCount(recordCount);
 		restorePanel.setPatientCount(patientCount);
+		restorePanel.setDictionaryCount(dictionaryCount);
 	}
 }

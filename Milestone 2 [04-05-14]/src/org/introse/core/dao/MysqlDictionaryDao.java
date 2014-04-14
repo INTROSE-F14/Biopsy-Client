@@ -246,4 +246,40 @@ public class MysqlDictionaryDao extends MysqlDao implements DictionaryDao
 		}
 		return true;
 	}
+
+	@Override
+	public List<DictionaryWord> getAll() 
+	{
+		List<DictionaryWord> words = new Vector<DictionaryWord>();
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet result = null;
+		String sql = "Select * from " + TitleConstants.DICTIONARY;
+		
+		try 
+		{
+			System.out.println(sql);
+			conn = createConnection();
+			stmt = conn.createStatement();
+			result = stmt.executeQuery(sql);
+			
+			while(result.next())
+			{
+				String word = result.getString(DictionaryTable.WORD);
+				int type = result.getInt(DictionaryTable.TYPE);
+				words.add(new DictionaryWord(type, word));
+			}
+		} catch (ClassNotFoundException | SQLException e) {e.printStackTrace();}  
+		finally
+		{
+			try
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+			} catch (SQLException e) {e.printStackTrace();}
+		}
+		return words;
+	}
 }

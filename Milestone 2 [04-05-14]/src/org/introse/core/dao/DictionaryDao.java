@@ -11,6 +11,7 @@ public interface DictionaryDao
 	public int getCount();
 	public int getCount(int type);
 	public List<DictionaryWord> getAll(int type, int start, int range);
+	public List<DictionaryWord> getAll();
 	public List<String> getWords(int type, int start, int range);
 	public boolean isUnique(String word, int type);
 }

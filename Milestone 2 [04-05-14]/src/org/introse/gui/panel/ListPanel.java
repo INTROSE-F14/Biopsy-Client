@@ -97,6 +97,7 @@ public class ListPanel extends JPanel
 		buttonPanel.add(previous);
 		buttonPanel.add(currentRange);
 		buttonPanel.add(next);
+		buttonPanel.setBorder(null);
 		listPanel = new JPanel(new GridBagLayout());
 		emptyPanel = new JPanel(new GridBagLayout());
 		refreshPanel = new JPanel(new GridBagLayout());

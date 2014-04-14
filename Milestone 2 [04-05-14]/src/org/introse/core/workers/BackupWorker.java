@@ -14,12 +14,11 @@ import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
 import org.introse.core.Diagnosis;
+import org.introse.core.DictionaryWord;
 import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.core.dao.DiagnosisDao;
-import org.introse.core.dao.MysqlDiagnosisDao;
-import org.introse.core.dao.MysqlPatientDao;
-import org.introse.core.dao.MysqlRecordDao;
+import org.introse.core.dao.DictionaryDao;
 import org.introse.core.dao.PatientDao;
 import org.introse.core.dao.RecordDao;
 import org.introse.gui.panel.BackupPanel;
@@ -30,16 +29,19 @@ public class BackupWorker extends SwingWorker<Void, String>
 	private DiagnosisDao diagnosisDao;
 	private RecordDao recordDao;
 	private PatientDao patientDao;
+	private DictionaryDao dictionaryDao;
 	private File backupFile;
 	private BackupPanel backupPanel;
-	private int patientCount, recordCount;
+	private int patientCount, recordCount, dictionaryCount;
 	
-	public BackupWorker(File backupFile, BackupPanel backupPanel)
+	public BackupWorker(DiagnosisDao diagnosisDao, RecordDao recordDao, PatientDao patientDao, 
+			DictionaryDao dictionaryDao, File backupFile, BackupPanel backupPanel)
 	{
 		this.backupFile = backupFile;
-		this.diagnosisDao = new MysqlDiagnosisDao();
-		this.patientDao = new MysqlPatientDao();
-		this.recordDao = new MysqlRecordDao();
+		this.diagnosisDao = diagnosisDao;
+		this.patientDao = patientDao;
+		this.recordDao = recordDao;
+		this.dictionaryDao = dictionaryDao;
 		this.backupPanel = backupPanel;
 	}
 	
@@ -49,14 +51,15 @@ public class BackupWorker extends SwingWorker<Void, String>
 		List<Patient> patients = patientDao.getAll(0, patientDao.getCount());
 		List<Record> records = recordDao.getAll();
 		List<Diagnosis> diagnosis = diagnosisDao.getAll();
-
+		List<DictionaryWord> dictionary = dictionaryDao.getAll();
+		
 		PrintWriter writer = null;
 		try 
 		{
 			patientCount = 0;
 			int patientSize = patients.size();
 			setProgress(0);
-			publish("Step 1/3:Backing up patients");
+			publish("Step 1/4:Backing up patients");
 			
 			writer = new PrintWriter(new FileWriter(backupFile, false));
 			writer.println("#" + TitleConstants.PATIENTS + "#");
@@ -76,13 +79,13 @@ public class BackupWorker extends SwingWorker<Void, String>
 						+SEPARATOR+birthday+SEPARATOR+gender + "$");
 				patientCount++;
 				setProgress(patientCount * 100 / patientSize);
-				publish("Step 1/3:Backing up patients");
+				publish("Step 1/4:Backing up patients");
 			}
 			
 			recordCount = 0;
 			int recordSize = records.size();
 			setProgress(0);
-			publish("Step 2/3:Backing up records");
+			publish("Step 2/4:Backing up records");
 			writer.println();
 			writer.println("#" + TitleConstants.RECORDS + "#");
 			Iterator<Record> recordIterator = records.iterator();
@@ -111,13 +114,13 @@ public class BackupWorker extends SwingWorker<Void, String>
 						SEPARATOR + microNote + "$");
 				recordCount++;
 				setProgress(recordCount * 100 / recordSize);
-				publish("Step 2/3:Backing up records");
+				publish("Step 2/4:Backing up records");
 			}
 			
 			int completedDiagnosis = 0;
 			int diagnosisSize = diagnosis.size();
 			setProgress(0);
-			publish("Step 3/3: Backing up diagnosis'");
+			publish("Step 3/4: Backing up diagnosis'");
 			writer.println();
 			writer.println("#" + TitleConstants.DIAGNOSIS + "#");
 			Iterator<Diagnosis> diagnosisIterator = diagnosis.iterator();
@@ -132,7 +135,25 @@ public class BackupWorker extends SwingWorker<Void, String>
 				writer.println(category + SEPARATOR+type + SEPARATOR + year + SEPARATOR+number +SEPARATOR+ value + "$");
 				completedDiagnosis++;
 				setProgress(completedDiagnosis * 100 / diagnosisSize);
-				publish("Step 3/3:Backing up diagnosis");
+				publish("Step 3/4:Backing up diagnosis");
+			}
+			
+			dictionaryCount = 0;
+			int wordsSize = dictionary.size();
+			setProgress(0);
+			publish("Step 4/4: Backing up dictionary'");
+			writer.println();
+			writer.println("#" + TitleConstants.DICTIONARY + "#");
+			Iterator<DictionaryWord> dictionaryIterator = dictionary.iterator();
+			while(dictionaryIterator.hasNext())
+			{
+				DictionaryWord curWord = dictionaryIterator.next();
+				int type = curWord.getType();
+				String word = curWord.getWord();
+				writer.println(type + SEPARATOR+word+ "$");
+				dictionaryCount++;
+				setProgress(dictionaryCount * 100 / wordsSize);
+				publish("Step 4/4:Backing up dictionary");
 			}
 		} catch (IOException e) {
 			throw new IOException();
@@ -159,6 +180,7 @@ public class BackupWorker extends SwingWorker<Void, String>
 		backupPanel.setSubMessage(sub);
 		backupPanel.setRecordCount(recordCount);
 		backupPanel.setPatientCount(patientCount);
+		backupPanel.setDictionaryCount(dictionaryCount);
 	}
 	
 	@Override
@@ -167,5 +189,6 @@ public class BackupWorker extends SwingWorker<Void, String>
 		firePropertyChange("DONE", null, null);
 		backupPanel.setRecordCount(recordCount);
 		backupPanel.setPatientCount(patientCount);
+		backupPanel.setDictionaryCount(dictionaryCount);
 	}
 }

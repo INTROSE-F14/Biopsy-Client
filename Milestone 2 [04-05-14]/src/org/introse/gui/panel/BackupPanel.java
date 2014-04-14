@@ -34,7 +34,8 @@ public class BackupPanel extends JPanel {
 	
 	private JPanel actionPanel, progressPanel;
 	private JProgressBar progressBar;
-	private JLabel mainMessage, subMessage, lblRecords, recordCount, lblPatient, patientCount;
+	private JLabel mainMessage, subMessage, lblRecords, recordCount, lblPatient, patientCount,
+	lblDictionary, dictionaryCount;
 	private ImageIcon successIcon, failIcon;
 	
 	public BackupPanel()
@@ -91,8 +92,10 @@ public class BackupPanel extends JPanel {
 		subMessage = new JLabel();
 		recordCount = new JLabel();
 		patientCount= new JLabel();
+		dictionaryCount = new JLabel();
 		lblPatient = new JLabel("Patient(s)");
 		lblRecords = new JLabel("Record(s)");
+		lblDictionary = new JLabel("Dictionary");
 		progressBar.setIndeterminate(true);
 		mainMessage.setHorizontalTextPosition(JLabel.LEADING);
 		mainMessage.setIconTextGap(20);
@@ -103,6 +106,8 @@ public class BackupPanel extends JPanel {
 		recordCount.setFont(mainMessage.getFont());
 		lblPatient.setFont(mainMessage.getFont());
 		lblRecords.setFont(mainMessage.getFont());
+		lblDictionary.setFont(mainMessage.getFont());
+		dictionaryCount.setFont(mainMessage.getFont());
 		
 		JPanel emptyPanel = new JPanel();
 		emptyPanel.setBackground(Color.white);
@@ -192,6 +197,17 @@ public class BackupPanel extends JPanel {
 		c.gridx = 1;
 		c.insets = new Insets(0,0,5,0);
 		progressPanel.add(patientCount, c);
+		c.gridx = 0;
+		c.weightx = 0.0;
+		c.gridy = y;
+		c.insets = new Insets(0,0,5,10);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		progressPanel.add(lblDictionary, c);
+		c.gridy = y++;
+		c.weightx = 1.0;
+		c.gridx = 1;
+		c.insets = new Insets(0,0,5,0);
+		progressPanel.add(dictionaryCount, c);
 	}
 	
 	public void addListener(ActionListener listener)
@@ -241,6 +257,11 @@ public class BackupPanel extends JPanel {
 	public void setPatientCount(int count)
 	{
 		patientCount.setText(""+count);
+	}
+	
+	public void setDictionaryCount(int count)
+	{
+		dictionaryCount.setText(""+count);
 	}
 	
 	public void setStatus(int status)

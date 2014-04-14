@@ -738,4 +738,38 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 			{e.printStackTrace();}
 		}
 	}
+
+	@Override
+	public int getCount() 
+	{
+		int count = 0;
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet result = null;
+		String sql = "Select count(*) from " + TitleConstants.RECORDS;
+		
+		try 
+		{
+			System.out.println(sql);
+			conn = createConnection();
+			stmt = conn.createStatement();
+			result = stmt.executeQuery(sql);
+			if(result.next())
+				count = result.getInt("count(*)");
+		} catch (ClassNotFoundException | SQLException e) 
+		{e.printStackTrace();} 
+		finally
+		{
+			try 
+			{
+				if(result != null)
+					result.close();
+				if(stmt != null)
+					stmt.close();
+					
+			} catch (SQLException e) 
+			{e.printStackTrace();}
+		}
+		return count;
+	}
 }
