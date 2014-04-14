@@ -15,21 +15,19 @@ public class RecordRetrieveWorker extends SwingWorker<Object, Void>
 	private int start, range;
 	private Record model;
 	
-	public RecordRetrieveWorker(RecordDao recordDao, Record model)
+	public RecordRetrieveWorker(RecordDao recordDao, Record model, int operation)
 	{
 		this.recordDao = recordDao;
 		this.model = model;
-		operation = GET_COUNT;
+		this.operation = operation;
 	}
-	public RecordRetrieveWorker(RecordDao recordDao, Record model, int start, int range)
+	public RecordRetrieveWorker(RecordDao recordDao, Record model, int start, int range, int operation)
 	{
 		this.recordDao = recordDao;
 		this.model = model;
 		this.start = start;
 		this.range = range;
-		if(start ==0 && range ==0)
-			operation = GET;
-		else operation = SEARCH;
+		this.operation = operation;
 	}
 	
 	@Override

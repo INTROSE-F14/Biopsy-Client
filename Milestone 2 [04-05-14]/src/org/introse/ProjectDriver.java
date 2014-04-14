@@ -340,7 +340,7 @@ public class ProjectDriver
 		if(reset)
 			listPanel.setStart(0);
 		
-		final RecordRetrieveWorker countGetter = new RecordRetrieveWorker(recordDao, record);
+		final RecordRetrieveWorker countGetter = new RecordRetrieveWorker(recordDao, record, RecordRetrieveWorker.GET_COUNT);
 		countGetter.addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
@@ -351,9 +351,9 @@ public class ProjectDriver
 					{
 						listPanel.setListSize((int)countGetter.get());
 						setCountLabel(view, listPanel.getListSize());
-						final RecordRetrieveWorker recordWorker = new RecordRetrieveWorker(recordDao, 
-								record, listPanel.getStart(), listPanel.getRange());
-						recordWorker.addPropertyChangeListener(new PropertyChangeListener() {
+						final RecordRetrieveWorker recordSearcher = new RecordRetrieveWorker(recordDao, 
+								record, listPanel.getStart(), listPanel.getRange(), RecordRetrieveWorker.SEARCH);
+						recordSearcher.addPropertyChangeListener(new PropertyChangeListener() {
 							
 							@Override
 							public void propertyChange(PropertyChangeEvent evt) {
@@ -362,7 +362,7 @@ public class ProjectDriver
 									List<Record> records;
 									try 
 									{
-										records = (List<Record>)recordWorker.get();
+										records = (List<Record>)recordSearcher.get();
 										final RecordListGenerator listWorker = new RecordListGenerator(records, patientDao);
 										listWorker.addPropertyChangeListener(new PropertyChangeListener()
 										{
@@ -389,7 +389,7 @@ public class ProjectDriver
 								}
 							}
 						});
-						recordWorker.execute();
+						recordSearcher.execute();
 					} catch (InterruptedException | ExecutionException e2) 
 					{e2.printStackTrace();}
 				}	
@@ -760,8 +760,8 @@ public class ProjectDriver
 			{
 				Record record = (Record)detailPanel.getObject();
 				
-				final RecordRetrieveWorker recordWorker = new RecordRetrieveWorker(recordDao, record, 0, 0);
-				recordWorker.addPropertyChangeListener(new PropertyChangeListener() {
+				final RecordRetrieveWorker recordGetter = new RecordRetrieveWorker(recordDao, record, RecordRetrieveWorker.GET);
+				recordGetter.addPropertyChangeListener(new PropertyChangeListener() {
 					
 					@Override
 					public void propertyChange(PropertyChangeEvent evt) {
@@ -769,7 +769,7 @@ public class ProjectDriver
 						{
 							try 
 							{
-								final Record actualRecord = (Record)recordWorker.get();
+								final Record actualRecord = (Record)recordGetter.get();
 								final DiagnosisRetrieveWorker diagnosisWorker = new DiagnosisRetrieveWorker(diagnosisDao, actualRecord);
 								diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() 
 								{	
@@ -818,7 +818,7 @@ public class ProjectDriver
 						
 					}
 				});
-				recordWorker.execute();
+				recordGetter.execute();
 				
 				
 			}
@@ -1343,7 +1343,7 @@ public class ProjectDriver
 						final Record r = new Record();
 						final int patientId =  (int)p.getAttribute(PatientTable.PATIENT_ID);
 						r.putAttribute(RecordTable.PATIENT_ID,patientId);
-						final RecordRetrieveWorker countGetter = new RecordRetrieveWorker(recordDao, r);
+						final RecordRetrieveWorker countGetter = new RecordRetrieveWorker(recordDao, r, RecordRetrieveWorker.GET_COUNT);
 						countGetter.addPropertyChangeListener(new PropertyChangeListener() 
 						{	
 							@Override
@@ -1351,58 +1351,51 @@ public class ProjectDriver
 							{
 								if(evt.getPropertyName().equals("DONE"))
 								{
-									final RecordRetrieveWorker recordWorker;
-									try 
-									{
-										recordWorker = new RecordRetrieveWorker(recordDao,r, 0, (int)countGetter.get());
-										recordWorker.addPropertyChangeListener(new PropertyChangeListener() 
-										{							
-											@Override
-											public void propertyChange(PropertyChangeEvent evt) 
+									
+									final RecordRetrieveWorker recordSearcher = new RecordRetrieveWorker(recordDao,r, RecordRetrieveWorker.SEARCH);
+									recordSearcher.addPropertyChangeListener(new PropertyChangeListener() 
+									{							
+										@Override
+										public void propertyChange(PropertyChangeEvent evt) 
+										{
+											if(evt.getPropertyName().equals("DONE"))
 											{
-												if(evt.getPropertyName().equals("DONE"))
+												List<Record> records;
+												try 
 												{
-													List<Record> records;
-													try 
+													records = (List<Record>)recordSearcher.get();
+													Iterator<Record> i = records.iterator();
+													while(i.hasNext())
 													{
-														records = (List<Record>)recordWorker.get();
-														Iterator<Record> i = records.iterator();
-														while(i.hasNext())
+														Record curRecord = i.next();
+														DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, curRecord);
+														diagnosisWorker.execute();
+													}
+													final RecordUpdateWorker updateWorker = new 
+															RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
+													updateWorker.addPropertyChangeListener(new PropertyChangeListener() 
+													{	
+														@Override
+														public void propertyChange(PropertyChangeEvent evt) 
 														{
-															Record curRecord = i.next();
-															DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, curRecord);
-															diagnosisWorker.execute();
-														}
-														final RecordUpdateWorker updateWorker = new 
-																RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
-														updateWorker.addPropertyChangeListener(new PropertyChangeListener() 
-														{	
-															@Override
-															public void propertyChange(PropertyChangeEvent evt) 
+															if(evt.getPropertyName().equals("DONE"))
 															{
-																if(evt.getPropertyName().equals("DONE"))
-																{
-																	PatientUpdateWorker worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.DELETE);
-																	worker.execute();
-																	changeView(getCurrentView());
-																}
+																PatientUpdateWorker worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.DELETE);
+																worker.execute();
+																changeView(getCurrentView());
 															}
-														});
-														updateWorker.execute();
-														
-													} catch (InterruptedException
-															| ExecutionException e) 
-													{e.printStackTrace();}
-												}
-												
+														}
+													});
+													updateWorker.execute();
+													
+												} catch (InterruptedException
+														| ExecutionException e) 
+												{e.printStackTrace();}
 											}
-										});
-										recordWorker.execute();
-									} catch (InterruptedException
-											| ExecutionException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
+											
+										}
+									});
+									recordSearcher.execute();
 								}
 							}
 						});
