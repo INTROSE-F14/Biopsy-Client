@@ -51,6 +51,7 @@ import org.introse.core.workers.RecordListGenerator;
 import org.introse.core.workers.RecordRetrieveWorker;
 import org.introse.core.workers.RecordUpdateWorker;
 import org.introse.core.workers.RestoreWorker;
+import org.introse.gui.dialogbox.LoadingDialog;
 import org.introse.gui.dialogbox.PatientLoader;
 import org.introse.gui.dialogbox.PopupDialog;
 import org.introse.gui.dialogbox.PrintDialog;
@@ -146,9 +147,9 @@ public class ProjectDriver
 				mainMenu = new MainMenu();
 				mainMenu.addListListener(listListener);
 				mainMenu.addListener(listener);
+				loadWords();
 				changeView(TitleConstants.HISTOPATHOLOGY);
 				mainMenu.showGUI();
-				loadWords();
 			}});
 	}
 	
@@ -496,22 +497,23 @@ public class ProjectDriver
 	{
 		if(object instanceof Record)
 		{
+			final LoadingDialog loadingDialog = new LoadingDialog(mainMenu, "Loading", "Loading record");
 			final Record record = (Record)object;
 			Patient patient = new Patient();
 			patient.putAttribute(PatientTable.PATIENT_ID, 
 					record.getAttribute(Constants.RecordTable.PATIENT_ID));
 			
-			final PatientRetrieveWorker patientWorker = new PatientRetrieveWorker(patientDao, patient, 0, 0);
-			patientWorker.addPropertyChangeListener(new PropertyChangeListener() 
+			final PatientRetrieveWorker patientFinder = new PatientRetrieveWorker(patientDao, patient, 0, 0);
+			patientFinder.addPropertyChangeListener(new PropertyChangeListener() 
 			{	
 				@Override
 				public void propertyChange(PropertyChangeEvent evt) 
 				{
 					try 
 					{
-						final Patient p = (Patient)patientWorker.get();
-						final DiagnosisRetrieveWorker diagnosisWorker = new DiagnosisRetrieveWorker(diagnosisDao, record);
-						diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
+						final Patient p = (Patient)patientFinder.get();
+						final DiagnosisRetrieveWorker diagnosisRetriever = new DiagnosisRetrieveWorker(diagnosisDao, record);
+						diagnosisRetriever.addPropertyChangeListener(new PropertyChangeListener() {
 							
 							@Override
 							public void propertyChange(PropertyChangeEvent evt) {
@@ -520,7 +522,7 @@ public class ProjectDriver
 									RecordForm recordForm = null;
 									List<Diagnosis> diagnosis;
 									try {
-										diagnosis = (List<Diagnosis>)diagnosisWorker.get();
+										diagnosis = (List<Diagnosis>)diagnosisRetriever.get();
 										record.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
 										record.putAttribute(RecordTable.PATIENT, p);
 										
@@ -537,6 +539,7 @@ public class ProjectDriver
 										detailPanel = new RecordPanel((JPanel)recordForm, Constants.ActionConstants.VIEW);
 										detailPanel.addListener(listener);
 										mainMenu.getContentPanel().setDetailsPanel(detailPanel);
+										loadingDialog.dispose();
 										mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
 									} catch (InterruptedException
 											| ExecutionException e) 
@@ -544,14 +547,15 @@ public class ProjectDriver
 								}
 							}
 						});
-						diagnosisWorker.execute();
+						diagnosisRetriever.execute();
 					
 					} catch (InterruptedException | ExecutionException e) 
 					{e.printStackTrace();}
 					
 				}
 			});
-			patientWorker.execute();
+			patientFinder.execute();
+			loadingDialog.showGui();
 		}
 		
 		else if(object instanceof Patient)
@@ -576,9 +580,9 @@ public class ProjectDriver
 	{
 		if(detailPanel.areFieldsValid())
 		{
+			final LoadingDialog loadingDialog = new LoadingDialog(mainMenu, "Saving", "Saving, please wait");
 			SwingWorker bigWorker = new SwingWorker()
 			{
-
 				@Override
 				protected void done()
 				{
@@ -738,15 +742,20 @@ public class ProjectDriver
 				}
 				
 			};
-			bigWorker.addPropertyChangeListener(new PropertyChangeListener() {
-				
+			bigWorker.addPropertyChangeListener(new PropertyChangeListener() 
+			{	
 				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
+				public void propertyChange(PropertyChangeEvent evt) 
+				{
 					if(evt.getPropertyName().equals("DONE"))
+					{
+						loadingDialog.dispose();
 						detailPanel.setMode(Constants.ActionConstants.VIEW);
+					}
 				}
 			});
 			bigWorker.execute();
+			loadingDialog.showGui();
 			
 		}
 		else new PopupDialog(mainMenu, "Save Error", "Please fill up all required fields.", "OK").showGui();
@@ -754,17 +763,19 @@ public class ProjectDriver
 	
 	public void cancelCurrentForm()
 	{
+		final LoadingDialog loadingDialog = new LoadingDialog(mainMenu, "Loading", "Loading, please wait");
 		if(detailPanel.getMode() == Constants.ActionConstants.EDIT)
 		{
 			if(detailPanel instanceof RecordPanel)
 			{
 				Record record = (Record)detailPanel.getObject();
-				
-				final RecordRetrieveWorker recordGetter = new RecordRetrieveWorker(recordDao, record, RecordRetrieveWorker.GET);
-				recordGetter.addPropertyChangeListener(new PropertyChangeListener() {
-					
+				final RecordRetrieveWorker recordGetter = new RecordRetrieveWorker(recordDao, 
+						record, RecordRetrieveWorker.GET);
+				recordGetter.addPropertyChangeListener(new PropertyChangeListener() 
+				{	
 					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
+					public void propertyChange(PropertyChangeEvent evt) 
+					{
 						if(evt.getPropertyName().equals("DONE"))
 						{
 							try 
@@ -797,6 +808,7 @@ public class ProjectDriver
 															{
 																((RecordPanel)detailPanel).getRecordForm().setFields(actualRecord, (Patient)patientWorker.get());
 																detailPanel.setMode(Constants.ActionConstants.VIEW);
+																loadingDialog.dispose();
 															} catch (InterruptedException | ExecutionException e) 
 															{e.printStackTrace();}
 														}
@@ -810,17 +822,13 @@ public class ProjectDriver
 									}
 								});
 								diagnosisWorker.execute();
-							} catch (InterruptedException | ExecutionException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
+							} catch (InterruptedException | ExecutionException e1) 
+							{e1.printStackTrace();}
 						}
-						
 					}
 				});
 				recordGetter.execute();
-				
-				
+				loadingDialog.showGui();
 			}
 			else if(detailPanel instanceof PatientPanel)
 			{
@@ -835,6 +843,7 @@ public class ProjectDriver
 							{
 								((PatientPanel)detailPanel).getPatientForm().setFields((Patient)patientWorker.get());
 								detailPanel.setMode(Constants.ActionConstants.VIEW);
+								loadingDialog.dispose();
 							} catch (InterruptedException | ExecutionException e) 
 							{e.printStackTrace();}
 						}
@@ -842,6 +851,7 @@ public class ProjectDriver
 					}
 				});
 				patientWorker.execute();
+				loadingDialog.showGui();
 			}
 		}
 		else 
@@ -853,6 +863,7 @@ public class ProjectDriver
 	
 	public void printCurrentForm()
 	{
+		final LoadingDialog loadingDialog = new LoadingDialog(mainMenu, "Loading", "Loading, please wait");
 		final Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
 		final DiagnosisRetrieveWorker diagnosisWorker = new DiagnosisRetrieveWorker(diagnosisDao, r);
 		diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
@@ -866,6 +877,7 @@ public class ProjectDriver
 					{
 						diagnosis = (List<Diagnosis>)diagnosisWorker.get();
 						r.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
+						loadingDialog.dispose();
 						PrintDialog pd = new PrintDialog(r);
 					} catch (InterruptedException | ExecutionException e) 
 					{e.printStackTrace();}
@@ -873,6 +885,7 @@ public class ProjectDriver
 			}
 		});
 		diagnosisWorker.execute();
+		loadingDialog.showGui();
 	}
 
 	public void createNew(int type)
@@ -998,9 +1011,9 @@ public class ProjectDriver
 	
 	public void selectBackupPath()
 	{
+		final LoadingDialog loadingDialog = new LoadingDialog(mainMenu, "Loading", "Checking data to be backed up");
 		final SwingWorker dataCountGetter = new SwingWorker<Integer, Void>()
 		{
-
 			@Override
 			protected Integer doInBackground() throws Exception 
 			{
@@ -1024,6 +1037,7 @@ public class ProjectDriver
 				{
 					try 
 					{
+						loadingDialog.dispose();
 						if((int)dataCountGetter.get() > 0)
 						{
 							BackupPanel backupPanel = mainMenu.getContentPanel().getToolsPanel().getBackupPanel();
@@ -1053,6 +1067,7 @@ public class ProjectDriver
 			}
 		});
 		dataCountGetter.execute();
+		loadingDialog.showGui();
 	}
 	
 	public void selectExportPath()
@@ -1252,6 +1267,7 @@ public class ProjectDriver
 			final int actualType = type;
 			if(word.replaceAll("\\s", "").length() > 0)
 			{
+				final LoadingDialog loadingDialog = new LoadingDialog(mainMenu, "Loading", "Adding word");
 				final DictionaryUpdateWorker wordChecker = new DictionaryUpdateWorker
 						(dictionaryDao, word, type, DictionaryUpdateWorker.CHECK);
 				wordChecker.addPropertyChangeListener(new PropertyChangeListener() 
@@ -1263,6 +1279,7 @@ public class ProjectDriver
 						{
 							try 
 							{
+								loadingDialog.dispose();
 								if((boolean)wordChecker.get())
 								{
 									DictionaryUpdateWorker wordAdder =
@@ -1287,12 +1304,14 @@ public class ProjectDriver
 					}
 				});
 				wordChecker.execute();
+				loadingDialog.showGui();
 			}
 		}
 	}
 	
 	public void delete(final Object object)
 	{
+		final LoadingDialog loadingDialog = new LoadingDialog(mainMenu, "Loading", "Deleting selected item, please wait");
 		PopupDialog dialog = null;
 		if(object instanceof Record)
 		{
@@ -1312,15 +1331,26 @@ public class ProjectDriver
 							public void propertyChange(PropertyChangeEvent evt) {
 								if(evt.getPropertyName().equals("DONE"))
 								{
-									final RecordUpdateWorker recordWorker = new 
+									final RecordUpdateWorker recordDeleter = new 
 											RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
-									recordWorker.execute();
-									changeView(getCurrentView());
+									recordDeleter.addPropertyChangeListener(new PropertyChangeListener() 
+									{	
+										@Override
+										public void propertyChange(PropertyChangeEvent evt) 
+										{
+											if(evt.getPropertyName().equals("DONE"))
+											{
+												loadingDialog.dispose();
+												changeView(getCurrentView());
+											}
+										}
+									});
+									recordDeleter.execute();
 								}
-								
 							}
 						});
 						diagnosisWorker.execute();
+						loadingDialog.showGui();
 					}
 					
 				}
@@ -1371,22 +1401,33 @@ public class ProjectDriver
 														DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, curRecord);
 														diagnosisWorker.execute();
 													}
-													final RecordUpdateWorker updateWorker = new 
+													final RecordUpdateWorker recordDeleter = new 
 															RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
-													updateWorker.addPropertyChangeListener(new PropertyChangeListener() 
+													recordDeleter.addPropertyChangeListener(new PropertyChangeListener() 
 													{	
 														@Override
 														public void propertyChange(PropertyChangeEvent evt) 
 														{
 															if(evt.getPropertyName().equals("DONE"))
 															{
-																PatientUpdateWorker worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.DELETE);
-																worker.execute();
-																changeView(getCurrentView());
+																PatientUpdateWorker patientDeleter = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.DELETE);
+																patientDeleter.addPropertyChangeListener(new PropertyChangeListener() {
+																	
+																	@Override
+																	public void propertyChange(PropertyChangeEvent evt) {
+																		if(evt.getPropertyName().equals("DONE"))
+																		{
+																			loadingDialog.dispose();
+																			changeView(getCurrentView());
+																		}
+																		
+																	}
+																});
+																patientDeleter.execute();	
 															}
 														}
 													});
-													updateWorker.execute();
+													recordDeleter.execute();
 													
 												} catch (InterruptedException
 														| ExecutionException e) 
@@ -1400,6 +1441,7 @@ public class ProjectDriver
 							}
 						});
 						countGetter.execute();
+						loadingDialog.showGui();
 					}
 				}
 			});
@@ -1425,11 +1467,13 @@ public class ProjectDriver
 							public void propertyChange(PropertyChangeEvent evt) {
 								if(evt.getPropertyName().equals("DONE"))
 								{
+									loadingDialog.dispose();
 									changeView(getCurrentView());
 								}
 							}
 						});
 						wordDeleter.execute();
+						loadingDialog.showGui();
 					}
 				}
 			});
