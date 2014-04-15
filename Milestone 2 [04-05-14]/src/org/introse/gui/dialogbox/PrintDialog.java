@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -22,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
@@ -33,6 +35,7 @@ import org.introse.core.CustomCalendar;
 import org.introse.core.Diagnosis;
 import org.introse.core.Patient;
 import org.introse.core.Record;
+import org.introse.core.WrapEditorKit;
 import org.introse.gui.event.CustomListener;
 
 public class PrintDialog extends JDialog implements ActionListener{
@@ -68,11 +71,12 @@ public class PrintDialog extends JDialog implements ActionListener{
 		setLayout(null);
 
 		this.tp_textpane= new JTextPane();
-		this.sd_doc = this.tp_textpane.getStyledDocument();
 		this.tp_textpane.setFont(new Font("Courier", Font.PLAIN, 12));
 		this.tp_textpane.setEditable(false);
-		this.tp_textpane.setMargin(new Insets(36, 72,36, 72));
+		this.tp_textpane.setMargin(new Insets(18, 18,18, 18));
 		this.tp_textpane.setHighlighter(null);
+		this.tp_textpane.setEditorKit(new WrapEditorKit());
+		this.sd_doc = this.tp_textpane.getStyledDocument();
 		
 		this.sp_scrollpane = new JScrollPane(this.tp_textpane);
         this.sp_scrollpane.setPreferredSize( new Dimension(585, 450));
@@ -111,9 +115,9 @@ public class PrintDialog extends JDialog implements ActionListener{
 		PageFormat pf = new PageFormat();
 		Paper p = pf.getPaper();
 		p.setSize(8.5 * 72, 11 * 72);
-	    p.setImageableArea(0.5 * 72, 0.0 * 72, 7.5 * 72, 10.5 * 72);
+	    p.setImageableArea(18,18,18,18);
 		pf.setPaper(p);
-		return pf;     
+		return pf;
 	}
 	
 	public void addListener(CustomListener listener){
@@ -331,7 +335,8 @@ public class PrintDialog extends JDialog implements ActionListener{
 		StyleConstants.setUnderline(mas_boldunderline, true);
 	try{
 		this.centerAlign();
-		sd_doc.insertString(sd_doc.getLength(), String.format("MANILA DOCTORS HOSPITAL"), mas_boldunderline );
+		tp_textpane.insertIcon(new ImageIcon(getClass().getResource("/res/icons/hospital_logo.png")));
+		sd_doc.insertString(sd_doc.getLength(), String.format("\nMANILA DOCTORS HOSPITAL"), mas_boldunderline );
 		sd_doc.insertString(sd_doc.getLength(), String.format("\nDepartment of Laboratory Medicine"), mas_bold );
 		sd_doc.insertString(sd_doc.getLength(), String.format("\n667 U.N. Ave., Ermita, Manila"), mas_bold );
 		sd_doc.insertString(sd_doc.getLength(), String.format("\nTel. No. 5288108/ 5243011 loc. 8108"), mas_bold );
@@ -502,14 +507,13 @@ public class PrintDialog extends JDialog implements ActionListener{
 		}
 	}
 
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btn_print){
 			Thread printThread = new Thread("Print thread") {
 				public void run() {
 					try {
-						tp_textpane.print(); 
+						tp_textpane.print(new MessageFormat("Page {0}"), null); 
 					}
 					catch (PrinterException e) {
 						e.printStackTrace(); 
