@@ -291,7 +291,6 @@ public class PrintDialog extends JDialog implements ActionListener{
 	private String getSpaces(String s1, String s2){
 		FontMetrics fm = this.tp_textpane.getFontMetrics(tp_textpane.getFont());
 		int width = (int) getFormat().getImageableWidth() - 36;
-		System.out.println("Width: " + width);
 		int length1 = fm.stringWidth(s1);
 		int length2 = fm.stringWidth(s2);
 		int space = fm.charWidth(' ');
@@ -299,16 +298,13 @@ public class PrintDialog extends JDialog implements ActionListener{
 		String longSpace = "";
 		for(int i=0; i<numSpaces;i++){
 			longSpace = longSpace + " ";
-		}
-		System.out.println("Spaces: " + numSpaces);
-		
+		}		
 		return longSpace;
 	}
 	
 	private String getSpaces(String s1, String s2, String s3){
 		FontMetrics fm = this.tp_textpane.getFontMetrics(tp_textpane.getFont());
 		int width = (int) getFormat().getImageableWidth() - 36;
-		System.out.println("Width: " + width);
 		int length1 = fm.stringWidth(s1);
 		int length2 = fm.stringWidth(s2);
 		int length3 = fm.stringWidth(s3);
@@ -318,9 +314,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 		for(int i=0; i<numSpaces;i++){
 			longSpace = longSpace + " ";
 		}
-		System.out.println("Spaces: " + numSpaces);
 		return longSpace;
-		
 	}
 	
 	private void clear(){
