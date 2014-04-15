@@ -115,7 +115,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 		PageFormat pf = new PageFormat();
 		Paper p = pf.getPaper();
 		p.setSize(8.5 * 72, 11 * 72);
-	    p.setImageableArea(18,18,18,18);
+		p.setImageableArea(0.25 * 72, 0.25 * 72, 7.75 * 72, 10.75 * 72);
 		pf.setPaper(p);
 		return pf;
 	}
@@ -257,8 +257,8 @@ public class PrintDialog extends JDialog implements ActionListener{
 				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + specimenLabel + specimen),null);
 				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + physicianLabel + physician + getSpaces(physicianLabel+physician,roomLabel+room) + roomLabel + room), null);
 				sd_doc.insertString(sd_doc.getLength(), String.format("\n" + dateReceivedLabel + dateReceived + getSpaces(dateReceivedLabel+dateReceived,dateCompletedLabel+dateCompleted) + dateCompletedLabel + dateCompleted), null);
-				this.centerAlign();
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
+				this.centerAlign();
 				sd_doc.insertString(sd_doc.getLength(), "\n"+title, mas_boldunderline);
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				this.leftAlign();
@@ -290,7 +290,8 @@ public class PrintDialog extends JDialog implements ActionListener{
 	
 	private String getSpaces(String s1, String s2){
 		FontMetrics fm = this.tp_textpane.getFontMetrics(tp_textpane.getFont());
-		int width = (int) getFormat().getImageableWidth() - 120;
+		int width = (int) getFormat().getImageableWidth() - 36;
+		System.out.println("Width: " + width);
 		int length1 = fm.stringWidth(s1);
 		int length2 = fm.stringWidth(s2);
 		int space = fm.charWidth(' ');
@@ -299,12 +300,15 @@ public class PrintDialog extends JDialog implements ActionListener{
 		for(int i=0; i<numSpaces;i++){
 			longSpace = longSpace + " ";
 		}
+		System.out.println("Spaces: " + numSpaces);
+		
 		return longSpace;
 	}
 	
 	private String getSpaces(String s1, String s2, String s3){
 		FontMetrics fm = this.tp_textpane.getFontMetrics(tp_textpane.getFont());
-		int width = (int) getFormat().getImageableWidth() - 120;
+		int width = (int) getFormat().getImageableWidth() - 36;
+		System.out.println("Width: " + width);
 		int length1 = fm.stringWidth(s1);
 		int length2 = fm.stringWidth(s2);
 		int length3 = fm.stringWidth(s3);
@@ -314,6 +318,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 		for(int i=0; i<numSpaces;i++){
 			longSpace = longSpace + " ";
 		}
+		System.out.println("Spaces: " + numSpaces);
 		return longSpace;
 		
 	}
