@@ -32,6 +32,7 @@ public class LoginWorker extends SwingWorker<Integer, Void> implements PropertyC
 	protected Integer doInBackground() throws Exception 
 	{
 		int loginStatus = client.connectToServer(password);
+		firePropertyChange("ALMOST DONE", null, null);
 		return loginStatus;
 	}
 	
@@ -50,9 +51,6 @@ public class LoginWorker extends SwingWorker<Integer, Void> implements PropertyC
 			try 
 			{
 				loginStatus = (int)get();
-				loginForm.setLoadingVisible(false);
-				loginForm.setLoginButtonEnabled(true);
-				loginForm.setListening(2);
 				switch(loginStatus)
 				{
 					case Constants.NetworkConstants.AUTHENTICATION_SUCCESSFUL: 
@@ -72,26 +70,15 @@ public class LoginWorker extends SwingWorker<Integer, Void> implements PropertyC
 					case Constants.NetworkConstants.AUTHENTICATION_FAILED:
 						PopupDialog dialog = new PopupDialog(loginForm, "Login Failed", 
 								"You entered an invalid password.", "OK");
-						dialog.addPropertyChangeListener(new PropertyChangeListener(){
-
-							@Override
-							public void propertyChange(PropertyChangeEvent evt) 
-							{loginForm.setListening(1);}
-						});
 						dialog.showGui();
 						break;
 					case Constants.NetworkConstants.SERVER_ERROR:
 						PopupDialog dialog2 = new PopupDialog(loginForm, "Server Error", 
 								"An error occured while trying to connect to the server.", "OK");
-						dialog2.addPropertyChangeListener(new PropertyChangeListener(){
-
-							@Override
-							public void propertyChange(PropertyChangeEvent evt) 
-							{loginForm.setListening(1);}
-						});
 						dialog2.showGui();
 						break;
 				}
+				loginForm.setLoginButtonEnabled(true);
 			} catch (InterruptedException | ExecutionException e) 
 			{
 				e.printStackTrace();

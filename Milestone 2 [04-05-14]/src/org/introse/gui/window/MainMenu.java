@@ -31,7 +31,7 @@ public class MainMenu extends JFrame{
 		super(Preferences.PROGRAM_NAME);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		
+		setIconImage(LoginWindow.PROGRAM_ICON);
 		mainPanel = new JPanel(new GridBagLayout());
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 		mainPanel.setBackground(Color.white);

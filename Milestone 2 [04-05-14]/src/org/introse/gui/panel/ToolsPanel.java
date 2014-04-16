@@ -61,29 +61,17 @@ public class ToolsPanel extends JPanel
 	{
 		overviewPanel = new JPanel(new GridBagLayout());
 		overviewPanel.setBackground(Color.white);
-		backupViewButton = new JButton("Backup existing database");
-		restoreViewButton = new JButton("Restore a backup file");
-		exportViewButton = new JButton("Export to CSV");
-		backupViewButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/backup.png")));
-		restoreViewButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/restore.png")));
-		exportViewButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/export.png")));
-		
-		backupViewButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/backupHover.png")));
-		restoreViewButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/restoreHover.png")));
-		exportViewButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/exportHover.png")));
+		backupViewButton = new JButton();
+		restoreViewButton = new JButton();
+		exportViewButton = new JButton();
+		backupViewButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_backup_hover.png")));
+		restoreViewButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_restore_hover.png")));
+		exportViewButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_export_hover.png")));
+		backupViewButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_backup_normal.png")));
+		restoreViewButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_restore_normal.png")));
+		exportViewButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_export_normal.png")));
 		
 		backupViewButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-		backupViewButton.setIconTextGap(10);
-		restoreViewButton.setIconTextGap(10);
-		exportViewButton.setIconTextGap(10);
-		restoreViewButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-		exportViewButton.setVerticalTextPosition(SwingConstants.BOTTOM);
-		backupViewButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		restoreViewButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		exportViewButton.setHorizontalTextPosition(SwingConstants.CENTER);
-		backupViewButton.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.SUBHEADER));
-		restoreViewButton.setFont(backupViewButton.getFont());
-		exportViewButton.setFont(backupViewButton.getFont());
 		backupViewButton.setOpaque(true);
 		backupViewButton.setContentAreaFilled(false);
 		backupViewButton.setBorderPainted(false);

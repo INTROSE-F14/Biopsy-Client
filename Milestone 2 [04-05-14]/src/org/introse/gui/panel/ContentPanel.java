@@ -113,12 +113,12 @@ public class ContentPanel extends JPanel
 			searchButton.setOpaque(true);
 			searchButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
 			
-			newButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/add.png")));
-			newButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/add_rollover.png")));
-			searchButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/find.png")));
-			searchButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/find_rollover.png")));
-			refreshButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/refresh.png")));
-			refreshButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/refresh_rollover.png")));
+			newButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_new.png")));
+			newButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_new_hover.png")));
+			searchButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_search.png")));
+			searchButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_search_hover.png")));
+			refreshButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_refresh.png")));
+			refreshButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_refresh_hover.png")));
 			newButton.setIconTextGap(7);
 			searchButton.setIconTextGap(7);
 			refreshButton.setIconTextGap(7);

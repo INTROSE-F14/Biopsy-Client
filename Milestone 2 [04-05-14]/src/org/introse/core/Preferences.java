@@ -32,7 +32,7 @@ public abstract class Preferences
 	public static String databaseName;
 	public static String username;
 	public static String password;
-	public static final String PROGRAM_NAME = "Don't list this as an issue please";
+	public static final String PROGRAM_NAME = "Biopsy Client";
 	private static final String SA_PREFIX = "server_url";
 	private static final String DN_PREFIX = "db_name";
 

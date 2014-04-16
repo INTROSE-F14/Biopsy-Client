@@ -19,7 +19,7 @@ public abstract class Constants
 		public static final float MENU = 15;
 		public static final String PRESSED = "#d8d8d8";
 		public static final String HOVER  = "#e9e9e9";
-		public static final String SELECTED = "#33b5e5";
+		public static final String SELECTED = "#3d36cc";
 		public static final String NORMAL = "#FFFFFF";
 	}
 	
@@ -55,7 +55,7 @@ public abstract class Constants
 		public static final String DICTIONARY = "Dictionary";
 		public static final String DISCARD_CHANGES_MESSAGE = "All changes made will be discarded, do you want to continue?";
 		public static final String REFRESH_PANEL = "Refresh";
-		public static final String EMPTY_PANEL = "Ooops...it's empty";
+		public static final String EMPTY_PANEL = "List is empty";
 		public static final String LIST_PANEL = "List";
 		public static final String LOGIN_WINDOW = "Login - Biopsy Client";
 		public static final String ALL="ALL";

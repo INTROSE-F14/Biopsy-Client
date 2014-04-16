@@ -1,7 +1,6 @@
 package org.introse.gui.panel;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -10,16 +9,18 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.DictionaryConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomDocument;
-import org.introse.core.Preferences;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.event.ListListener;
 
@@ -47,7 +48,11 @@ public class DictionaryPanel extends JPanel implements FocusListener
 		textField = new JTextField(50);
 		textField.setForeground(Color.GRAY);
 		textField.addFocusListener(this);
-		addButton = new JButton("add");
+		addButton = new JButton();
+		addButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_new.png")));
+		addButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_new_hover.png")));
+		addButton.setContentAreaFilled(false);
+		addButton.setBorderPainted(false);
 		wordPanel = new ListPanel(SwingConstants.HORIZONTAL, 28, 14);
 		textField.setDocument(new CustomDocument(DictionaryConstants.WORD_LENGTH));
 		textField.addKeyListener(new KeyListener() {

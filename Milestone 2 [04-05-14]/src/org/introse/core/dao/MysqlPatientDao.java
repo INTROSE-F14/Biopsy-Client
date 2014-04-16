@@ -227,6 +227,9 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 	public int add(Patient patient)
 	{
 		int patientId = -1;
+		Object pID = patient.getAttribute(PatientTable.PATIENT_ID);
+		if(pID != null)
+			patientId = (int)pID;
 		String lastName = ((String)patient.getAttribute(PatientTable.LAST_NAME)).replace("\"", "\\\"");
 		lastName = "\""+lastName+"\"";
 		String firstName = ((String)patient.getAttribute(PatientTable.FIRST_NAME)).replace("\"", "\\\"");
@@ -240,14 +243,20 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		
 		String sql = "Insert into Patients(" + PatientTable.LAST_NAME  +
 				", " + PatientTable.FIRST_NAME + ", " + PatientTable.MIDDLE_NAME + ", " + PatientTable.GENDER + 
-				", " + PatientTable.BIRTHDAY + ") value (" +
-				lastName + ", " + firstName + ", " + middleName + ", " + gender + ", " + bDay + ")";
+				", " + PatientTable.BIRTHDAY;
+		if(pID != null)
+			sql = sql.concat(", " + PatientTable.PATIENT_ID);
+		sql = sql.concat(") value(" + lastName + ", " + firstName + ", " + middleName + ", " + gender + ", " + bDay);
+		if(pID != null)
+			sql = sql.concat(", " + patientId);
+		sql = sql.concat(")");
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
 		ResultSet key = null;
 		try 
 		{
+			
 			conn = createConnection();
 			stmt = conn.createStatement();
 			stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);

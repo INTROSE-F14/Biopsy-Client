@@ -87,10 +87,10 @@ public class ListPanel extends JPanel
 		next.setBorderPainted(false);
 		previous.setContentAreaFilled(false);
 		previous.setBorderPainted(false);
-		next.setIcon(new ImageIcon(getClass().getResource("/res/icons/next.png")));
-		next.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/next_rollover.png")));
-		previous.setIcon(new ImageIcon(getClass().getResource("/res/icons/previous.png")));
-		previous.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/previous_rollover.png")));
+		next.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_next.png")));
+		next.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_next_hover.png")));
+		previous.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_previous.png")));
+		previous.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_previous_hover.png")));
 		cardPanel = new JPanel(new CardLayout());
 		buttonPanel = new JPanel(new GridLayout(1, 3));
 		buttonPanel.setBackground(Color.white);

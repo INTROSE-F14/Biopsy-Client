@@ -22,21 +22,16 @@ public abstract class ListItem extends JPanel
 	protected List<String> labels;
 	protected ActionListener buttonListener;
 	protected JButton deleteButton;
-	protected ImageIcon normalIcon;
-	protected ImageIcon rolloverIcon;
 	
 	public ListItem()
 	{
 		super(new GridBagLayout());
 		labels = new Vector<String>();
 		deleteButton = new JButton();
-		normalIcon = new ImageIcon(getClass().
-				getResource("/res/icons/delete_normal.png"));
-		rolloverIcon = new ImageIcon(getClass().
-				getResource("/res/icons/delete_rollover.png"));
 		deleteButton.setContentAreaFilled(false);
 		deleteButton.setBorderPainted(false);
 		deleteButton.setFocusable(false);
+		deleteButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_place_holder.png")));
 	}
 	
 	public abstract void initializePanel();
@@ -65,12 +60,12 @@ public abstract class ListItem extends JPanel
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				deleteButton.setIcon(null);
+				deleteButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_place_holder.png")));
 			}
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				deleteButton.setIcon(normalIcon);
+				deleteButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_delete.png")));
 			}
 			
 			@Override
@@ -86,12 +81,12 @@ public abstract class ListItem extends JPanel
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				deleteButton.setIcon(null);
+				deleteButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_place_holder.png")));
 			}
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				deleteButton.setIcon(rolloverIcon);
+				deleteButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_delete_hover.png")));
 			}
 			
 			@Override

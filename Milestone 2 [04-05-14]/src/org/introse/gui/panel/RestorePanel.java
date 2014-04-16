@@ -48,8 +48,8 @@ public class RestorePanel extends JPanel {
 	private void initUI()
 	{
 		btnBack = new JButton();
-		btnBack.setIcon(new ImageIcon(getClass().getResource("/res/icons/back.png")));
-		btnBack.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/back_rollover.png")));
+		btnBack.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_back.png")));
+		btnBack.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_back_hover.png")));
 		btnBack.setContentAreaFilled(false);
 		btnBack.setBorderPainted(false);
 		

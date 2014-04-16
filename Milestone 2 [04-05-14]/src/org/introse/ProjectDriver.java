@@ -124,12 +124,21 @@ public class ProjectDriver
 	
 	public void login()
 	{
+		final LoadingDialog loadingDialog = new LoadingDialog(loginWindow, "Loading", "Logging in");
 		if(loginWorker == null || loginWorker.isDone())
 		{
-			loginWindow.setLoadingVisible(true);
 			loginWindow.setLoginButtonEnabled(false);
 			loginWorker = new LoginWorker(loginWindow, driver, client);
+			loginWorker.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getPropertyName().equals("ALMOST DONE"))
+						loadingDialog.dispose();
+				}
+			});
 			loginWorker.execute();
+			loadingDialog.showGui();
 		}
 	}
 	
@@ -599,6 +608,7 @@ public class ProjectDriver
 					int patientID = (int)p.getAttribute(PatientTable.PATIENT_ID);
 					if(patientID != -1)
 						r.putAttribute(RecordTable.PATIENT_ID, patientID);
+					else p.putAttribute(PatientTable.PATIENT_ID, null);
 					
 					final DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, r);
 					diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() 
@@ -731,7 +741,8 @@ public class ProjectDriver
 					DetailPanel rP = (DetailPanel)detailPanel;
 					switch(rP.getMode())
 					{
-					case ActionConstants.NEW:	worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.ADD);
+					case ActionConstants.NEW:	p.putAttribute(PatientTable.PATIENT_ID, null);
+												worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.ADD);
 												break;
 					case ActionConstants.EDIT:	worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.UPDATE);
 					}

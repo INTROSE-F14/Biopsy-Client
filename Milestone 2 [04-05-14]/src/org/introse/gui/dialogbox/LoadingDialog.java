@@ -50,10 +50,11 @@ public class LoadingDialog extends JDialog
 		pane.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
 		messageLabel = new JLabel(message);
 		messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		messageLabel.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
+		messageLabel.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.SUBHEADER));
 		messageLabel.setOpaque(true);
 		messageLabel.setBackground(Color.white);
-		messageLabel.setIcon(new ImageIcon(getClass().getResource("/res/icons/loading2.gif")));
+		messageLabel.setIconTextGap(20);
+		messageLabel.setIcon(new ImageIcon(getClass().getResource("/res/icons/refreshing.gif")));
 	}
 	
 	private void layoutComponents()

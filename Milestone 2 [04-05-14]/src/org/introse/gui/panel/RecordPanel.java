@@ -7,6 +7,7 @@ import java.awt.Insets;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.introse.Constants;
@@ -22,7 +23,10 @@ public class RecordPanel extends DetailPanel
 	private static final long serialVersionUID = 1L;
 	private JPanel topPanel;
 	private JPanel recordForm;
+	private JLabel divider;
 	private JButton editOrSaveButton, printOrCancelButton, backButton;
+	private ImageIcon editIcon, printIcon, saveIcon, editIconRollover,
+	printIconRollover, cancelIcon, saveIconRollover, cancelIconRollover;
 	
 	public RecordPanel(JPanel recordForm, int mode)
 	{
@@ -36,19 +40,33 @@ public class RecordPanel extends DetailPanel
 	
 	private void initializeComponents()
 	{
+		divider = new JLabel("l");
+		divider.setForeground(Color.LIGHT_GRAY);
+		divider.setFont(getFont().deriveFont(25f));
+		editIcon = new ImageIcon(getClass().getResource("/res/icons/ic_action_edit.png"));
+		editIconRollover = new ImageIcon(getClass().getResource("/res/icons/ic_action_edit_hover.png"));
+		printIcon = new ImageIcon(getClass().getResource("/res/icons/ic_action_print.png"));
+		printIconRollover = new ImageIcon(getClass().getResource("/res/icons/ic_action_print_hover.png"));
+		saveIcon = new ImageIcon(getClass().getResource("/res/icons/ic_action_accept.png"));
+		saveIconRollover = new ImageIcon(getClass().getResource("/res/icons/ic_action_accept_hover.png"));
+		cancelIcon = new ImageIcon(getClass().getResource("/res/icons/ic_action_cancel.png"));
+		cancelIconRollover = new ImageIcon(getClass().getResource("/res/icons/ic_action_cancel_hover.png"));
 		topPanel = new JPanel(new GridBagLayout());
 		topPanel.setBackground(Color.white);
 		backButton = new JButton();
+		backButton.setFocusable(false);
 		backButton.setBorderPainted(false);
 		backButton.setContentAreaFilled(false);
 		backButton.setOpaque(true);
 		backButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
 		backButton.setIconTextGap(7);
-		backButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/back.png")));
-		backButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/back_rollover.png")));
+		backButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_back.png")));
+		backButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_back_hover.png")));
 		
 		editOrSaveButton = new JButton();
+		editOrSaveButton.setFocusable(false);
 		printOrCancelButton = new JButton();
+		printOrCancelButton.setFocusable(false);
 		editOrSaveButton.setBorderPainted(false);
 		editOrSaveButton.setContentAreaFilled(false);
 		editOrSaveButton.setOpaque(true);
@@ -79,6 +97,11 @@ public class RecordPanel extends DetailPanel
 		c.gridy = 0;
 		c.weightx = 0.0;
 		c.insets = new Insets(0,0,0,0);
+		topPanel.add(divider, c);
+		c.gridx = 3;
+		c.gridy = 0;
+		c.weightx = 0.0;
+		c.insets = new Insets(0,0,0,0);
 		topPanel.add(printOrCancelButton, c);
 		
 		c = new GridBagConstraints();
@@ -101,8 +124,6 @@ public class RecordPanel extends DetailPanel
 	{
 		editOrSaveButton.addActionListener(listener);
 		printOrCancelButton.addActionListener(listener);
-		editOrSaveButton.addMouseListener(listener);
-		printOrCancelButton.addMouseListener(listener);
 		backButton.addActionListener(listener);
 		backButton.setActionCommand(ActionConstants.BACK);
 		((RecordForm)recordForm).addListener(listener);
@@ -116,35 +137,35 @@ public class RecordPanel extends DetailPanel
 			case Constants.ActionConstants.VIEW: 
 				       editOrSaveButton.setActionCommand(Constants.ActionConstants.EDIT_RECORD);
 			 		   printOrCancelButton.setActionCommand(Constants.ActionConstants.PRINT);
-			 		   editOrSaveButton.setText("Edit");
-			 		   printOrCancelButton.setText("Print");
 			 		   ((RecordForm)recordForm).setRecordEditable(false);
 			 		   ((RecordForm)recordForm).setPatientEditable(false);
 			 		   ((RecordForm)recordForm).setLoadPatientEnabled(false);
-			 		   editOrSaveButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/edit.png")));
-			 		   printOrCancelButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/print.png")));
+			 		   editOrSaveButton.setIcon(editIcon);
+			 		   printOrCancelButton.setIcon(printIcon);
+			 		   editOrSaveButton.setRolloverIcon(editIconRollover);
+			 		   printOrCancelButton.setRolloverIcon(printIconRollover);
 			 		   break;
 			case Constants.ActionConstants.EDIT: 
 					   editOrSaveButton.setActionCommand(Constants.ActionConstants.SAVE);
 					   printOrCancelButton.setActionCommand(Constants.ActionConstants.CANCEL);
-					   editOrSaveButton.setText("Save");
-					   printOrCancelButton.setText("Cancel");
 					   ((RecordForm)recordForm).setRecordEditable(true);
 					   ((RecordForm)recordForm).setPatientEditable(false);
 					   ((RecordForm)recordForm).setLoadPatientEnabled(false);
-					   editOrSaveButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/save.png")));
-						printOrCancelButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/cancel.png")));
+					   editOrSaveButton.setIcon(saveIcon);
+					   editOrSaveButton.setRolloverIcon(saveIconRollover);
+						printOrCancelButton.setIcon(cancelIcon);
+						printOrCancelButton.setRolloverIcon(cancelIconRollover);
 					   break;
 			case Constants.ActionConstants.NEW:  
 					   editOrSaveButton.setActionCommand(Constants.ActionConstants.SAVE);
 			   		   printOrCancelButton.setActionCommand(Constants.ActionConstants.CANCEL);
-			   		   editOrSaveButton.setText("Save");
-			   		   printOrCancelButton.setText("Cancel");
 			   		   ((RecordForm)recordForm).setRecordEditable(true);
 			   		   ((RecordForm)recordForm).setPatientEditable(true);
 			   		   ((RecordForm)recordForm).setLoadPatientEnabled(true);
-			   		   editOrSaveButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/save.png")));
-			   		   printOrCancelButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/cancel.png")));
+			   		   editOrSaveButton.setIcon(saveIcon);
+			   		   printOrCancelButton.setIcon(cancelIcon);
+			   		   editOrSaveButton.setRolloverIcon(saveIconRollover);
+			   		   printOrCancelButton.setRolloverIcon(cancelIconRollover);
 			   		   break;
 		}
 	}

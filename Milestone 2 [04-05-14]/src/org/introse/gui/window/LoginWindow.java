@@ -10,6 +10,7 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -35,10 +36,9 @@ public class LoginWindow extends JFrame implements KeyListener{
 	private JPanel contentPane;
 	private JPasswordField passwordField;
 	private JButton actionButton;
-	private JLabel loadingStatus;
 	public static Font PRIMARY_FONT;
 	public static Font SECONDARY_FONT;
-	public int isListening;
+	public static BufferedImage PROGRAM_ICON;
 	
 	public LoginWindow() 
 	{
@@ -46,16 +46,19 @@ public class LoginWindow extends JFrame implements KeyListener{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setPreferredSize(new Dimension((int)(Preferences.getScreenWidth() * 0.4), 
 				(int)(Preferences.getScreenHeight() * 0.5)));
-		initUI();
 		try
 		{
 			PRIMARY_FONT = Font.createFont(Font.TRUETYPE_FONT,
 					getClass().getResourceAsStream("/res/fonts/calibri.ttf"));
 			SECONDARY_FONT = Font.createFont(Font.TRUETYPE_FONT,
 					getClass().getResourceAsStream("/res/fonts/calibri_light.ttf"));
-			
+			ImageIcon programIcon = new ImageIcon(getClass().getResource("/res/icons/ic_launcher.png"));
+			PROGRAM_ICON = new BufferedImage(programIcon.getIconWidth(), programIcon.getIconHeight(), 
+					BufferedImage.TYPE_INT_ARGB);
+			programIcon.paintIcon(null, PROGRAM_ICON.getGraphics(), 0, 0);
 		}catch (FontFormatException | IOException e) {e.printStackTrace();}
-		isListening = 0;
+		setIconImage(PROGRAM_ICON);
+		initUI();
 	}
 	
 	public void initUI()
@@ -66,22 +69,13 @@ public class LoginWindow extends JFrame implements KeyListener{
 		setContentPane(contentPane);
 		JLabel label = new JLabel();
 		label.setHorizontalAlignment(SwingConstants.CENTER);
-		label.setIcon(new ImageIcon(LoginWindow.class.getResource("/res/icons/title.png")));
+		label.setIcon(new ImageIcon(LoginWindow.class.getResource("/res/icons/ic_banner.png")));
 		
-		ImageIcon loadingIcon = new ImageIcon(getClass().getResource("/res/icons/loading.gif"));
-		loadingStatus = new JLabel();
-		loadingStatus.setIcon(loadingIcon);
-		loadingStatus.setVerticalTextPosition(JLabel.TOP);
-		loadingStatus.setHorizontalAlignment(JLabel.CENTER);
-		loadingStatus.setVisible(false);
 		passwordField = new JPasswordField(20);
-		passwordField.setForeground(Color.decode("#3498db"));
-		passwordField.setBorder(null);
-		passwordField.setFont(new Font("/res/fonts/calibri.ttf", Font.PLAIN, 17));
+		passwordField.setFont(PRIMARY_FONT.deriveFont(20f));
 		passwordField.setHorizontalAlignment(SwingConstants.CENTER);
-		passwordField.setBackground(Color.decode("#ecf0f1"));
-		ImageIcon loginIconRollover = new ImageIcon(getClass().getResource("/res/icons/btnLoginHover.png"));
-		ImageIcon loginIconNormal = new ImageIcon(getClass().getResource("/res/icons/btnLogin.png"));
+		ImageIcon loginIconRollover = new ImageIcon(getClass().getResource("/res/icons/ic_login_hover.png"));
+		ImageIcon loginIconNormal = new ImageIcon(getClass().getResource("/res/icons/ic_login_normal.png"));
 		actionButton = new JButton();
 		actionButton.setBorderPainted(false);
 		actionButton.setContentAreaFilled(false);
@@ -111,18 +105,13 @@ public class LoginWindow extends JFrame implements KeyListener{
 		c.weightx = 1.0;
 		c.insets = new Insets(0,0,20,20);
 		contentPane.add(actionButton, c);
-		c.anchor = GridBagConstraints.CENTER;
-		c.gridx = 0;
-		c.gridy = 2;
-		c.gridwidth = 3;
-		c.insets = new Insets(0,20,0,20);
-		contentPane.add(loadingStatus, c);
 	}
 	
 	public void showGUI()
 	{
 		pack();
 		setVisible(true);
+		setResizable(false);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(dim.width/2-getSize().width/2, dim.height/2-getSize().height/2);
 	}
@@ -149,11 +138,6 @@ public class LoginWindow extends JFrame implements KeyListener{
 		return new String(passwordField.getPassword());
 	}
 	
-	public void setLoadingVisible(boolean isVisible)
-	{
-		loadingStatus.setVisible(isVisible);
-	}
-	
 	public void setLoginButtonEnabled(boolean isEnabled)
 	{
 		actionButton.setEnabled(isEnabled);
@@ -170,17 +154,13 @@ public class LoginWindow extends JFrame implements KeyListener{
 	{
 		if(passwordField.getPassword().length > 0)
 		{
-			if(e.getKeyCode() == KeyEvent.VK_ENTER && isListening == 0)
+			if(e.getKeyCode() == KeyEvent.VK_ENTER)
+			{
+				actionButton.requestFocusInWindow();
 				actionButton.doClick();
+			}
 			else actionButton.setEnabled(true);
-			if(isListening == 1)
-				isListening = 0;
 		}
 		else actionButton.setEnabled(false);
 	} 
-	
-	public void setListening(int isListening)
-	{
-		this.isListening = isListening;
-	}
 }

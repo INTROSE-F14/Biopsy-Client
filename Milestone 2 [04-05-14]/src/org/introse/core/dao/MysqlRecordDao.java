@@ -488,6 +488,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 	{
 		int recordNumber = (int)record.getAttribute(Constants.RecordTable.RECORD_NUMBER);
 		int recordYear = (int)record.getAttribute(RecordTable.RECORD_YEAR);
+		int patientID = (int)record.getAttribute(RecordTable.PATIENT_ID);
 		String recordType = "\""+(char)record.getAttribute(RecordTable.RECORD_TYPE)+"\"";
 		String specimen = ((String)record.getAttribute(Constants.RecordTable.SPECIMEN)).replace("\"", "\\\"");
 		specimen =	"\""+specimen+"\"";
@@ -518,6 +519,7 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				"-" + (completed.getMonth() + 1) + "-" + completed.getDay() + "\"";
 
 		String sql = "Update records set "  + 
+				RecordTable.PATIENT_ID + " = " + patientID + ", " +
 				Constants.RecordTable.SPECIMEN + " = " + specimen +", " + 
 				Constants.RecordTable.PATHOLOGIST + " = " + pathologist + ", " + 
 				Constants.RecordTable.PHYSICIAN + " = " + physician + ", "+
