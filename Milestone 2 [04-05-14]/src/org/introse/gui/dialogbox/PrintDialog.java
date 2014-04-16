@@ -15,6 +15,11 @@ import java.awt.print.PrinterException;
 import java.text.MessageFormat;
 import java.util.List;
 
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
+import javax.print.attribute.standard.MediaPrintableArea;
+import javax.print.attribute.standard.MediaSize;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -512,7 +517,11 @@ public class PrintDialog extends JDialog implements ActionListener{
 			Thread printThread = new Thread("Print thread") {
 				public void run() {
 					try {
-						tp_textpane.print(new MessageFormat("Page {0}"), null); 
+						MediaPrintableArea mpa = new MediaPrintableArea((float)0.25,(float)0.25,(float)8.25,(float)10.75, MediaPrintableArea.INCH);
+						PrintRequestAttributeSet attr_set = new HashPrintRequestAttributeSet();
+						attr_set.add(mpa);
+						attr_set.add(MediaSize.NA.LETTER);
+						tp_textpane.print(null, new MessageFormat("Page {0}"), false, null, attr_set, false); 
 					}
 					catch (PrinterException e) {
 						e.printStackTrace(); 
