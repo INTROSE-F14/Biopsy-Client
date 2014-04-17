@@ -4,7 +4,8 @@ import javax.swing.text.*;
 
 public class WrapEditorKit extends StyledEditorKit {
 	
-	ViewFactory defaultFactory;
+	private static final long serialVersionUID = 1L;
+	private ViewFactory defaultFactory;
 	
 	public WrapEditorKit(){
 		super();

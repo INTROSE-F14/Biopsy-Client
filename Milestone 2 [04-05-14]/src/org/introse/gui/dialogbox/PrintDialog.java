@@ -45,9 +45,6 @@ import org.introse.gui.event.CustomListener;
 
 public class PrintDialog extends JDialog implements ActionListener{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JButton btn_print, btn_exit;
 	private JTextPane tp_textpane;
@@ -520,7 +517,6 @@ public class PrintDialog extends JDialog implements ActionListener{
 						MediaPrintableArea mpa = new MediaPrintableArea((float)0.25,(float)0.25,(float)8.25,(float)10.75, MediaPrintableArea.INCH);
 						PrintRequestAttributeSet attr_set = new HashPrintRequestAttributeSet();
 						attr_set.add(mpa);
-						attr_set.add(MediaSize.NA.LETTER);
 						tp_textpane.print(null, new MessageFormat("Page {0}"), false, null, attr_set, false); 
 					}
 					catch (PrinterException e) {
