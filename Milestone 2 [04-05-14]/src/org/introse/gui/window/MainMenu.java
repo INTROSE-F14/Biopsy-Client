@@ -9,9 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.introse.Constants.StyleConstants;
 import org.introse.core.Preferences;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.event.ListListener;
+import org.introse.gui.event.NavigationListener;
+import org.introse.gui.event.TabListener;
 import org.introse.gui.panel.ContentPanel;
 import org.introse.gui.panel.NavigationPanel;
 
@@ -34,7 +37,7 @@ public class MainMenu extends JFrame{
 		setIconImage(LoginWindow.PROGRAM_ICON);
 		mainPanel = new JPanel(new GridBagLayout());
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		mainPanel.setBackground(Color.white);
+		mainPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
 		createNavigationPanel();
 		createContentPanel();
 		setContentPane(mainPanel);
@@ -47,8 +50,17 @@ public class MainMenu extends JFrame{
 	
 	public void addListener(CustomListener listener)
 	{
-		navigationPanel.addListener(listener);
 		contentPanel.addListener(listener);
+	}
+	
+	public void addNavigationListener(NavigationListener listener)
+	{
+		navigationPanel.addListener(listener);
+	}
+	
+	public void addTabListener(TabListener listener)
+	{
+		contentPanel.addTabListener(listener);
 	}
 	
 	public void showGUI()

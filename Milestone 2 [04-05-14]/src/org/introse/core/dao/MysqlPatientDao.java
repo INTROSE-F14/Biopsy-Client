@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -42,11 +43,15 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 						result.getString(PatientTable.FIRST_NAME.toString()));
 				p.putAttribute(PatientTable.MIDDLE_NAME.toString(), 
 						result.getString(PatientTable.MIDDLE_NAME.toString()));
-				Calendar bday = Calendar.getInstance();
-				bday.setTime(result.getDate(PatientTable.BIRTHDAY.toString()));
-				CustomCalendar calendar = new CustomCalendar();
-				calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
-				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				Date date = result.getDate(PatientTable.BIRTHDAY.toString());
+				if(date != null)
+				{
+					Calendar bday = Calendar.getInstance();
+					bday.setTime(date);
+					CustomCalendar calendar = new CustomCalendar();
+					calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
+					p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				}
 				p.putAttribute(PatientTable.GENDER.toString(), 
 						result.getString(PatientTable.GENDER.toString()));
 			}
@@ -174,6 +179,9 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 				else bdayString = bdayString.concat("0" + birthday.getDay() + "\"");
 			}
 			else bdayString = bdayString.concat("%\"");
+			
+			if(birthday.getYear() == -1 && birthday.getMonth() == -1 && birthday.getDay() == -1)
+			bdayString = bdayString.concat(" OR " + PatientTable.BIRTHDAY + " IS NULL");
 			if(whereCount > 0)
 			{
 				sql = sql.concat(" AND ");
@@ -186,6 +194,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		
 		try 
 		{
+			System.out.println(sql);
 			conn = createConnection();
 			stmt = conn.createStatement();
 			result = stmt.executeQuery(sql);
@@ -200,11 +209,15 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 						result.getString(PatientTable.FIRST_NAME.toString()));
 				p.putAttribute(PatientTable.MIDDLE_NAME.toString(), 
 						result.getString(PatientTable.MIDDLE_NAME.toString()));
-				Calendar bday = Calendar.getInstance();
-				CustomCalendar calendar = new CustomCalendar();
-				bday.setTime(result.getDate(PatientTable.BIRTHDAY.toString()));
-				calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
-				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				Date date = result.getDate(PatientTable.BIRTHDAY.toString());
+				if(date != null)
+				{
+					Calendar bday = Calendar.getInstance();
+					bday.setTime(date);
+					CustomCalendar calendar = new CustomCalendar();
+					calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
+					p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				}
 				p.putAttribute(PatientTable.GENDER.toString(), 
 						result.getString(PatientTable.GENDER.toString()));
 				matches.add(p);
@@ -239,7 +252,9 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		
 		String gender = "\""+(String)patient.getAttribute(PatientTable.GENDER)+"\"";
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
-		String bDay = "\"" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "\"";
+		String bDay = null;
+		if(birthday != null)
+			bDay = "\"" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "\"";
 		
 		String sql = "Insert into Patients(" + PatientTable.LAST_NAME  +
 				", " + PatientTable.FIRST_NAME + ", " + PatientTable.MIDDLE_NAME + ", " + PatientTable.GENDER + 
@@ -303,11 +318,15 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 						result.getString(PatientTable.FIRST_NAME.toString()));
 				p.putAttribute(PatientTable.MIDDLE_NAME.toString(), 
 						result.getString(PatientTable.MIDDLE_NAME.toString()));
-				Calendar bday = Calendar.getInstance();
-				bday.setTime(result.getDate(PatientTable.BIRTHDAY.toString()));
-				CustomCalendar calendar = new CustomCalendar();
-				calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
-				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				Date date = result.getDate(PatientTable.BIRTHDAY.toString());
+				if(date != null)
+				{
+					Calendar bday = Calendar.getInstance();
+					bday.setTime(date);
+					CustomCalendar calendar = new CustomCalendar();
+					calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
+					p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				}
 				p.putAttribute(PatientTable.GENDER.toString(), 
 						result.getString(PatientTable.GENDER.toString()));
 				patients.add(p);
@@ -343,7 +362,9 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		
 		String gender = "\""+(String)patient.getAttribute(PatientTable.GENDER)+"\"";
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
-		String bDay = "\"" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "\"";
+		String bDay = null;
+		if(birthday != null)
+			bDay = "\"" + birthday.getYear() + "-" + (birthday.getMonth() + 1) + "-" + birthday.getDay() + "\"";
 		
 		String sql = "Update patients set " + 
 				PatientTable.LAST_NAME + " = " + lastName + ", " + 
@@ -489,6 +510,9 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 				else bdayString = bdayString.concat("0" + birthday.getDay() + "\"");
 			}
 			else bdayString = bdayString.concat("%\"");
+			
+			if(birthday.getYear() == -1 && birthday.getMonth() == -1 && birthday.getDay() == -1)
+			bdayString = bdayString.concat(" OR " + PatientTable.BIRTHDAY + " IS NULL");
 			if(whereCount > 0)
 			{
 				sql = sql.concat(" AND ");
@@ -559,11 +583,15 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 						result.getString(PatientTable.FIRST_NAME.toString()));
 				p.putAttribute(PatientTable.MIDDLE_NAME.toString(), 
 						result.getString(PatientTable.MIDDLE_NAME.toString()));
-				Calendar bday = Calendar.getInstance();
-				bday.setTime(result.getDate(PatientTable.BIRTHDAY.toString()));
-				CustomCalendar calendar = new CustomCalendar();
-				calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
-				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				Date date = result.getDate(PatientTable.BIRTHDAY.toString());
+				if(date != null)
+				{
+					Calendar bday = Calendar.getInstance();
+					bday.setTime(date);
+					CustomCalendar calendar = new CustomCalendar();
+					calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
+					p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				}
 				p.putAttribute(PatientTable.GENDER.toString(), 
 						result.getString(PatientTable.GENDER.toString()));
 				patients.add(p);
@@ -622,12 +650,15 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 						result.getString(PatientTable.FIRST_NAME.toString()));
 				p.putAttribute(PatientTable.MIDDLE_NAME.toString(), 
 						result.getString(PatientTable.MIDDLE_NAME.toString()));
-				Calendar bday = Calendar.getInstance();
-				bday.setTime(result.getDate(PatientTable.BIRTHDAY.toString()));
-				CustomCalendar calendar = new CustomCalendar();
-				calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
-				p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
-				p.putAttribute(PatientTable.GENDER.toString(), 
+				Date date = result.getDate(PatientTable.BIRTHDAY.toString());
+				if(date != null)
+				{
+					Calendar bday = Calendar.getInstance();
+					bday.setTime(date);
+					CustomCalendar calendar = new CustomCalendar();
+					calendar.set(bday.get(Calendar.MONTH), bday.get(Calendar.DATE), bday.get(Calendar.YEAR));
+					p.putAttribute(PatientTable.BIRTHDAY.toString(), calendar);
+				}p.putAttribute(PatientTable.GENDER.toString(), 
 						result.getString(PatientTable.GENDER.toString()));
 				patients.add(p);
 			}

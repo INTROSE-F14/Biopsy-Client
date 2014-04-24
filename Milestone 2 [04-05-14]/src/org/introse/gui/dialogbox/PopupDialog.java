@@ -221,7 +221,7 @@ public class PopupDialog extends JDialog implements ActionListener, MouseListene
 	{
 		JButton button = (JButton)e.getSource();
 		button.setOpaque(true);
-		button.setBackground(Color.decode(Constants.StyleConstants.HOVER));
+		button.setBackground(Color.decode(Constants.StyleConstants.QUARTERNARY_COLOR));
 	}
 
 	@Override
@@ -229,7 +229,7 @@ public class PopupDialog extends JDialog implements ActionListener, MouseListene
 	{
 		JButton button = (JButton)e.getSource();
 		button.setOpaque(true);
-		button.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		button.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 	}
 
 	@Override
@@ -237,6 +237,6 @@ public class PopupDialog extends JDialog implements ActionListener, MouseListene
 	{
 		JButton button = (JButton)e.getSource();
 		button.setOpaque(true);
-		button.setBackground(Color.decode(Constants.StyleConstants.PRESSED));
+		button.setBackground(Color.decode(Constants.StyleConstants.TERTIARY_COLOR));
 	}
 }

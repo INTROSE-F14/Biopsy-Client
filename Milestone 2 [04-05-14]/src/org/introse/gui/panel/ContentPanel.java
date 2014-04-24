@@ -4,21 +4,20 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
+import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.event.ListListener;
+import org.introse.gui.event.TabListener;
 import org.introse.gui.window.LoginWindow;
 import org.introse.gui.window.MainMenu;
 	
@@ -36,14 +35,11 @@ public class ContentPanel extends JPanel
 		private JPanel listPanel;
 		private JPanel settingsPanel;
 		private JPanel detailsPanel;
-		private DictionaryPanel pathPanel;
-		private DictionaryPanel physPanel;
-		private DictionaryPanel specPanel;
+		private DictionaryPanel dictionaryPanel;
 		private ToolsPanel toolsPanel;
 		private JButton newButton;
 		private JButton searchButton;
 		private JButton refreshButton;
-		private JTextField filterField;
 		private JLabel headerLabel;
 		private JLabel countLabel;
 		
@@ -99,19 +95,18 @@ public class ContentPanel extends JPanel
 			newButton.setFocusPainted(false);
 			refreshButton.setFocusPainted(false);
 			searchButton.setFocusPainted(false);
-			filterField = new JTextField("Quick filter", 25);
-			filterField.setForeground(Color.GRAY);
 			headerLabel = new JLabel();
 			headerLabel.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.HEADER));
+			headerLabel.setForeground(Color.decode(StyleConstants.GRAY));
 			countLabel = new JLabel("0");
 			countLabel.setFont(headerLabel.getFont());
 			countLabel.setForeground(Color.LIGHT_GRAY);
 			newButton.setOpaque(true);
-			newButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+			newButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 			refreshButton.setOpaque(true);
-			refreshButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+			refreshButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 			searchButton.setOpaque(true);
-			searchButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+			searchButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 			
 			newButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_new.png")));
 			newButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_new_hover.png")));
@@ -125,18 +120,13 @@ public class ContentPanel extends JPanel
 			
 			itemPanel = new JPanel(new CardLayout());
 			itemPanel.setBackground(Color.white);
-			pathPanel = new DictionaryPanel();
-			physPanel = new DictionaryPanel();
-			specPanel = new DictionaryPanel();
+			dictionaryPanel = new DictionaryPanel();
 			itemPanel.add(Constants.TitleConstants.HISTOPATHOLOGY, histopathologyList);
 			itemPanel.add(Constants.TitleConstants.GYNECOLOGY, gynecologyList);
 			itemPanel.add(Constants.TitleConstants.CYTOLOGY, cytologyList);
 			itemPanel.add(Constants.TitleConstants.PATIENTS,patientList);
 			itemPanel.add(Constants.TitleConstants.SEARCH_RESULT, searchList);
-			itemPanel.add(Constants.TitleConstants.PATHOLOGISTS, pathPanel);
-			itemPanel.add(Constants.TitleConstants.PHYSICIANS, physPanel);
-			itemPanel.add(Constants.TitleConstants.SPECIMENS, specPanel);
-			
+			itemPanel.add(Constants.TitleConstants.DICTIONARY, dictionaryPanel);
 			detailsPanel = new JPanel(new GridBagLayout());
 			detailsPanel.setBackground(Color.white);
 
@@ -200,11 +190,14 @@ public class ContentPanel extends JPanel
 			
 		}
 		
+		public void addTabListener(TabListener listener)
+		{
+			dictionaryPanel.addTabListener(listener);
+		}
+		
 		public void addListener(CustomListener listener)
 		{
-			physPanel.addButtonListener(listener);
-			pathPanel.addButtonListener(listener);
-			specPanel.addButtonListener(listener);
+			dictionaryPanel.addButtonListener(listener);
 			toolsPanel.addListener(listener);
 			histopathologyList.addButtonListener(listener);
 			cytologyList.addButtonListener(listener);
@@ -215,29 +208,6 @@ public class ContentPanel extends JPanel
 			searchButton.addActionListener(listener);
 			refreshButton.addActionListener(listener);
 			refreshButton.setActionCommand(Constants.ActionConstants.REFRESH);
-//			filterField.addKeyListener(listener);
-			filterField.addFocusListener(new FocusListener()
-			{
-
-				@Override
-				public void focusGained(FocusEvent e) 
-				{
-					if(((JTextField)e.getComponent()).getText().equals(TitleConstants.QUICK_FILTER))
-						((JTextField)e.getComponent()).setText("");
-					((JTextField)e.getComponent()).setForeground(Color.black);
-				}
-
-				@Override
-				public void focusLost(FocusEvent e) 
-				{
-					if(((JTextField)e.getComponent()).getText().length() < 1)
-					{
-						((JTextField)e.getComponent()).setText(TitleConstants.QUICK_FILTER);
-						((JTextField)e.getComponent()).setForeground(Color.GRAY);
-					}
-				}
-			});
-			
 		}
 		
 		public void changeView(String view)
@@ -254,6 +224,7 @@ public class ContentPanel extends JPanel
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
 									  searchButton.setVisible(true);
 									  newButton.setVisible(true);
+									  countLabel.setVisible(true);
 									  break;
 					case Constants.TitleConstants.GYNECOLOGY:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
@@ -263,6 +234,7 @@ public class ContentPanel extends JPanel
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
 									  searchButton.setVisible(true);
 									  newButton.setVisible(true);
+									  countLabel.setVisible(true);
 									  break;
 					case Constants.TitleConstants.CYTOLOGY:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
@@ -272,13 +244,21 @@ public class ContentPanel extends JPanel
 									  searchButton.setActionCommand(ActionConstants.SEARCH_RECORD);
 									  searchButton.setVisible(true);
 									  newButton.setVisible(true);
+									  countLabel.setVisible(true);
 									  break;
-					case Constants.TitleConstants.PATHOLOGISTS:  
+					case Constants.TitleConstants.DICTIONARY:  
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
 									  subLayout.show(itemPanel, view);
 									  headerLabel.setText(view);
 									  searchButton.setVisible(false);
 									  newButton.setVisible(false);
+									  countLabel.setVisible(false);
+									  break;
+					case TitleConstants.PATHOLOGISTS: dictionaryPanel.setSelectedTab(view);
+									  break;
+					case TitleConstants.PHYSICIANS: dictionaryPanel.setSelectedTab(view);
+									  break;
+					case TitleConstants.SPECIMENS: dictionaryPanel.setSelectedTab(view);
 									  break;
 					case Constants.TitleConstants.PATIENTS: 
 									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
@@ -288,20 +268,7 @@ public class ContentPanel extends JPanel
 									  searchButton.setActionCommand(ActionConstants.SEARCH_PATIENT);
 									  searchButton.setVisible(true);
 									  newButton.setVisible(true);
-									  break;
-					case Constants.TitleConstants.PHYSICIANS:  
-									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
-									  subLayout.show(itemPanel, view);
-									  headerLabel.setText(view);
-									  searchButton.setVisible(false);
-									  newButton.setVisible(false);
-									  break;
-					case Constants.TitleConstants.SPECIMENS:  
-									  mainLayout.show(this, Constants.TitleConstants.RECORDS);
-									  subLayout.show(itemPanel, view);
-									  headerLabel.setText(view);
-									  searchButton.setVisible(false);
-									  newButton.setVisible(false);
+									  countLabel.setVisible(true);
 									  break;
 					case Constants.TitleConstants.PREFERENCES: 
 									  mainLayout.show(this, view);
@@ -314,14 +281,12 @@ public class ContentPanel extends JPanel
 									  headerLabel.setText(view);
 									  searchButton.setVisible(true);
 									  newButton.setVisible(false);
+									  countLabel.setVisible(true);
 									  break;
 					case Constants.TitleConstants.DETAIL_PANEL:
 						  				mainLayout.show(this, Constants.TitleConstants.DETAIL_PANEL);
 						
 				}
-				filterField.setText(TitleConstants.QUICK_FILTER);
-				filterField.setForeground(Color.GRAY);
-				
 				if(!currentView.equals(view) && !currentView.equals(TitleConstants.DETAIL_PANEL))
 					previousView = currentView;
 				currentView = view;
@@ -341,12 +306,7 @@ public class ContentPanel extends JPanel
 		public String getPreviousView()
 		{
 			return previousView;
-		}
-		
-		public String getFilter()
-		{
-			return filterField.getText();
-		}
+		}	
 		
 		public void setDetailsPanel(JPanel panel)
 		{
@@ -378,21 +338,15 @@ public class ContentPanel extends JPanel
 			case TitleConstants.CYTOLOGY: return cytologyList;
 			case TitleConstants.PATIENTS: return patientList;
 			case TitleConstants.SEARCH_RESULT: return searchList;
-			case TitleConstants.PHYSICIANS: return physPanel.getWordPanel();
-			case TitleConstants.PATHOLOGISTS: return pathPanel.getWordPanel();
-			case TitleConstants.SPECIMENS: return specPanel.getWordPanel();
+			case TitleConstants.PHYSICIANS: return dictionaryPanel.getPanel(view);
+			case TitleConstants.PATHOLOGISTS: return dictionaryPanel.getPanel(view);
+			case TitleConstants.SPECIMENS: return dictionaryPanel.getPanel(view);
 			}
 			return null;
 		}
 		
-		public DictionaryPanel getDickPanel(String view)
+		public DictionaryPanel getDickPanel()
 		{
-			switch(view)
-			{
-			case TitleConstants.PHYSICIANS: return physPanel;
-			case TitleConstants.PATHOLOGISTS: return pathPanel;
-			case TitleConstants.SPECIMENS: return specPanel;
-			}
-			return null;
+			return dictionaryPanel;
 		}
 	}

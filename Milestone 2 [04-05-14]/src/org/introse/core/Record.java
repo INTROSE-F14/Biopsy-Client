@@ -43,73 +43,6 @@ public class Record  extends ListItem
 		attributes.put(key, newValue);
 	}
 	
-	/*
-	public boolean matches(Record record)
-	{
-		if(record.getClass().equals(getClass()))
-		{
-			HashMap<String, Object> attributes = record.getHashMap();
-			Set<String> keys = attributes.keySet();
-			Iterator<String> i = keys.iterator();
-			while(i.hasNext())
-			{
-				String currentKey = i.next();
-				System.out.println(currentKey);
-				Object foreignValue = attributes.get(currentKey);
-				Object myValue = this.attributes.get(currentKey);
-				
-				if(myValue != null)
-				{
-					//checking for patient (two patients are equal if their IDs are equal)
-					if(foreignValue instanceof Patient)
-					{
-						Patient p = (Patient)foreignValue;
-						Patient p2 = (Patient)myValue;
-						if(!p2.equals(p))
-							return false;
-					}
-					//checking for calendar
-					else if(foreignValue instanceof Calendar || foreignValue instanceof Date)
-					{
-						if(!myValue.toString().equals(foreignValue.toString()))
-							return false;
-					}
-					else if(foreignValue instanceof String)
-					{
-						if(!(((String)myValue).equalsIgnoreCase((String)foreignValue)))
-							return false;
-					}
-					//checking for primitive values
-					else
-					{
-						if(!myValue.equals(foreignValue))
-						return false;
-					}
-				}
-				else return false;
-			}
-			return true;
-		}
-		return false;
-	}
-	/*
-	@Override
-	public boolean equals(Object b)
-	{
-		if(!(getClass().equals(b.getClass())))
-		{
-			System.out.println("CLASS 1: " + getClass() + " CLASS 2: " + b.getClass());
-			System.out.println("Different classes");
-			return false;
-		}
-		Record r = (Record)b;
-		Object rId = r.getAttribute(Constants.RecordTable.REF_NUM);
-		Object myId = getAttribute(Constants.RecordTable.REF_NUM);
-		if(rId != null && myId != null)
-			return rId.equals(myId);
-		return super.equals(b);
-	}*/
-	
 	public void initializePanel()
 	{	
 		setPreferredSize(new Dimension((450), 120));
@@ -172,7 +105,7 @@ public class Record  extends ListItem
 		this.labels.add(label3);
 		this.labels.add(label4);
 		this.labels.add(label5);
-		setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 		int y = 0;
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;

@@ -8,7 +8,7 @@ CREATE TABLE Patients
 	lastName VARCHAR(30) NOT NULL,
 	firstName VARCHAR(30) NOT NULL,
 	middleName VARCHAR(30) NOT NULL,
-	birthday DATE NOT NULL,
+	birthday DATE,
 	gender CHAR(1) NOT NULL,
 	PRIMARY KEY(patientID)
 )ENGINE = MyISAM;
@@ -28,9 +28,9 @@ CREATE TABLE Records
 	specimen VARCHAR(100) NOT NULL,
 	specimenType VARCHAR (30) NOT NULL,
 	room VARCHAR(15),
-	remarks VARCHAR(2000),
-	grossDescription VARCHAR(2000),
-	microscopicNotes VARCHAR(2000),
+	remarks VARCHAR(10000),
+	grossDescription VARCHAR(10000),
+	microscopicNotes VARCHAR(10000),
 	PRIMARY KEY(recordType, recordYear, recordNumber),
 	FOREIGN KEY(patientID) REFERENCES Patients(patientID)
 ) ENGINE = MyISAM;
@@ -59,7 +59,7 @@ CREATE TABLE Diagnosis
 	recordYear TINYINT NOT NULL,
 	recordNumber SMALLINT NOT NULL,
 	recordType ENUM('G','H','C') NOT NULL,
-	diagnosis_value VARCHAR(2000) NOT NULL,
+	diagnosis_value VARCHAR(10000) NOT NULL,
 	PRIMARY KEY(category_id, recordYear, recordNumber, recordType),
 	FOREIGN KEY(category_id) REFERENCES Categories(category_id),
 	FOREIGN KEY(recordType, recordYear, recordNumber) REFERENCES Records(recordType, recordYear, recordNumber)

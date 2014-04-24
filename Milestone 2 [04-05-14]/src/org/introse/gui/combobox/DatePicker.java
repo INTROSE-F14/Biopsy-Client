@@ -193,6 +193,8 @@ public class DatePicker extends JPanel implements ItemListener{
 					else
 					{
 						int i = day.getItemCount() + 1;
+						if(hasWildcard)
+							i -= 1;
 						String d = "" + i;
 						while(day.getItemCount() < max)
 						{
@@ -282,35 +284,74 @@ public class DatePicker extends JPanel implements ItemListener{
 			}
 			else if(source == year)
 			{
-				if(month.getSelectedIndex() == 1)
+				if((hasWildcard && year.getSelectedIndex() != 0) || !hasWildcard)
 				{
-					int selectedYear = Integer.parseInt((String)year.getSelectedItem());
-					if(selectedYear % 4 == 0 || (selectedYear % 100 == 0 && selectedYear % 400 == 0))
+					int feb = 1;
+					if(hasWildcard)
+						feb = 2;
+					if(month.getSelectedIndex() == feb)
 					{
-						if(day.getItemCount() == 31)
-							day.removeItemAt(30);
-						if(day.getItemCount() == 30)
-							day.removeItemAt(29);
-						if(day.getItemCount() == 29)
-							return;
-						
-						int i = day.getItemCount() + 1;
-						String d = "" + i;
-						while(day.getItemCount() < 29)
+						int selectedYear = Integer.parseInt((String)year.getSelectedItem());
+						if(selectedYear % 4 == 0 || (selectedYear % 100 == 0 && selectedYear % 400 == 0))
 						{
-							day.addItem(d);
-							i++;
-							d = "" + i;
+							if(!hasWildcard)
+							{
+								if(day.getItemCount() == 31)
+									day.removeItemAt(30);
+								if(day.getItemCount() == 30)
+									day.removeItemAt(29);
+								if(day.getItemCount() == 29)
+									return;
+								
+								int i = day.getItemCount() + 1;
+								String d = "" + i;
+								while(day.getItemCount() < 29)
+								{
+									day.addItem(d);
+									i++;
+									d = "" + i;
+								}
+							}
+							else
+							{
+								if(day.getItemCount() == 32)
+									day.removeItemAt(31);
+								if(day.getItemCount() == 31)
+									day.removeItemAt(30);
+								if(day.getItemCount() == 30)
+									return;
+								
+								int i = day.getItemCount();
+								String d = "" + i;
+								while(day.getItemCount() < 30)
+								{
+									day.addItem(d);
+									i++;
+									d = "" + i;
+								}
+							}
 						}
-					}
-					else
-					{
-						if(day.getItemCount() == 31)
-							day.removeItemAt(30);
-						if(day.getItemCount() == 30)
-							day.removeItemAt(29);
-						if(day.getItemCount() == 29)
-							day.removeItemAt(28);
+						else
+						{
+							if(!hasWildcard)
+							{
+								if(day.getItemCount() == 31)
+									day.removeItemAt(30);
+								if(day.getItemCount() == 30)
+									day.removeItemAt(29);
+								if(day.getItemCount() == 29)
+									day.removeItemAt(28);
+							}
+							else
+							{
+								if(day.getItemCount() == 32)
+									day.removeItemAt(31);
+								if(day.getItemCount() == 31)
+									day.removeItemAt(30);
+								if(day.getItemCount() == 30)
+									day.removeItemAt(29);
+							}
+						}
 					}
 				}
 			}

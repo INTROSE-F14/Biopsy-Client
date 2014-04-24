@@ -284,7 +284,7 @@ public class ListPanel extends JPanel
 		int max = start + range;
 		if(max > size)
 			max = size;
-		currentRange.setText((start+1) + "-" + max);
+		currentRange.setText((start+1) + "-" + max + " (" + size + ")");
 		
 	}
 	public void previous()

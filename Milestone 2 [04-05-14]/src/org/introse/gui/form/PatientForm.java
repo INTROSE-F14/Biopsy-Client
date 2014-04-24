@@ -25,7 +25,7 @@ import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.LoginWindow;
 
-public class PatientForm extends JPanel implements Form
+public class PatientForm extends JPanel
 {
 	/**
 	 * 
@@ -61,7 +61,7 @@ public class PatientForm extends JPanel implements Form
 		loadExisting.setBorderPainted(false);
 		loadExisting.setContentAreaFilled(false);
 		loadExisting.setOpaque(true);
-		loadExisting.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		loadExisting.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 		loadExisting.setIcon(new ImageIcon(getClass().getResource("/res/icons/load.png")));
 		loadExisting.setIconTextGap(7);
 	}
@@ -104,9 +104,7 @@ public class PatientForm extends JPanel implements Form
 		middleNameValue.setFont(lastNameValue.getFont());
 		middleNameValue.setHorizontalAlignment(JTextField.CENTER);
 		genderValue.setFont(lastNameValue.getFont());
-		birthday = new DatePicker(100, false);
-		Calendar c = Calendar.getInstance();
-		birthday.setDate(c);
+		birthday = new DatePicker(100, true);
 		birthday.setPickerFont(lastNameValue.getFont());
 		loadExisting = new JButton("Load Existing Patient");
 		loadExisting.setVisible(false);
@@ -294,8 +292,11 @@ public class PatientForm extends JPanel implements Form
 		int day= birthday.getDay();
 		int month= birthday.getMonth();
 		int year= birthday.getYear();
-		birthDate.set(month, day, year);
-		patient.putAttribute(PatientTable.BIRTHDAY.toString(), birthDate);
+		if(day != -1 && month != -1 && year != -1)
+		{
+			birthDate.set(month, day, year);
+			patient.putAttribute(PatientTable.BIRTHDAY.toString(), birthDate);
+		}
 		return patient;
 	}
 
@@ -324,6 +325,17 @@ public class PatientForm extends JPanel implements Form
 			isValid = false;
 		}
 		else middleNameValue.setBorder(defaultTextField.getBorder());
+		
+		int day= birthday.getDay();
+		int month= birthday.getMonth();
+		int year= birthday.getYear();
+		
+		if((day != -1 || month != -1 || year != -1) && (day == -1 || month == -1 || year == -1))
+		{
+			birthday.setBorder(BorderFactory.createLineBorder(Color.red));
+			isValid = false;
+		}
+		else birthday.setBorder(null);
 		return isValid;
 	}
 	

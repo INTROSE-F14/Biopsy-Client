@@ -11,6 +11,5 @@ public interface DiagnosisDao
 	public void add(Diagnosis diagnosis);
 	public List<Diagnosis> getAll();
 	public Diagnosis get(Diagnosis diagnosis);
-	public void update(Diagnosis diagnosis);
 	public void delete(Record record);
 }

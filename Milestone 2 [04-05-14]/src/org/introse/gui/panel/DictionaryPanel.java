@@ -1,15 +1,16 @@
 package org.introse.gui.panel;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -19,10 +20,13 @@ import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.DictionaryConstants;
+import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomDocument;
+import org.introse.gui.button.TabButton;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.event.ListListener;
+import org.introse.gui.event.TabListener;
 
 public class DictionaryPanel extends JPanel implements FocusListener
 {
@@ -31,20 +35,42 @@ public class DictionaryPanel extends JPanel implements FocusListener
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private JPanel topPanel, cardPanel, buttonPanel;
 	private JTextField textField;
 	private JButton addButton;
-	private ListPanel wordPanel;
+	private ListPanel pathologistPanel, physicianPanel, specimenPanel;
+	private TabButton pathologistButton, physicianButton, specimenButton;
+	private String currentView;
 	
 	public DictionaryPanel() 
 	{
 		super(new GridBagLayout());
-		setBackground(Color.white);
+		setBackground(new Color(0f,0f,0f,0f));
 		initUI();
 		layoutComponents();
+		currentView = TitleConstants.PATHOLOGISTS;
 	}
 	
 	private void initUI()
 	{
+		buttonPanel = new JPanel(new GridLayout(1,3,1,0));
+		buttonPanel.setBackground(Color.LIGHT_GRAY);
+		pathologistButton = new TabButton(StyleConstants.PRIMARY_COLOR, StyleConstants.SECONDARY_COLOR, 
+				TitleConstants.PATHOLOGISTS, true);
+		physicianButton = new TabButton(StyleConstants.PRIMARY_COLOR, StyleConstants.SECONDARY_COLOR,
+				TitleConstants.PHYSICIANS, false);
+		specimenButton = new TabButton(StyleConstants.PRIMARY_COLOR, StyleConstants.SECONDARY_COLOR,
+				TitleConstants.SPECIMENS, false);
+		pathologistButton.setBorder(new EmptyBorder(0,15,0,15));
+		physicianButton.setBorder(new EmptyBorder(0,15,0,15));
+		specimenButton.setBorder(new EmptyBorder(0,15,0,15));
+		pathologistButton.setName(TitleConstants.PATHOLOGISTS);
+		physicianButton.setName(TitleConstants.PHYSICIANS);
+		specimenButton.setName(TitleConstants.SPECIMENS);
+		cardPanel = new JPanel(new CardLayout());
+		cardPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
+		topPanel = new JPanel(new GridBagLayout());
+		topPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
 		textField = new JTextField(50);
 		textField.setForeground(Color.GRAY);
 		textField.addFocusListener(this);
@@ -53,7 +79,9 @@ public class DictionaryPanel extends JPanel implements FocusListener
 		addButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_new_hover.png")));
 		addButton.setContentAreaFilled(false);
 		addButton.setBorderPainted(false);
-		wordPanel = new ListPanel(SwingConstants.HORIZONTAL, 28, 14);
+		pathologistPanel = new ListPanel(SwingConstants.HORIZONTAL, 24, 12);
+		physicianPanel = new ListPanel(SwingConstants.HORIZONTAL, 24, 12);
+		specimenPanel = new ListPanel(SwingConstants.HORIZONTAL, 24, 12);
 		textField.setDocument(new CustomDocument(DictionaryConstants.WORD_LENGTH));
 		textField.addKeyListener(new KeyListener() {
 			
@@ -87,39 +115,75 @@ public class DictionaryPanel extends JPanel implements FocusListener
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = y;
-		c.insets = new Insets(0,0,20,5);
-		add(textField, c);
-		c.gridx = 1;
+		c.gridwidth = 3;
+		c.insets = new Insets(0,0,10,5);
+		topPanel.add(textField, c);
+		c.gridx = 3;
 		c.gridy = y++;
-		c.insets = new Insets(0,0,20,0);
+		c.gridwidth = 1;
 		c.weightx = 1.0;
-		add(addButton, c);
-		c.fill = GridBagConstraints.BOTH;
+		c.insets = new Insets(0,0,10,0);
+		topPanel.add(addButton, c);
+		c.anchor = GridBagConstraints.CENTER;
+		c.weightx = 1.0;	
 		c.gridx = 0;
+		c.gridwidth = 3;
+		c.gridy = y;
+		c.insets = new Insets(0,0,10,0);
+		topPanel.add(buttonPanel, c);
+		
+		cardPanel.add(TitleConstants.PATHOLOGISTS, pathologistPanel);
+		cardPanel.add(TitleConstants.PHYSICIANS, physicianPanel);
+		cardPanel.add(TitleConstants.SPECIMENS, specimenPanel);
+		buttonPanel.add(pathologistButton);
+		buttonPanel.add(physicianButton);
+		buttonPanel.add(specimenButton);
+		
+		y = 0;
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.weightx = 1.0;
+		c.gridy = y++;
+		add(topPanel, c);
+		c.fill = GridBagConstraints.BOTH;
 		c.gridy = y;
 		c.weighty = 1.0;
-		c.weightx = 1.0;
-		c.gridwidth = 2;
-		c.gridheight = 3;
-		c.insets = new Insets(0,0,0,0);
-		add(wordPanel, c);
+		add(cardPanel, c);
 	}
 	
 	public void addListListener(ListListener listener)
 	{
-		wordPanel.addMouseListener(listener);
+		pathologistPanel.addMouseListener(listener);
+		physicianPanel.addMouseListener(listener);
+		specimenPanel.addMouseListener(listener);
+	}
+	
+	public void addTabListener(TabListener listener)
+	{
+		pathologistButton.addMouseListener(listener);
+		physicianButton.addMouseListener(listener);
+		specimenButton.addMouseListener(listener);
 	}
 	
 	public void addButtonListener(CustomListener listener)
 	{
 		addButton.addActionListener(listener);
 		addButton.setActionCommand(ActionConstants.ADD_WORD);
-		wordPanel.addButtonListener(listener);
+		pathologistPanel.addButtonListener(listener);
+		physicianPanel.addButtonListener(listener);
+		specimenPanel.addButtonListener(listener);
 	}
-
-	public ListPanel getWordPanel()
+	
+	public ListPanel getPanel(String view)
 	{
-		return wordPanel;
+		switch(view)
+		{
+		case TitleConstants.PATHOLOGISTS: return pathologistPanel;
+		case TitleConstants.PHYSICIANS: return physicianPanel;
+		case TitleConstants.SPECIMENS: return specimenPanel;
+		}
+		return null;
 	}
 	
 	public String getWord()
@@ -148,5 +212,26 @@ public class DictionaryPanel extends JPanel implements FocusListener
 	{
 		textField.setText(TitleConstants.DICTIONARY_HINT);
 		textField.setForeground(Color.gray);
+	}
+	
+	public void setSelectedTab(String name)
+	{
+		currentView = name;
+		CardLayout cl = (CardLayout)cardPanel.getLayout();
+		cl.show(cardPanel, name);
+		pathologistButton.setState(false);
+		physicianButton.setState(false);
+		specimenButton.setState(false);
+		if(name.equals(pathologistButton.getName()))
+			pathologistButton.setState(true);
+		else if(name.equals(physicianButton.getName()))
+			physicianButton.setState(true);
+		else if(name.equals(specimenButton.getName()))
+			specimenButton.setState(true);
+	}
+	
+	public String getCurrentView()
+	{
+		return currentView;
 	}
 }

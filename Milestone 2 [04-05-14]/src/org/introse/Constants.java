@@ -17,10 +17,11 @@ public abstract class Constants
 		public static final float HEADER = 45;
 		public static final float SUBHEADER = 18;
 		public static final float MENU = 15;
-		public static final String PRESSED = "#d8d8d8";
-		public static final String HOVER  = "#e9e9e9";
-		public static final String SELECTED = "#3d36cc";
-		public static final String NORMAL = "#FFFFFF";
+		public static final String SECONDARY_COLOR = "#3d36cc";//blue-violet
+		public static final String PRIMARY_COLOR  = "#FFFFFF";//white
+		public static final String TERTIARY_COLOR = "#edebeb";//dark gray
+		public static final String QUARTERNARY_COLOR = "#f2f1f1";//light gray
+		public static final String GRAY = "#545353";
 	}
 	
 	public abstract class RecordConstants
@@ -32,11 +33,11 @@ public abstract class Constants
 		public static final int OTHERS = 3;
 		public static final int RECORD = 0;
 		public static final int DIAGNOSIS = 1;
-		public static final int REMARKS_LENGTH = 2000;
+		public static final int REMARKS_LENGTH = 10000;
 		public static final int ROOM_LENGTH = 15;
-		public static final int DIAGNOSIS_LENGTH = 2000;
-		public static final int GROSS_LENGTH = 2000;
-		public static final int MICRO_LENGTH = 2000;
+		public static final int DIAGNOSIS_LENGTH = 10000;
+		public static final int GROSS_LENGTH = 10000;
+		public static final int MICRO_LENGTH = 10000;
 	}
 	
 	public abstract class PatientConstants
@@ -48,6 +49,7 @@ public abstract class Constants
 
 	public abstract class TitleConstants
 	{
+		public static final String MAINTENANCE = "Maintenance";
 		public static final String CONFIRM_DELETE_WORD =  "Are you sure you want to delete this word?";
 		public static final String CONFIRM_DELETE_RECORD = "Are you sure you want to delete this record?";
 		public static final String CONFIRM_DELETE_PATIENT = "Are you sure you want to delete this patient? This will also delete all records associated to this patient";

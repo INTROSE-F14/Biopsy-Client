@@ -1,42 +1,56 @@
 package org.introse.gui.button;
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import org.introse.Constants;
+import org.introse.gui.window.LoginWindow;
 
 
-public class NavButton extends JButton implements MouseListener{
+public class NavButton extends JPanel{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private boolean isSelected;
-	private String normalColor;
-	private String hoverColor;
-	private String pressedColor;
 	private String selectedColor;
-	private String text;
-	public NavButton(String normalColor, String hoverColor, 
-			String pressedColor, String selectedColor, String text, boolean isSelected)
+	private JLabel indicator;
+	private JLabel title;
+	
+	public NavButton(String normalColor, String selectedColor, String text, boolean isSelected)
 	{
-		super(text);
+		super(new GridBagLayout());
 		setOpaque(true);
-		setContentAreaFilled(false);
-		setBorderPainted(false);
-		setFocusPainted(false);
-		this.normalColor = normalColor;
-		this.hoverColor = hoverColor;
-		this.pressedColor = pressedColor;
+		setBackground(Color.decode(normalColor));
+		this.isSelected = isSelected;
 		this.selectedColor = selectedColor;
-		this.text = text;
+		indicator = new JLabel("  ");
+		indicator.setOpaque(true);
+		indicator.setBackground(getBackground());
+		title = new JLabel(text);
+		title.setOpaque(true);
+		title.setBackground(getBackground());
+		title.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
+		GridBagConstraints c = new GridBagConstraints();
+		c.fill = GridBagConstraints.VERTICAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		c.weighty = 1.0;
+		c.weightx = 1.0;
+		c.anchor = GridBagConstraints.EAST;
+		c.insets = new Insets(10,10,10,5);
+		add(title, c);
+		c.gridx = 1;
+		c.weightx = 0.0;
+		c.insets = new Insets(0,0,0,0);
+		add(indicator, c);
 		setState(isSelected);
-		addMouseListener(this);
 	}
 	
 	public void setState(boolean isSelected)
@@ -44,13 +58,13 @@ public class NavButton extends JButton implements MouseListener{
 		this.isSelected = isSelected;
 		if(isSelected)
 		{
-			setBackground(Color.decode(selectedColor));
-			setForeground(Color.white);
+			indicator.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_indicator_selected.png")));
+			title.setForeground(Color.decode(selectedColor));
 		}
 		else
 		{
-			setBackground(Color.decode(normalColor));
-			setForeground(Color.black);
+			indicator.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_indicator_unselected.png")));
+			title.setForeground(Color.GRAY);
 		}
 	}
 	
@@ -58,48 +72,14 @@ public class NavButton extends JButton implements MouseListener{
 	{
 		return isSelected;
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent arg0) {}
-
-	@Override
-	public void mouseEntered(MouseEvent e) 
-	{
-		if(!((NavButton)e.getComponent()).getState())
-		{
-			e.getComponent().setBackground(Color.decode(hoverColor));
-			e.getComponent().setForeground(Color.black);
-		}
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) 
-	{
-		setState(getState());	
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if(!((NavButton)e.getComponent()).getState())
-		{
-			e.getComponent().setBackground(Color.decode(pressedColor));
-			e.getComponent().setForeground(Color.black);
-		}
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {}
 	
 	@Override
-	public void paintComponent(Graphics g)
+	public void setBackground(Color color)
 	{
-		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D)g;
-		Insets insets = getInsets();
-		g.setColor(getBackground());
-		g.fillRect(0, 0, getWidth(), getHeight());
-		g.setColor(getForeground());
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.drawString(text, 0 + insets.left, 0 + getFontMetrics(getFont()).getHeight());
+		super.setBackground(color);
+		if(title!= null)
+			title.setBackground(color);
+		if(indicator!= null)
+			indicator.setBackground(getBackground());
 	}
 }

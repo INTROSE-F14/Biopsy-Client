@@ -43,62 +43,6 @@ public class Patient extends ListItem
 		attributes.put(key, newValue);
 	}
 	
-	/*
-	public boolean matches(Patient patient)
-	{
-		if(patient.getClass().equals(getClass()))
-		{
-			HashMap<String, Object> attributes = patient.getHashMap();
-			Set<String> keys = attributes.keySet();
-			Iterator<String> i = keys.iterator();
-			while(i.hasNext())
-			{
-				String currentKey = i.next();
-				System.out.println(currentKey);
-				Object foreignValue = attributes.get(currentKey);
-				Object myValue = this.attributes.get(currentKey);
-				
-				if(myValue != null)
-				{
-					
-					//checking for calendar
-					if(foreignValue instanceof Calendar || foreignValue instanceof Date)
-					{
-						if(!myValue.toString().equals(foreignValue.toString()))
-							return false;
-					}
-					else if(foreignValue instanceof String)
-					{
-						if(!(((String)myValue).equalsIgnoreCase((String)foreignValue)))
-							return false;
-					}
-					//checking for primitive values
-					else
-					{
-						if(!myValue.equals(foreignValue))
-							return false;
-					}
-				}
-				else return false;
-			}
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean equals(Object o)
-	{
-		if(!(o instanceof Patient))
-			return false;
-		Patient p = (Patient)o;
-		Object pId = p.getAttribute(PatientTable.PATIENT_ID.toString());
-		Object myId = getAttribute(PatientTable.PATIENT_ID.toString());
-		if(pId != null && myId != null)
-			return pId.equals(myId);
-		return super.equals(o);
-	}
-	*/
 	@Override
 	public void initializePanel() 
 	{
@@ -107,8 +51,10 @@ public class Patient extends ListItem
 				" " + getAttribute(PatientTable.MIDDLE_NAME);
 		String label2 = "";
 		CustomCalendar birthday =  (CustomCalendar)getAttribute(PatientTable.BIRTHDAY);
-		String label3 = birthday.toString();
-		setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		String label3 = "Unset";
+		if(birthday != null)
+			label3 = birthday.toString();
+		setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 		setBorder(new EmptyBorder(20,20,20,20));
 		
 		if(((String)getAttribute(PatientTable.GENDER)).charAt(0) == 'M')

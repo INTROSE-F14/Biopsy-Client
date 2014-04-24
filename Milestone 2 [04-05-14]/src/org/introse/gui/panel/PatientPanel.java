@@ -3,17 +3,17 @@ package org.introse.gui.panel;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
+import org.introse.Constants.StyleConstants;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.form.Form;
 import org.introse.gui.form.PatientForm;
 
 public class PatientPanel extends DetailPanel 
@@ -22,28 +22,29 @@ public class PatientPanel extends DetailPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel patientForm;
-	private JLabel divider;
+	private PatientForm patientForm;
+	private JPanel topPanel, buttonPanel;
 	private JButton editOrSaveButton, cancelButton, backButton;
 	private ImageIcon editIcon, saveIcon, cancelIcon, editIconRollover, saveIconRollover, cancelIconRollover;
 	
 	
-	public PatientPanel(JPanel patientForm, int mode)
+	public PatientPanel(PatientForm patientForm, int mode)
 	{
 		super(new GridBagLayout(), mode);
-		setBackground(Color.white);
+		setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
 		this.patientForm = patientForm;
 		initializeComponents();
 		layoutComponents();
 		setMode(mode);
-		((PatientForm)patientForm).setViewOnly(false);
+		patientForm.setViewOnly(false);
 	}
 	
 	private void initializeComponents()
 	{
-		divider = new JLabel("l");
-		divider.setFont(getFont().deriveFont(25f));
-		divider.setForeground(Color.LIGHT_GRAY);
+		topPanel = new JPanel(new GridBagLayout());
+		topPanel.setBackground(new Color(0f,0f,0f,0f));
+		buttonPanel = new JPanel(new GridLayout(1,2,1,1));
+		buttonPanel.setBackground(Color.LIGHT_GRAY);
 		editIcon = new ImageIcon(getClass().getResource("/res/icons/ic_action_edit.png"));
 		editIconRollover = new ImageIcon(getClass().getResource("/res/icons/ic_action_edit_hover.png"));
 		saveIcon = new ImageIcon(getClass().getResource("/res/icons/ic_action_accept.png"));
@@ -56,7 +57,7 @@ public class PatientPanel extends DetailPanel
 		backButton.setBorderPainted(false);
 		backButton.setContentAreaFilled(false);
 		backButton.setOpaque(true);
-		backButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		backButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 		backButton.setIconTextGap(7);
 		backButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_back.png")));
 		backButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_back_hover.png")));
@@ -72,8 +73,8 @@ public class PatientPanel extends DetailPanel
 		cancelButton.setBorderPainted(false);
 		cancelButton.setContentAreaFilled(false);
 		cancelButton.setOpaque(true);
-		cancelButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
-		editOrSaveButton.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		cancelButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
+		editOrSaveButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 		editOrSaveButton.setIconTextGap(7);
 		cancelButton.setIconTextGap(7);
 	}
@@ -84,29 +85,26 @@ public class PatientPanel extends DetailPanel
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
 		c.gridy = 0;
-		add(backButton, c);
+		topPanel.add(backButton, c);
 		c.anchor = GridBagConstraints.LINE_END;
 		c.gridx = 3;
 		c.weightx = 1.0;
 		c.insets = new Insets(0,0,0,2);
-		add(editOrSaveButton, c);
-		c.gridx = 4;
-		c.gridy = 0;
-		c.weightx = 0.0;
-		c.insets = new Insets(0,0,0,0);
-		add(divider, c);
-		c.gridx = 5;
-		c.gridy = 0;
-		c.weightx = 0.0;
-		c.insets = new Insets(0,0,0,0);
-		add(cancelButton, c);
-		c.insets = new Insets(20,0,0,0);
-		c.anchor = GridBagConstraints.NORTH;
-		c.fill = GridBagConstraints.HORIZONTAL;
+		topPanel.add(buttonPanel, c);
+		buttonPanel.add(editOrSaveButton);
+		
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.NORTHEAST;
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1.0;
+		c.weighty = 0.0;
 		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 6;
-		c.gridheight = 1;
+		c.gridy = 0;
+		add(topPanel, c);
+		c.gridx = 0;
+		c.gridy = 2;
+		c.gridwidth = 5;
+		c.gridheight = 2;
 		c.weighty = 1.0;
 		add(patientForm, c);
 	}
@@ -129,17 +127,21 @@ public class PatientPanel extends DetailPanel
 			 		   editOrSaveButton.setIcon(editIcon);
 			 		   editOrSaveButton.setRolloverIcon(editIconRollover);
 			 		   cancelButton.setVisible(false);
-			 		   divider.setVisible(false);
-			 		   ((Form)patientForm).setEditable(false);
+			 		   patientForm.setEditable(false);
+			 		   buttonPanel.remove(cancelButton);
+			 		   buttonPanel.revalidate();
+			 		   repaint();
 			 		   break;
 			case Constants.ActionConstants.EDIT: 
 			case Constants.ActionConstants.NEW:  
 					   editOrSaveButton.setActionCommand(Constants.ActionConstants.SAVE);
 					   cancelButton.setVisible(true);
-					   ((Form)patientForm).setEditable(true);
-					   divider.setVisible(true);
+					   patientForm.setEditable(true);
 					   editOrSaveButton.setIcon(saveIcon);
 					   editOrSaveButton.setRolloverIcon(saveIconRollover);
+					   buttonPanel.add(cancelButton);
+					   buttonPanel.revalidate();
+					   repaint();
 					   break;
 		}
 	}
@@ -147,18 +149,18 @@ public class PatientPanel extends DetailPanel
 	@Override
 	public boolean areFieldsValid() 
 	{
-		return ((Form)patientForm).areFieldsValid();
+		return patientForm.areFieldsValid();
 	}
 
 
 	@Override
 	public Object getObject() 
 	{
-		return ((Form)patientForm).getObject();
+		return patientForm.getObject();
 	}
 	
-	public Form getPatientForm()
+	public PatientForm getPatientForm()
 	{
-		return (Form)patientForm;
+		return patientForm;
 	}
 }

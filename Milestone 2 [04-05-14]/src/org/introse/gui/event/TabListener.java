@@ -6,20 +6,18 @@ import java.awt.event.MouseListener;
 
 import org.introse.Constants;
 import org.introse.ProjectDriver;
-import org.introse.gui.panel.ListItem;
+import org.introse.gui.button.TabButton;
 
-public class ListListener implements MouseListener {
-
+public class TabListener implements MouseListener 
+{
 	private ProjectDriver driver;
-	
-	public ListListener(ProjectDriver driver)
+	public TabListener(ProjectDriver driver)
 	{
-		super();
 		this.driver = driver;
 	}
-	
+
 	@Override
-	public void mouseClicked(MouseEvent arg0) {}
+	public void mouseClicked(MouseEvent e) {}
 
 	@Override
 	public void mouseEntered(MouseEvent e) 
@@ -36,17 +34,19 @@ public class ListListener implements MouseListener {
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
-		e.getComponent().setBackground(Color.decode(Constants.StyleConstants.QUARTERNARY_COLOR));
+		TabButton source = (TabButton)e.getSource();
+		if(!source.getState())
+			source.setBackground(Color.decode(Constants.StyleConstants.TERTIARY_COLOR));
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) 
 	{
-		if(e.getComponent().contains(e.getPoint()))
+		final TabButton source = (TabButton)e.getComponent();
+		if(source.contains(e.getPoint()))
 		{
-			e.getComponent().setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
-			ListItem listItem = (ListItem)e.getComponent();
-			driver.viewItem(listItem);
+			final String name = source.getName();
+			driver.changeView(name);
 		}
 	}
 

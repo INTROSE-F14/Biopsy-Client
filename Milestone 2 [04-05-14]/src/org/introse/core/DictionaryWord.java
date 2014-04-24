@@ -34,7 +34,7 @@ public class DictionaryWord extends ListItem {
 	public void initializePanel() 
 	{
 		setPreferredSize(new Dimension((450), 30));
-		setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 		JLabel wordLabel = new JLabel(word);
 		wordLabel.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.MENU));
 		wordLabel.setHorizontalAlignment(SwingConstants.CENTER);

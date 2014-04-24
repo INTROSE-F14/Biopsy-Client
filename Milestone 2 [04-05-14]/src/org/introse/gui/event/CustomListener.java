@@ -33,46 +33,8 @@ public class CustomListener implements ActionListener, MouseListener
 		final String actionCommand = e.getActionCommand();
 		switch(actionCommand)
 		{
-		case Constants.TitleConstants.HISTOPATHOLOGY:
-		case Constants.TitleConstants.GYNECOLOGY:
-		case Constants.TitleConstants.CYTOLOGY:
-		case Constants.TitleConstants.PATHOLOGISTS:
-		case Constants.TitleConstants.PATIENTS:
-		case Constants.TitleConstants.PHYSICIANS:
-		case Constants.TitleConstants.SPECIMENS:
-		case Constants.TitleConstants.PREFERENCES:
-			if(projectDriver.getDetailPanelStatus() == ActionConstants.EDIT || 
-			projectDriver.getDetailPanelStatus() == ActionConstants.NEW)
-			{
-				PopupDialog popup = new PopupDialog(projectDriver.getMainMenu(), "Cancel form", 
-						TitleConstants.DISCARD_CHANGES_MESSAGE, "Yes", "No");
-				popup.addPropertyChangeListener(new PropertyChangeListener()
-				{
-
-					@Override
-					public void propertyChange(PropertyChangeEvent evt) 
-					{
-						if(evt.getPropertyName().equals("POSITIVE"))
-						{
-							projectDriver.cancelCurrentForm();
-							projectDriver.changeView(actionCommand);
-							projectDriver.setSelectedButton(e.getSource());
-						}
-					}
-				});
-				popup.showGui();
-			}
-			else
-			{
-				projectDriver.removeDetailsPanel();
-				projectDriver.changeView(actionCommand);
-				projectDriver.setSelectedButton(e.getSource());
-			}
-			break;
 		case Constants.ActionConstants.REFRESH: projectDriver.refresh(projectDriver.getCurrentView(), false);
 												projectDriver.removeDetailsPanel();
-			break;
-		case Constants.ActionConstants.LOG_OUT: projectDriver.logout();
 			break;
 		case Constants.ActionConstants.LOG_IN: projectDriver.login();
 			break;
@@ -173,24 +135,25 @@ public class CustomListener implements ActionListener, MouseListener
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {}
+	public void mouseClicked(MouseEvent e) 
+	{}
 
 	@Override
 	public void mouseEntered(MouseEvent e) 
 	{
-		e.getComponent().setBackground(Color.decode(Constants.StyleConstants.HOVER));
+		e.getComponent().setBackground(Color.decode(Constants.StyleConstants.QUARTERNARY_COLOR));
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) 
 	{
-		e.getComponent().setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		e.getComponent().setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
-		e.getComponent().setBackground(Color.decode(Constants.StyleConstants.PRESSED));
+		e.getComponent().setBackground(Color.decode(Constants.StyleConstants.QUARTERNARY_COLOR));
 	}
 
 	@Override

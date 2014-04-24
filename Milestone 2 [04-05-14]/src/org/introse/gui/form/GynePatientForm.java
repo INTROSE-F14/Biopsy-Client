@@ -25,7 +25,7 @@ import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.LoginWindow;
 
-public class GynePatientForm extends JPanel implements Form
+public class GynePatientForm extends JPanel 
 {
 	private JTextField lastNameValue, firstNameValue, middleNameValue;
 	private JComboBox<String> genderValue;
@@ -57,7 +57,7 @@ public class GynePatientForm extends JPanel implements Form
 		loadExisting.setBorderPainted(false);
 		loadExisting.setContentAreaFilled(false);
 		loadExisting.setOpaque(true);
-		loadExisting.setBackground(Color.decode(Constants.StyleConstants.NORMAL));
+		loadExisting.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 		loadExisting.setIcon(new ImageIcon(getClass().getResource("/res/icons/load.png")));
 		loadExisting.setIconTextGap(7);
 	}

@@ -60,8 +60,9 @@ import org.introse.gui.dialogbox.SearchPatientDialog;
 import org.introse.gui.dialogbox.SearchRecordDialog;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.event.ListListener;
+import org.introse.gui.event.NavigationListener;
+import org.introse.gui.event.TabListener;
 import org.introse.gui.form.CytologyForm;
-import org.introse.gui.form.Form;
 import org.introse.gui.form.GynecologyForm;
 import org.introse.gui.form.HistopathologyForm;
 import org.introse.gui.form.PatientForm;
@@ -81,7 +82,7 @@ import org.introse.gui.window.MainMenu;
 
 public class ProjectDriver 
 {
-	public static LoginWindow loginWindow;
+	private static LoginWindow loginWindow;
 	private final Client client = new Client();
 	private MainMenu mainMenu;
 	private MysqlRecordDao recordDao;
@@ -96,6 +97,8 @@ public class ProjectDriver
 	private static final ProjectDriver driver = new ProjectDriver();
 	private static final CustomListener listener =  new CustomListener(driver);
 	private static final ListListener listListener = new ListListener(driver);
+	private static final TabListener tabListener = new TabListener(driver);
+	private static final NavigationListener navListener = new NavigationListener(driver);
 	
 	public static void main(String[] args) 
 	{
@@ -156,6 +159,8 @@ public class ProjectDriver
 				mainMenu = new MainMenu();
 				mainMenu.addListListener(listListener);
 				mainMenu.addListener(listener);
+				mainMenu.addNavigationListener(navListener);
+				mainMenu.addTabListener(tabListener);
 				loadWords();
 				changeView(TitleConstants.HISTOPATHOLOGY);
 				mainMenu.showGUI();
@@ -278,6 +283,15 @@ public class ProjectDriver
 							updateRList((Record)lastSearch, view, reset);
 						else updatePList((Patient)lastSearch, view, reset);
 									  break;
+					case TitleConstants.DICTIONARY: 
+						DictionaryPanel panel = mainMenu.getContentPanel().getDickPanel();
+						String currentView = panel.getCurrentView();
+						if(currentView.equals(TitleConstants.PATHOLOGISTS))
+								updateWList(DictionaryConstants.PATHOLOGIST, currentView);
+						else if(currentView.equals(TitleConstants.PHYSICIANS))
+							updateWList(DictionaryConstants.PHYSICIAN, currentView);
+						else updateWList(DictionaryConstants.SPECIMEN, currentView);
+						break;
 					case TitleConstants.SPECIMENS: updateWList(DictionaryConstants.SPECIMEN, view);
 					break;
 					case TitleConstants.PATHOLOGISTS: updateWList(DictionaryConstants.PATHOLOGIST, view);
@@ -487,7 +501,7 @@ public class ProjectDriver
 				if(detailPanel != null && detailPanel instanceof RecordPanel && detailPanel.getMode() == 
 						Constants.ActionConstants.NEW)
 				{
-						loadExistingPatient(object);
+						loadExistingPatient((Patient)object);
 						return;
 				}
 				else if(searchDialog != null && searchDialog instanceof SearchRecordDialog)
@@ -903,7 +917,7 @@ public class ProjectDriver
 	{
 		JPanel panel = null;
 		JPanel recordForm = null;
-		JPanel patientForm = null;
+		PatientForm patientForm = null;
 		Record record = new Record();
 		Patient patient = new Patient();
 		patient.putAttribute(PatientTable.PATIENT_ID, -1);
@@ -929,7 +943,7 @@ public class ProjectDriver
 											break;
 		case Constants.RecordConstants.PATIENT:			
 											patientForm = new PatientForm();
-											((Form)patientForm).setFields(patient);
+											patientForm.setFields(patient);
 											panel = new PatientPanel(patientForm, Constants.ActionConstants.NEW);
 											((DetailPanel)panel).addListener(listener);
 		}
@@ -938,7 +952,7 @@ public class ProjectDriver
 		mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
 	}
 	
-	public void loadExistingPatient(Object patient)
+	public void loadExistingPatient(Patient patient)
 	{
 		((RecordForm)((RecordPanel)detailPanel).getRecordForm()).setPatient((Patient)patient);
 		loader.dispose();
@@ -1267,7 +1281,7 @@ public class ProjectDriver
 	
 	public void addCurrentWord()
 	{
-		final DictionaryPanel panel = mainMenu.getContentPanel().getDickPanel(getCurrentView());
+		final DictionaryPanel panel = mainMenu.getContentPanel().getDickPanel();
 		final String word = panel.getWord();
 		
 		if(!word.equals(TitleConstants.DICTIONARY_HINT))
