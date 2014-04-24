@@ -49,6 +49,10 @@ public abstract class Constants
 
 	public abstract class TitleConstants
 	{
+		public static final String HORM_EVAL = "Hormonal Evaluation (for vaginal smears only)";
+		public static final String SUPERFICIALS = "Superficials";
+		public static final String INTERMEDIATES = "Intermediates";
+		public static final String PARABASALS = "Parabasals";
 		public static final String MAINTENANCE = "Maintenance";
 		public static final String CONFIRM_DELETE_WORD =  "Are you sure you want to delete this word?";
 		public static final String CONFIRM_DELETE_RECORD = "Are you sure you want to delete this record?";
@@ -228,6 +232,10 @@ public abstract class Constants
 		public static final int SC = 8;
 		public static final int GC = 9;
 		public static final int SA = 10;
+		public static final int HE = 11;
+		public static final int S = 12;
+		public static final int I = 13;
+		public static final int P = 14;
 	}
 	
 	public abstract class StatusConstants

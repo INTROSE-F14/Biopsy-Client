@@ -64,6 +64,10 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 	private JRadioButton liquidBased;
 	private JRadioButton others;
 	
+	private JLabel hormonalEvaluationLabel;
+	private JLabel superficialsLabel, intermediatesLabel, parabasalsLabel;
+	private JTextField superficialValue, intermediatesValue, parabasalsValue;
+	
 	private JLabel specimenAdequacyLabel;
 	private ButtonGroup saGroup;
 	private JRadioButton satisfactory;
@@ -203,50 +207,130 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		secondPanel.add(other1, c);
 		
 		y = 0;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 1;
+		c.gridwidth = 5;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
+		secondPanel.add(hormonalEvaluationLabel, c);
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		c.gridy = y;
+		c.insets = new Insets(0,20,0,0);
+		secondPanel.add(superficialsLabel, c);
+		c.gridwidth = 4;
+		c.weightx = 1.0;
+		c.gridy = y++;
+		c.gridx = 2;
+		c.insets = new Insets(0,0,0,0);
+		secondPanel.add(superficialValue, c);
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		c.gridy = y;
+		c.gridx = 1;
+		c.insets = new Insets(0,20,0,0);
+		secondPanel.add(intermediatesLabel, c);
+		c.gridwidth = 4;
+		c.weightx = 1.0;
+		c.gridy = y++;
+		c.gridx = 2;
+		c.insets = new Insets(0,0,0,0);
+		secondPanel.add(intermediatesValue, c);
+		c.gridwidth = 1;
+		c.weightx = 0.0;
+		c.gridy = y;
+		c.gridx = 1;
+		c.insets = new Insets(0,20,0,0);
+		secondPanel.add(parabasalsLabel, c);
+		c.gridwidth = 4;
+		c.weightx = 1.0;
+		c.gridx = 2;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,0,0);
+		secondPanel.add(parabasalsValue, c);
+		c.weightx = 1.0;
+		c.gridx = 1;
+		c.gridy = y++;
+		c.gridwidth = 5;
+		c.insets = new Insets(0,0,0,0);
 		secondPanel.add(eca, c);
+		c.weightx = 1.0;
+		c.gridwidth = 5;
 		c.gridy = y++;
 		c.insets = new Insets(0,20,0,0);
 		secondPanel.add(squamousCell, c);
+		c.weightx = 0.0;
+		c.gridwidth = 3;
+		c.gridy = y;
 		c.insets = new Insets(0,40,0,0);
-		c.gridy = y++;
 		secondPanel.add(squamous1, c);
+		c.weightx = 1.0;
+		c.gridwidth = 2;
 		c.gridy = y++;
-		c.insets = new Insets(0,60,0,0);
+		c.gridx = 4;
+		c.insets = new Insets(0,0,0,0);
 		secondPanel.add(squamous1Box, c);
+		c.weightx = 1.0;
+		c.gridx = 1;
 		c.gridy = y++;
+		c.gridwidth = 5;
 		c.insets = new Insets(0,40,0,0);
 		secondPanel.add(squamous2, c);
-		c.gridy = y++;
+		c.weightx = 0.0;
+		c.gridwidth = 4;
+		c.gridy = y;
 		secondPanel.add(squamous3, c);
+		c.weightx = 1.0;
+		c.gridx = 5;
 		c.gridy = y++;
-		c.insets = new Insets(0,60,0,0);
+		c.gridwidth = 1;
+		c.insets = new Insets(0,0,0,0);
 		secondPanel.add(squamous3Box, c);
+		c.weightx = 1.0;
+		c.gridwidth = 5;
+		c.gridx = 1;
 		c.gridy = y++;
 		c.insets = new Insets(0,40,0,0);
 		secondPanel.add(squamous4, c);
 		
+		c.weightx = 1.0;
+		c.gridwidth = 5;
 		c.gridy = y++;
 		c.insets = new Insets(0,20,0,0);
 		secondPanel.add(glandularCell, c);
-		c.gridy = y++;
+		c.weightx = 0.0;
+		c.gridy = y;
+		c.gridwidth = 1;
 		c.insets = new Insets(0,40,0,0);
 		secondPanel.add(glandular1, c);
+		c.weightx = 1.0;
+		c.gridwidth = 4;
 		c.gridy = y++;
-		c.insets = new Insets(0,60,0,0);
+		c.gridx = 2;
+		c.insets = new Insets(0,0,0,0);
 		secondPanel.add(glandular1Box, c);
+		c.weightx = 1.0;
+		c.gridx = 1;
+		c.gridy = y++;
+		c.gridwidth = 5;
 		c.insets = new Insets(0,40,0,0);
-		c.gridy = y++;
 		secondPanel.add(glandular2, c);
-		c.gridy = y++;
+		c.weightx = 0.0;
+		c.gridy = y;
+		c.gridwidth = 2;
 		secondPanel.add(glandular3, c);
+		c.weightx = 1.0;
 		c.gridy = y++;
-		c.insets = new Insets(0,60,0,0);
+		c.gridx = 3;
+		c.gridwidth = 3;
+		c.insets = new Insets(0,0,0,0);
 		secondPanel.add(glandular3Box, c);
+		c.weightx = 1.0;
+		c.gridx = 1;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
+		c.gridwidth = 5;
 		secondPanel.add(omn, c);
 		c.gridy = y++;
 		c.fill = GridBagConstraints.BOTH;
@@ -343,16 +427,12 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		grossDescValue.setFont(remarksValue.getFont());
 		microNoteValue.setFont(remarksValue.getFont());
 		
-		//mainCategory = new ButtonGroup();
 		nilm = new JRadioButton(TitleConstants.NILM);
 		eca = new JRadioButton(TitleConstants.ECA);
 		omn = new JRadioButton(TitleConstants.OMN);
 		nilm.setBackground(Color.white);
 		eca.setBackground(Color.white);
 		omn.setBackground(Color.white);
-		//mainCategory.add(nilm);
-		//mainCategory.add(eca);
-		//mainCategory.add(omn);
 		
 		specimenTypeLabel = new JLabel(TitleConstants.SPEC_TYPE);
 		specGroup = new ButtonGroup();
@@ -375,6 +455,17 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		unsatisfactoryDueTo = new JTextField(35);
 		saGroup.add(satisfactory);
 		saGroup.add(unsatisfactory);		
+		
+		hormonalEvaluationLabel = new JLabel(TitleConstants.HORM_EVAL);
+		superficialsLabel = new JLabel(TitleConstants.SUPERFICIALS);
+		intermediatesLabel = new JLabel(TitleConstants.INTERMEDIATES);
+		parabasalsLabel = new JLabel(TitleConstants.PARABASALS);
+		superficialValue = new JTextField(4);
+		intermediatesValue = new JTextField(4);
+		parabasalsValue = new JTextField(4);
+		parabasalsValue.setDocument(new CustomDocument(4));
+		superficialValue.setDocument(new CustomDocument(4));
+		intermediatesValue.setDocument(new CustomDocument(4));
 		
 		nilmGroup = new ButtonGroup();
 		nilmGroup.add(organisms);
@@ -618,6 +709,13 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 												 unsatisfactoryDueTo.setText(
 														 value.substring(TitleConstants.UNSATISFACTORY.length() + 1));
 											 }
+											break;
+				case CategoriesConstants.S: superficialValue.setText(value);
+				break;
+				case CategoriesConstants.I: intermediatesValue.setText(value);
+				break;
+				case CategoriesConstants.P: parabasalsValue.setText(value);
+												
 				}
 			}
 		}
@@ -649,6 +747,27 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		others.setEnabled(isEditable);
 		grossDescValue.setEditable(isEditable);
 		microNoteValue.setEditable(isEditable);
+		superficialValue.setEditable(isEditable);
+		intermediatesValue.setEditable(isEditable);
+		parabasalsValue.setEditable(isEditable);
+		if(!isEditable)
+		{
+			superficialsLabel.setForeground(Color.gray);
+			intermediatesLabel.setForeground(Color.gray);
+			parabasalsLabel.setForeground(Color.gray);
+			superficialValue.setForeground(Color.gray);
+			intermediatesValue.setForeground(Color.gray);
+			parabasalsValue.setForeground(Color.gray);
+		}
+		else
+		{
+			superficialsLabel.setForeground(Color.black);
+			intermediatesLabel.setForeground(Color.black);
+			parabasalsLabel.setForeground(Color.black);
+			superficialValue.setForeground(Color.black);
+			intermediatesValue.setForeground(Color.black);
+			parabasalsValue.setForeground(Color.black);
+		}
 		updateButtons();
 	}
 	@Override
@@ -917,6 +1036,13 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 			record.putAttribute(RecordTable.GROSS_DESC, grossDescValue.getText());
 		if(microNoteValue.getText().length() > 0)
 			record.putAttribute(RecordTable.MICRO_NOTE, microNoteValue.getText());
+		
+		if(superficialValue.getText().replaceAll("\\s", "").length() > 0)
+			diagnosisList.add(new Diagnosis(CategoriesConstants.S, superficialValue.getText()));
+		if(intermediatesValue.getText().replaceAll("\\s", "").length() > 0)
+			diagnosisList.add(new Diagnosis(CategoriesConstants.I, intermediatesValue.getText()));
+		if(parabasalsValue.getText().replaceAll("\\s", "").length() > 0)
+			diagnosisList.add(new Diagnosis(CategoriesConstants.P, parabasalsValue.getText()));
 		return record;
 	}
 
