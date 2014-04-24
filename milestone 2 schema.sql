@@ -76,5 +76,9 @@ insert into categories values
 (7, 'Other', 1),
 (8, 'Squamous Cell', 2),
 (9, 'Glandular Cell', 2), 
-(10, 'Specimen Adequacy', null);
+(10, 'Specimen Adequacy', null),
+(11, 'Hormonal Evaluation', null),
+(12, 'Superficials', 11),
+(13, 'Intermediates', 11),
+(14, 'Parabasals', 11);
 
