@@ -1062,7 +1062,7 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 	@Override
 	public void setLoadPatientEnabled(boolean isEnabled) 
 	{
-		overviewPanel.getGynePatientForm().setLoadExisting(isEnabled);
+		overviewPanel.getPatientForm().setLoadExisting(isEnabled);
 	} 
 	
 }

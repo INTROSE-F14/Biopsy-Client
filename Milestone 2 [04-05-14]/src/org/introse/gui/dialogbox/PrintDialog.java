@@ -203,21 +203,20 @@ public class PrintDialog extends JDialog implements ActionListener{
 			}
 			String number = (char)record.getAttribute(Constants.RecordTable.RECORD_TYPE) + ("" + (int) record.getAttribute(Constants.RecordTable.RECORD_YEAR)) + "-" + refNumber;
 			
-			String room;
-			if(record.getAttribute(Constants.RecordTable.ROOM) == null){
-				room = "N/A";
-			}
-			else{
+			String room = "N/A";
+			if(record.getAttribute(Constants.RecordTable.ROOM) != null)
 				room = (String) record.getAttribute(Constants.RecordTable.ROOM);
-			}
 			
-			String patientName = ((String)((Patient) record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.LAST_NAME)).toUpperCase() + ", " + 
-								 (String)((Patient) record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.FIRST_NAME) + " " +
-								 (String)((Patient) record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.MIDDLE_NAME);
+			Patient patient = (Patient)record.getAttribute(RecordTable.PATIENT);
+			String patientName = ((String)patient.getAttribute(Constants.PatientTable.LAST_NAME)).toUpperCase() + ", " + 
+								 (String)patient.getAttribute(Constants.PatientTable.FIRST_NAME) + " " +
+								 (String)patient.getAttribute(Constants.PatientTable.MIDDLE_NAME);
 								 
-			String age = ((CustomCalendar)((Patient) record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.BIRTHDAY)).getAge() + "";
-			
-			String gender = ((String)((Patient) record.getAttribute(Constants.RecordTable.PATIENT)).getAttribute(Constants.PatientTable.GENDER));
+			String age = "N/A";
+			CustomCalendar bDay = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
+			if(bDay != null)
+					age = bDay.getYearDifference((CustomCalendar)record.getAttribute(RecordTable.DATE_RECEIVED)) + "";
+			String gender = ((String)patient.getAttribute(Constants.PatientTable.GENDER));
 			
 			String specimen;
 			

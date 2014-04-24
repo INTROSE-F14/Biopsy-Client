@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 
 import org.introse.Constants;
 import org.introse.Constants.DictionaryConstants;
+import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.core.CustomCalendar;
@@ -24,7 +25,6 @@ import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
-import org.introse.gui.form.GynePatientForm;
 import org.introse.gui.form.PatientForm;
 import org.introse.gui.window.LoginWindow;
 
@@ -41,11 +41,10 @@ public class RecordOverview extends JPanel
 	private JComboBox<String> specimenValue, physicianValue, pathologistValue;
 	private JTextField roomValue;
 	private JLabel refNumberLabel,  refNumberValue, specimenLabel, physicianLabel, pathologistLabel, dateReceivedLabel,
-	dateCompletedLabel, roomLabel;
+	dateCompletedLabel, roomLabel, ageLabel, ageValue;
 	private DatePicker receivedDate, completedDate;
 	private char recordType;
 	private PatientForm patientForm;
-    private GynePatientForm gPatientForm;
 	private JPanel recordForm;
 	
 	public RecordOverview(char recordType)
@@ -59,7 +58,9 @@ public class RecordOverview extends JPanel
 	private void initializeComponents()
 	{	
 		patientForm = new PatientForm();
-                gPatientForm = new GynePatientForm();
+		if(recordType == RecordConstants.GYNECOLOGY_RECORD)
+			patientForm.setFemaleOnly(true);
+		else patientForm.setFemaleOnly(false);
 		recordForm = new JPanel(new GridBagLayout());
 		recordForm.setBackground(Color.white);
 		refNumberLabel = new JLabel("Internal Reference Number");
@@ -69,11 +70,13 @@ public class RecordOverview extends JPanel
 		dateReceivedLabel = new JLabel("Date Received");
 		dateCompletedLabel = new JLabel("Date Completed");
 		roomLabel = new JLabel("Patient's Room");
+		ageLabel = new JLabel("Patient's Age");
+		ageValue = new JLabel("N/A");
 		refNumberValue= new JLabel();
 		physicianValue= new JComboBox<String>();
 		pathologistValue= new JComboBox<String>();
 		specimenValue = new JComboBox<String>();
-		roomValue = new JTextField(29);
+		roomValue = new JTextField(10);
 
 		refNumberValue.setHorizontalAlignment(JTextField.CENTER);
 		refNumberValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Font.BOLD).deriveFont(Constants.StyleConstants.SUBHEADER));
@@ -82,6 +85,8 @@ public class RecordOverview extends JPanel
 		pathologistValue.setFont(specimenValue.getFont());
 		roomValue.setFont(specimenValue.getFont());
 		roomValue.setHorizontalAlignment(JTextField.CENTER);
+		ageValue.setFont(specimenValue.getFont());
+		ageValue.setHorizontalAlignment(JLabel.CENTER);
 		receivedDate = new DatePicker(50, false);
 		completedDate = new DatePicker(50, false);
 	
@@ -109,30 +114,40 @@ public class RecordOverview extends JPanel
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		int y = 0;
+		c.weightx = 1.0;
 		c.gridwidth = 1;
 		c.gridy = y;
+		c.gridx = 0;
+		c.insets = new Insets(0,0,0,15);
+		recordForm.add(ageValue, c);
+		c.gridx = 1;
 		c.insets = new Insets(0,0,0,35);
 		recordForm.add(roomValue, c);
-		c.gridx = 1;
+		c.gridwidth = 2;
+		c.gridx = 2;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
 		recordForm.add(specimenValue, c);
+		c.gridwidth = 1;
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = y;
-		c.weightx = 0.0;
+		c.insets = new Insets(0,0,10,10);
+		recordForm.add(ageLabel, c);
+		c.gridx = 1;
 		c.insets = new Insets(0,0,10,35);
 		recordForm.add(roomLabel, c);
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
 		recordForm.add(specimenLabel, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridx = 0;
 		c.gridy = y;
+		c.gridwidth = 2;
 		c.insets = new Insets(0,0,0,35);
 		recordForm.add(pathologistValue, c);
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
 		recordForm.add(physicianValue, c);
@@ -141,7 +156,7 @@ public class RecordOverview extends JPanel
 		c.gridy = y;
 		c.insets = new Insets(0,0,10,35);
 		recordForm.add(pathologistLabel, c);
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
 		recordForm.add(physicianLabel, c);
@@ -150,7 +165,7 @@ public class RecordOverview extends JPanel
 		c.gridx = 0;
 		c.insets = new Insets(0,0,0,35);
 		recordForm.add(receivedDate, c);
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,0,0);
 		recordForm.add(completedDate, c);
@@ -159,7 +174,7 @@ public class RecordOverview extends JPanel
 		c.gridx = 0;
 		c.insets = new Insets(0,0,10,35);
 		recordForm.add(dateReceivedLabel, c);
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
 		recordForm.add(dateCompletedLabel, c);
@@ -184,10 +199,7 @@ public class RecordOverview extends JPanel
 		c.gridx = 0;
 		c.gridy = y++;
 		c.insets = new Insets(0,0,10,0);
-                if(recordType == 'H' || recordType == 'C'){
-                    add(patientForm, c);
-                }
-                else add(gPatientForm, c);
+		add(patientForm, c);
 		c.anchor = GridBagConstraints.NORTHEAST;
 		c.gridx = 0;
 		c.gridy = y;
@@ -249,10 +261,16 @@ public class RecordOverview extends JPanel
 	
 	public void setPatientFields(Patient patient)
 	{
-		if(recordType == 'H' || recordType == 'C'){
-                    patientForm.setFields(patient);
-                }
-                else gPatientForm.setFields(patient);
+		patientForm.setFields(patient);
+		
+		CustomCalendar dateReceived = new CustomCalendar();
+		int dayReceived = receivedDate.getDay();
+		int monthReceived = receivedDate.getMonth();
+		int yearReceived = receivedDate.getYear();
+		dateReceived.set(monthReceived, dayReceived, yearReceived);
+		CustomCalendar bDay = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
+		if(bDay != null)
+			ageValue.setText(bDay.getYearDifference(dateReceived)+"");
 	}
 	
 	public void setRecordEditable(boolean isEditable)
@@ -267,33 +285,33 @@ public class RecordOverview extends JPanel
 	
 	public void setPatientEditable(boolean isEditable)
 	{
-		if(recordType == 'H' || recordType == 'C')
-                {
-                    patientForm.setViewOnly(!isEditable);
-                }
-                else gPatientForm.setViewOnly(!isEditable);
+		patientForm.setViewOnly(!isEditable);
 	}
 	
 	public boolean areFieldsValid()
 	{
 		boolean isValid = true;
 		JTextField defaultTextField = new JTextField();
-		if(((String)specimenValue.getSelectedItem()) == null || 
-				((String)specimenValue.getSelectedItem()).length() > DictionaryConstants.WORD_LENGTH)
+		JTextField specimenField = (JTextField)specimenValue.getEditor().getEditorComponent();
+		JTextField pathologistField = (JTextField)pathologistValue.getEditor().getEditorComponent();
+		JTextField physicianField =  (JTextField)physicianValue.getEditor().getEditorComponent();
+		if(specimenField.getText().length() < 1 || 
+				specimenField.getText().length() > DictionaryConstants.WORD_LENGTH)
 		{
+			System.out.println(specimenValue.getSelectedItem());
 			specimenValue.setBorder(BorderFactory.createLineBorder(Color.red));
 			isValid = false;
 		}
 		else specimenValue.setBorder(defaultTextField.getBorder());
-		if(((String)physicianValue.getSelectedItem()) == null || 
-				((String)physicianValue.getSelectedItem()).length() > DictionaryConstants.WORD_LENGTH)
+		if(physicianField.getText().length() < 1 || 
+				physicianField.getText().length() > DictionaryConstants.WORD_LENGTH)
 		{
 			physicianValue.setBorder(BorderFactory.createLineBorder(Color.red));
 			isValid = false;
 		}
 		else physicianValue.setBorder(defaultTextField.getBorder());
-		if(((String)pathologistValue.getSelectedItem()) == null ||
-				((String)pathologistValue.getSelectedItem()).length() > DictionaryConstants.WORD_LENGTH)
+		if(pathologistField.getText().length() < 1 ||
+				pathologistField.getText().length() > DictionaryConstants.WORD_LENGTH)
 		{
 			pathologistValue.setBorder(BorderFactory.createLineBorder(Color.red));
 			isValid = false;
@@ -315,18 +333,9 @@ public class RecordOverview extends JPanel
 		cDate.set(cYear, cMonth, cDay);
 		
 		int pYear, pMonth, pDay;
-                if(recordType == 'H' || recordType == 'C')
-                {
-                    pYear = patientForm.returnYear();
-                    pMonth = patientForm.returnMonth();
-                    pDay = patientForm.returnDay();
-                }
-                else
-                {
-                    pYear = gPatientForm.returnYear();
-                    pMonth = gPatientForm.returnMonth();
-                    pDay = gPatientForm.returnDay();
-                }
+		pYear = patientForm.returnYear();
+        pMonth = patientForm.returnMonth();
+        pDay = patientForm.returnDay();
 		Calendar pDate = Calendar.getInstance();
 		pDate.clear();
 		pDate.set(pYear, pMonth, pDay);
@@ -344,10 +353,8 @@ public class RecordOverview extends JPanel
 		}
 		else receivedDate.setBorder(null);
 		
-		if(!patientForm.areFieldsValid() && (recordType == 'H' || recordType == 'C'))
+		if(!patientForm.areFieldsValid())
 			isValid = false;
-                if(!gPatientForm.areFieldsValid() && recordType == 'G')
-                        isValid = false;
 		return isValid;
 	}
 	
@@ -365,9 +372,12 @@ public class RecordOverview extends JPanel
 			String year = Calendar.getInstance().get(Calendar.YEAR)+"";
 			record.putAttribute(RecordTable.RECORD_YEAR, Integer.parseInt(year.substring(2, 4)));
 		}
-		record.putAttribute(RecordTable.SPECIMEN.toString(), (String)specimenValue.getSelectedItem());
-		record.putAttribute(RecordTable.PATHOLOGIST.toString(), (String)pathologistValue.getSelectedItem());
-		record.putAttribute(RecordTable.PHYSICIAN.toString(), (String)physicianValue.getSelectedItem());
+		JTextField specimenField = (JTextField)specimenValue.getEditor().getEditorComponent();
+		JTextField pathologistField = (JTextField)pathologistValue.getEditor().getEditorComponent();
+		JTextField physicianField =  (JTextField)physicianValue.getEditor().getEditorComponent();
+		record.putAttribute(RecordTable.SPECIMEN.toString(), specimenField.getText());
+		record.putAttribute(RecordTable.PATHOLOGIST.toString(), pathologistField.getText());
+		record.putAttribute(RecordTable.PHYSICIAN.toString(), physicianField.getText());
 		
 		if(roomValue.getText().replaceAll("\\s", "").length() > 0)
 			record.putAttribute(RecordTable.ROOM, roomValue.getText());
@@ -376,7 +386,6 @@ public class RecordOverview extends JPanel
 		int monthReceived = receivedDate.getMonth();
 		int yearReceived = receivedDate.getYear();
 		dateReceived.set(monthReceived, dayReceived, yearReceived);
-		
 		CustomCalendar dateCompleted = new CustomCalendar();
 		int dayCompleted = completedDate.getDay();
 		int monthCompleted = completedDate.getMonth();
@@ -384,39 +393,22 @@ public class RecordOverview extends JPanel
 		dateCompleted.set(monthCompleted, dayCompleted, yearCompleted);
 		record.putAttribute(RecordTable.DATE_RECEIVED.toString(), dateReceived);
 		record.putAttribute(RecordTable.DATE_COMPLETED.toString(), dateCompleted);
-		
-                if(recordType == 'H' || recordType == 'C')
-                {
-                    record.putAttribute(RecordTable.PATIENT, patientForm.getObject());
-                }
-                else record.putAttribute(RecordTable.PATIENT, gPatientForm.getObject());
+		record.putAttribute(RecordTable.PATIENT, patientForm.getObject());
 		return record;
 	}
 	
 	public Patient getPatient()
 	{
-		if(recordType == 'H' || recordType == 'C')
-                {
-                    return (Patient)patientForm.getObject();
-                }
-                else return (Patient)gPatientForm.getObject();
+		return (Patient)patientForm.getObject();
 	}
 	
 	public PatientForm getPatientForm()
 	{
-                return patientForm;
+		return patientForm;
 	}
-        public GynePatientForm getGynePatientForm()
-        {
-                return gPatientForm;
-        }
 	
 	public void addListener(CustomListener listener)
 	{
-		if(recordType == 'H' || recordType == 'C')
-                {
-                    patientForm.addListener(listener);
-                }
-                else gPatientForm.addListener(listener);
+		patientForm.addListener(listener);
 	}
 }

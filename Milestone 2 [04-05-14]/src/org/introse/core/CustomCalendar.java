@@ -54,15 +54,13 @@ public class CustomCalendar
 		this.year = year;
 	}
 	
-	public int getAge(){
-		int age = getCurrentYear() - getYear();  
-		if (getCurrentMonth() < getMonth()) {
-		  age--;  
-		} else if (getCurrentMonth() == getMonth()
-		    && getCurrentMonth() < getMonth()) {
-		  age--;  
-		}
-		return age;
+	public int getYearDifference(CustomCalendar laterDate)
+	{
+		int year = laterDate.getYear() - getYear();
+		if (getMonth() > laterDate.getMonth() ||
+				(getMonth() == laterDate.getMonth() && getDay() > laterDate.getDay())) 
+			year--;  
+		return year;
 	}
 	
 	@Override
@@ -73,7 +71,7 @@ public class CustomCalendar
 	
 	public String toNumericFormat()
 	{
-		String monthfinal = month + "";
+		String monthfinal = (month+1) + "";
 		String dayfinal = day + "";
 		if(month < 10){
 			monthfinal = "0" + monthfinal;

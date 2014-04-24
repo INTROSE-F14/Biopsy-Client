@@ -51,7 +51,7 @@ public class Patient extends ListItem
 				" " + getAttribute(PatientTable.MIDDLE_NAME);
 		String label2 = "";
 		CustomCalendar birthday =  (CustomCalendar)getAttribute(PatientTable.BIRTHDAY);
-		String label3 = "Unset";
+		String label3 = "N/A";
 		if(birthday != null)
 			label3 = birthday.toString();
 		setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));

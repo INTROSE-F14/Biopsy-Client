@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -74,7 +73,7 @@ public class PatientForm extends JPanel
 		_firstNameValue = new JLabel();
 		_middleNameValue = new JLabel();
 		_genderValue = new JLabel();
-		_birthdayValue = new JLabel();
+		_birthdayValue = new JLabel("N/A");
 		
 		editablePanel = new JPanel(new GridBagLayout());
 		editablePanel.setBackground(Color.white);
@@ -219,11 +218,9 @@ public class PatientForm extends JPanel
 		viewOnlyPanel.add(_birthdayLabel, c);
 	}
 	
-	public void setFields(Object object)
+	public void setFields(Patient patient)
 	{
-		Patient patient = (Patient)object;
 		patientID = (int)patient.getAttribute(PatientTable.PATIENT_ID.toString());
-		
 		String lastName = (String)patient.getAttribute(PatientTable.LAST_NAME.toString());
 		String firstName = (String)patient.getAttribute((PatientTable.FIRST_NAME.toString()));
 		String middleName = (String)patient.getAttribute(PatientTable.MIDDLE_NAME.toString());
@@ -250,12 +247,11 @@ public class PatientForm extends JPanel
 			_genderValue.setText(gender);
 		}
 		CustomCalendar birthday = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY.toString());
-		if(birthday!= null)
+		if(birthday != null)
 		{
 			this.birthday.setDate(birthday);
 			_birthdayValue.setText(birthday.toString());
 		}
-		
 		JTextField defaultTextField = new JTextField();
 		lastNameValue.setBorder(defaultTextField.getBorder());
 		firstNameValue.setBorder(defaultTextField.getBorder());
@@ -287,7 +283,7 @@ public class PatientForm extends JPanel
 		patient.putAttribute(PatientTable.FIRST_NAME.toString(), firstNameValue.getText());
 		patient.putAttribute(PatientTable.MIDDLE_NAME.toString(), middleNameValue.getText());
 		patient.putAttribute(PatientTable.GENDER.toString(), (String)genderValue.getSelectedItem());
-		
+		patient.putAttribute(PatientTable.BIRTHDAY, null);
 		CustomCalendar birthDate = new CustomCalendar();
 		int day= birthday.getDay();
 		int month= birthday.getMonth();
@@ -295,9 +291,16 @@ public class PatientForm extends JPanel
 		if(day != -1 && month != -1 && year != -1)
 		{
 			birthDate.set(month, day, year);
-			patient.putAttribute(PatientTable.BIRTHDAY.toString(), birthDate);
+			patient.putAttribute(PatientTable.BIRTHDAY, birthDate);
 		}
 		return patient;
+	}
+	
+	public void setFemaleOnly(boolean isFemaleOnly)
+	{
+		if(isFemaleOnly)
+			genderValue.removeItem("M");
+		else genderValue.addItem("M");
 	}
 
 	public boolean areFieldsValid() 
@@ -341,23 +344,17 @@ public class PatientForm extends JPanel
 	
     public int returnYear()
     {
-        int val = 0;
-        val = birthday.getYear();
-        return val;
+        return birthday.getYear();
     }        
     
     public int returnMonth()
     {
-        int val = 0;
-        val = birthday.getMonth();
-        return val;
+        return birthday.getMonth();
     }
     
     public int returnDay()
     {
-        int val = 0;
-        val = birthday.getDay();
-        return val;
+        return birthday.getDay();
     }
 
 	public void addListener(CustomListener listener)

@@ -620,6 +620,7 @@ public class ProjectDriver
 					final Patient p = ((RecordPanel)detailPanel).getRecordForm().getPatient();
 					DetailPanel rP = (DetailPanel)detailPanel;
 					int patientID = (int)p.getAttribute(PatientTable.PATIENT_ID);
+					System.out.println(patientID+"");
 					if(patientID != -1)
 						r.putAttribute(RecordTable.PATIENT_ID, patientID);
 					else p.putAttribute(PatientTable.PATIENT_ID, null);
@@ -665,8 +666,8 @@ public class ProjectDriver
 					{
 					case Constants.ActionConstants.NEW:  if(patientID == -1)
 														 {
-															final PatientUpdateWorker worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.ADD);
-															worker.addPropertyChangeListener(new PropertyChangeListener() 
+															final PatientUpdateWorker patientAdder = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.ADD);
+															patientAdder.addPropertyChangeListener(new PropertyChangeListener() 
 															{
 																@Override
 																public void propertyChange(PropertyChangeEvent evt) {
@@ -674,7 +675,8 @@ public class ProjectDriver
 																	{
 																		 try 
 																		 {
-																			int pID = worker.get();
+																			int pID = patientAdder.get();
+																			p.putAttribute(PatientTable.PATIENT_ID, pID);
 																			r.putAttribute(RecordTable.PATIENT_ID, pID);
 																			final RecordUpdateWorker recordWorker = new 
 																					RecordUpdateWorker(recordDao, r, RecordUpdateWorker.ADD);
@@ -704,7 +706,7 @@ public class ProjectDriver
 																	}
 																}
 															});
-															worker.execute();
+															patientAdder.execute();
 														 }
 														 else 
 														 {
@@ -890,6 +892,8 @@ public class ProjectDriver
 	{
 		final LoadingDialog loadingDialog = new LoadingDialog(mainMenu, "Loading", "Loading, please wait");
 		final Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
+		final Patient p = ((RecordPanel)detailPanel).getRecordForm().getPatient();
+		r.putAttribute(RecordTable.PATIENT, p);
 		final DiagnosisRetrieveWorker diagnosisWorker = new DiagnosisRetrieveWorker(diagnosisDao, r);
 		diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
 			

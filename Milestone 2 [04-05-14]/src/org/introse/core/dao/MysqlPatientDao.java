@@ -28,6 +28,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		patient.getAttribute(PatientTable.PATIENT_ID);
 		try 
 		{
+			System.out.println(sql);
 			conn = createConnection();
 			stmt = conn.createStatement();
 			result = stmt.executeQuery(sql);

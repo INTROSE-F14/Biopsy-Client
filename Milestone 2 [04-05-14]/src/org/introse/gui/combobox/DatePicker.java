@@ -93,6 +93,8 @@ public class DatePicker extends JPanel implements ItemListener{
 		int month = date.getMonth();
 		int day = date.getDay();
 		int year = date.getYear();
+		if(hasWildcard)
+			month++;
 		this.day.setSelectedItem(""+day);
 		this.month.setSelectedIndex(month);
 		this.year.setSelectedItem(""+year);
@@ -103,6 +105,8 @@ public class DatePicker extends JPanel implements ItemListener{
 		int month = date.get(Calendar.MONTH);
 		int day = date.get(Calendar.DATE);
 		int year = date.get(Calendar.YEAR);
+		if(hasWildcard)
+			month++;
 		this.day.setSelectedItem(""+day);
 		this.month.setSelectedIndex(month);
 		this.year.setSelectedItem(""+year);
@@ -124,6 +128,8 @@ public class DatePicker extends JPanel implements ItemListener{
 	{
 		if(hasWildcard && month.getSelectedIndex() == 0)
 			return -1;
+		else if(hasWildcard)
+			return month.getSelectedIndex() - 1;
 		return month.getSelectedIndex();
 	}
 	
