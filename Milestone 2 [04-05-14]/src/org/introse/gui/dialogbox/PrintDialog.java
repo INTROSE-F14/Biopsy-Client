@@ -213,9 +213,9 @@ public class PrintDialog extends JDialog implements ActionListener{
 								 (String)patient.getAttribute(Constants.PatientTable.MIDDLE_NAME);
 								 
 			String age = "N/A";
-			CustomCalendar bDay = (CustomCalendar)patient.getAttribute(PatientTable.BIRTHDAY);
+			CustomCalendar bDay = (CustomCalendar)patient.getAttribute(Constants.PatientTable.BIRTHDAY);
 			if(bDay != null)
-					age = bDay.getYearDifference((CustomCalendar)record.getAttribute(RecordTable.DATE_RECEIVED)) + "";
+					age = bDay.getYearDifference((CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED)) + "";
 			String gender = ((String)patient.getAttribute(Constants.PatientTable.GENDER));
 			
 			String specimen;
@@ -379,6 +379,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 		StyleConstants.setUnderline(mas_boldunderline, true);
 		try{
 			String diagnosis = "";
+			String S = "", I = "", P = "";
 			int cat = -1;
 			for(int i=0; i<l_diagnosis.size();i++){
 				int category = l_diagnosis.get(i).getCategory();
@@ -434,7 +435,12 @@ public class PrintDialog extends JDialog implements ActionListener{
 						sd_doc.insertString(sd_doc.getLength(), "\n" + "      [ ] " + Constants.PrintConstants.SATIS, null);
 						sd_doc.insertString(sd_doc.getLength(), "\n" + "      [X] " + value.toUpperCase(), null);
 					}
-								
+				break;
+				case Constants.CategoriesConstants.S: S = value;
+				break;
+				case Constants.CategoriesConstants.I: I = value;
+				break;
+				case Constants.CategoriesConstants.P: P = value;
 				}
 			}
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
@@ -487,11 +493,14 @@ public class PrintDialog extends JDialog implements ActionListener{
 							sd_doc.insertString(sd_doc.getLength(), "\n", null);
 							sd_doc.insertString(sd_doc.getLength(), "\n" + diagnosis, null);
 					}
-		
+		sd_doc.insertString(sd_doc.getLength(), "\n", null);
+		sd_doc.insertString(sd_doc.getLength(), "\n" + Constants.PrintConstants.HE, null);
+		sd_doc.insertString(sd_doc.getLength(), "\n      " + Constants.PrintConstants.HE_S + S + "       " +  Constants.PrintConstants.HE_I + I + "       " +  Constants.PrintConstants.HE_P + P, null);	
 		}
 		catch(Exception e){
 		
 		}
+		
 	}
 	
 	private void addSignature(String pathologistLabel, String pathologist){

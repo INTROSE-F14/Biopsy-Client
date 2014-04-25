@@ -279,6 +279,10 @@ public abstract class Constants
 		public static final String SQUAMOUS = "SQUAMOUS CELL ABNORMALITIES";
 		public static final String GLANDULAR = "GLANDULAR CELL ABNORMALITIES";
 		public static final String OMN = "OTHER MALIGNANT NEOPLASMS";
+		public static final String HE = "HORMONAL EVALUATION: (for vaginal smears only)";
+		public static final String HE_S = "SUPERFICIALS: ";
+		public static final String HE_I = "INTERMEDIATES: ";
+		public static final String HE_P = "PARABASALS: ";
 	}
 
 	public abstract class DictionaryTable
