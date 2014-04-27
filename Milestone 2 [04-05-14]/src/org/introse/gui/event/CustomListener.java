@@ -131,6 +131,10 @@ public class CustomListener implements ActionListener, MouseListener
        case ActionConstants.PRINT: projectDriver.printCurrentForm();
        break;
        case ActionConstants.DELETE: projectDriver.delete(((JButton)e.getSource()).getParent());
+		break;
+       case ActionConstants.CLEAR_PATIENT: projectDriver.clearPatient();
+       break;
+       case ActionConstants.DELETE_CURRENT: projectDriver.deleteCurrentForm();
 		}
 	}
 

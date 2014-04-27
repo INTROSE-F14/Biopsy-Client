@@ -1,14 +1,16 @@
 package org.introse.gui.panel;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 import org.introse.Constants;
 import org.introse.Constants.ActionConstants;
@@ -23,7 +25,7 @@ public class RecordPanel extends DetailPanel
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel topPanel, recordForm, buttonPanel;
-	private JButton editOrSaveButton, printOrCancelButton, backButton;
+	private JButton editOrSaveButton, printOrCancelButton, backButton, deleteButton;
 	private ImageIcon editIcon, printIcon, saveIcon, editIconRollover,
 	printIconRollover, cancelIcon, saveIconRollover, cancelIconRollover;
 	
@@ -39,8 +41,8 @@ public class RecordPanel extends DetailPanel
 	
 	private void initializeComponents()
 	{
-		buttonPanel = new JPanel(new GridLayout(1,2,1,1));
-		buttonPanel.setBackground(Color.LIGHT_GRAY);
+		buttonPanel = new JPanel(new GridBagLayout());
+		buttonPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
 		editIcon = new ImageIcon(getClass().getResource("/res/icons/ic_action_edit.png"));
 		editIconRollover = new ImageIcon(getClass().getResource("/res/icons/ic_action_edit_hover.png"));
 		printIcon = new ImageIcon(getClass().getResource("/res/icons/ic_action_print.png"));
@@ -63,18 +65,32 @@ public class RecordPanel extends DetailPanel
 		
 		editOrSaveButton = new JButton();
 		editOrSaveButton.setFocusable(false);
-		printOrCancelButton = new JButton();
-		printOrCancelButton.setFocusable(false);
 		editOrSaveButton.setBorderPainted(false);
 		editOrSaveButton.setContentAreaFilled(false);
 		editOrSaveButton.setOpaque(true);
+		editOrSaveButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
+		editOrSaveButton.setIconTextGap(7);
+		
+		printOrCancelButton = new JButton();
+		printOrCancelButton.setFocusable(false);
 		printOrCancelButton.setBorderPainted(false);
 		printOrCancelButton.setContentAreaFilled(false);
 		printOrCancelButton.setOpaque(true);
 		printOrCancelButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
-		editOrSaveButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
-		editOrSaveButton.setIconTextGap(7);
 		printOrCancelButton.setIconTextGap(7);
+		
+		deleteButton = new JButton();
+		deleteButton.setFocusable(false);
+		deleteButton.setBorderPainted(false);
+		deleteButton.setContentAreaFilled(false);
+		deleteButton.setOpaque(true);
+		deleteButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
+		deleteButton.setIconTextGap(7);
+		deleteButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_delete2.png")));
+		deleteButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_delete2_hover.png")));
+		deleteButton.setDisabledIcon(new ImageIcon(getClass().
+				   getResource("/res/icons/ic_action_delete2_placeholder.png")));
+		deleteButton.setToolTipText("Delete");
 	}
 	
 	private void layoutComponents()
@@ -83,32 +99,52 @@ public class RecordPanel extends DetailPanel
 		c.anchor = GridBagConstraints.WEST;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.weightx = 0.0;
+		c.weightx = 1.0;
 		c.weighty = 1.0;
 		topPanel.add(backButton, c);
-		c.gridx = 1;
-		c.anchor = GridBagConstraints.SOUTHEAST;
-		c.insets = new Insets(0,0,0,2);
-		c.weightx = 1.0;
-		topPanel.add(buttonPanel, c);
-		
-		buttonPanel.add(editOrSaveButton);
-		buttonPanel.add(printOrCancelButton);
 		
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.NORTHEAST;
-		c.fill = GridBagConstraints.BOTH;
+		c.anchor = GridBagConstraints.NORTH;
+		c.gridy = 0;
+		c.insets = new Insets(20,5,35,0);
+		buttonPanel.add(backButton, c);
+		c.insets = new Insets(0,5,35,0);
+		c.gridy = 1;
+		buttonPanel.add(printOrCancelButton, c);
+		c.gridy = 2;
+		c.insets = new Insets(0,5,35,0);
+		buttonPanel.add(editOrSaveButton, c);
+		c.gridy = 3;
+		c.weighty = 1.0;
+		buttonPanel.add(deleteButton, c);
+		
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.fill = GridBagConstraints.NONE;
 		c.weightx = 1.0;
 		c.weighty = 0.0;
 		c.gridx = 0;
 		c.gridy = 0;
 		add(topPanel, c);
+		c.fill = GridBagConstraints.BOTH;
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = 1;
 		c.gridwidth = 5;
 		c.gridheight = 2;
 		c.weighty = 1.0;
 		add(recordForm, c);
+		c.fill = GridBagConstraints.VERTICAL;
+		c.anchor = GridBagConstraints.NORTH;
+		JSeparator divider = new JSeparator(SwingConstants.VERTICAL);
+		divider.setPreferredSize(new Dimension(1, 1));
+		divider.setBackground(Color.LIGHT_GRAY);
+		c.gridy = 0;
+		c.gridheight = 3;
+		c.weightx = 0.0;
+		c.gridx = 1;
+		add(divider, c);
+		c.gridx = 2;
+		add(buttonPanel, c);
 	}
 	
 	public void addListener(CustomListener listener)
@@ -117,6 +153,8 @@ public class RecordPanel extends DetailPanel
 		printOrCancelButton.addActionListener(listener);
 		backButton.addActionListener(listener);
 		backButton.setActionCommand(ActionConstants.BACK);
+		deleteButton.addActionListener(listener);
+		deleteButton.setActionCommand(ActionConstants.DELETE_CURRENT);
 		((RecordForm)recordForm).addListener(listener);
 	}
 	
@@ -135,6 +173,9 @@ public class RecordPanel extends DetailPanel
 			 		   printOrCancelButton.setIcon(printIcon);
 			 		   editOrSaveButton.setRolloverIcon(editIconRollover);
 			 		   printOrCancelButton.setRolloverIcon(printIconRollover);
+			 		  editOrSaveButton.setToolTipText("Edit");
+			 		   printOrCancelButton.setToolTipText("Print");
+			 		  deleteButton.setEnabled(true);
 			 		   break;
 			case Constants.ActionConstants.EDIT: 
 					   editOrSaveButton.setActionCommand(Constants.ActionConstants.SAVE);
@@ -146,6 +187,9 @@ public class RecordPanel extends DetailPanel
 					   editOrSaveButton.setRolloverIcon(saveIconRollover);
 						printOrCancelButton.setIcon(cancelIcon);
 						printOrCancelButton.setRolloverIcon(cancelIconRollover);
+						editOrSaveButton.setToolTipText("Save");
+				 	    printOrCancelButton.setToolTipText("Cancel");
+				 	   deleteButton.setEnabled(false);
 					   break;
 			case Constants.ActionConstants.NEW:  
 					   editOrSaveButton.setActionCommand(Constants.ActionConstants.SAVE);
@@ -157,7 +201,10 @@ public class RecordPanel extends DetailPanel
 			   		   printOrCancelButton.setIcon(cancelIcon);
 			   		   editOrSaveButton.setRolloverIcon(saveIconRollover);
 			   		   printOrCancelButton.setRolloverIcon(cancelIconRollover);
-			   		   break;
+			   		   editOrSaveButton.setToolTipText("Save");
+			 		   printOrCancelButton.setToolTipText("Cancel");
+			 		   deleteButton.setEnabled(false);
+			 		   break;
 		}
 	}
 

@@ -7,6 +7,8 @@ import java.awt.Insets;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants.StyleConstants;
@@ -33,7 +35,6 @@ public class MainMenu extends JFrame{
 	{
 		super(Preferences.PROGRAM_NAME);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setIconImage(LoginWindow.PROGRAM_ICON);
 		mainPanel = new JPanel(new GridBagLayout());
 		mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -67,6 +68,7 @@ public class MainMenu extends JFrame{
 	{
 		pack();
 		setMinimumSize(new Dimension(getWidth(), getHeight()));
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setVisible(true);
 	}
 	
@@ -78,8 +80,16 @@ public class MainMenu extends JFrame{
 		c.weighty = 1.0;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.insets = new Insets(100,20,20,50);
+		c.insets = new Insets(100,20,20,20);
 		mainPanel.add(navigationPanel, c);
+/*		
+		JSeparator divider = new JSeparator(SwingConstants.VERTICAL);
+		divider.setBackground(Color.LIGHT_GRAY);
+		divider.setPreferredSize(new Dimension(1,20));
+		c.gridx = 1;
+		c.fill = GridBagConstraints.VERTICAL;
+		c.insets = new Insets(0,0,20,20);
+		mainPanel.add(divider,c);*/
 	}
 	
 	private void createContentPanel()
@@ -92,7 +102,7 @@ public class MainMenu extends JFrame{
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
-		c.gridx = 1;
+		c.gridx = 2;
 		c.gridy = 0;
 		mainPanel.add(contentPanel, c);
 	}

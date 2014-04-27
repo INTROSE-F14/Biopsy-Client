@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.introse.Constants;
+import org.introse.Constants.ActionConstants;
 import org.introse.Constants.PatientConstants;
 import org.introse.Constants.PatientTable;
 import org.introse.core.CustomCalendar;
@@ -33,14 +34,14 @@ public class PatientForm extends JPanel
 	private JTextField lastNameValue, firstNameValue, middleNameValue;
 	private JComboBox<String> genderValue;
 	private JLabel _lastNameValue, _firstNameValue,_middleNameValue, _genderValue, _birthdayValue;
-	private JButton loadExisting;
+	private JButton loadExisting, clearPatient;
 	
 	private JLabel lastNameLabel, firstNameLabel, middleNameLabel, genderLabel, birthdayLabel;
 	private JLabel _lastNameLabel, _firstNameLabel, _middleNameLabel, _genderLabel, _birthdayLabel;
 	
 	private DatePicker birthday;
 	private JPanel viewOnlyPanel, editablePanel;
-
+	private boolean isLoadable;
 	private int patientID;
 	
 	public PatientForm()
@@ -56,6 +57,7 @@ public class PatientForm extends JPanel
 	
 	public void setLoadExisting(boolean isLoadable)
 	{
+		this.isLoadable = isLoadable;
 		loadExisting.setVisible(isLoadable);
 		loadExisting.setBorderPainted(false);
 		loadExisting.setContentAreaFilled(false);
@@ -63,6 +65,17 @@ public class PatientForm extends JPanel
 		loadExisting.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 		loadExisting.setIcon(new ImageIcon(getClass().getResource("/res/icons/load.png")));
 		loadExisting.setIconTextGap(7);
+	}
+	
+	public void setClearExisting(boolean isClearable)
+	{
+		clearPatient.setVisible(isClearable);
+		clearPatient.setBorderPainted(false);
+		clearPatient.setContentAreaFilled(false);
+		clearPatient.setOpaque(true);
+		clearPatient.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
+		clearPatient.setIcon(new ImageIcon(getClass().getResource("/res/icons/load.png")));
+		clearPatient.setIconTextGap(7);
 	}
 	
 	private void initializeComponents()
@@ -106,7 +119,9 @@ public class PatientForm extends JPanel
 		birthday = new DatePicker(100, true);
 		birthday.setPickerFont(lastNameValue.getFont());
 		loadExisting = new JButton("Load Existing Patient");
+		clearPatient = new JButton("Clear Patient Fields");
 		loadExisting.setVisible(false);
+		clearPatient.setVisible(false);
 		
 		_lastNameValue.setFont(LoginWindow.PRIMARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
 		_lastNameValue.setHorizontalAlignment(JLabel.CENTER);
@@ -131,13 +146,13 @@ public class PatientForm extends JPanel
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridx = 0;
 		c.gridy = 0;
-		c.gridwidth = 1;
+		c.gridwidth = 2;
 		c.insets = new Insets(0, 0, 1, 20);
 		editablePanel.add(lastNameValue, c);
-		c.gridx = 1;
+		c.gridx = 2;
 		c.insets = new Insets(0, 0, 1, 20);
 		editablePanel.add(firstNameValue, c);
-		c.gridx = 2;
+		c.gridx = 4;
 		c.insets = new Insets(0, 0, 1, 0);
 		editablePanel.add(middleNameValue, c);
 		c.fill = GridBagConstraints.NONE;
@@ -145,10 +160,10 @@ public class PatientForm extends JPanel
 		c.gridy = 1;
 		c.insets = new Insets(0, 0, 10, 20);
 		editablePanel.add(lastNameLabel, c);
-		c.gridx = 1;
+		c.gridx = 2;
 		c.insets = new Insets(0, 0, 10,20);
 		editablePanel.add(firstNameLabel, c);
-		c.gridx = 2;
+		c.gridx = 4;
 		c.insets = new Insets(0,0,10,0);
 		editablePanel.add(middleNameLabel, c);
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -156,19 +171,22 @@ public class PatientForm extends JPanel
 		c.gridy = 2;
 		c.insets = new Insets(0,0,1,20);
 		editablePanel.add(genderValue, c);
-		c.gridx = 1;
+		c.gridx = 2;
 		c.insets = new Insets(0,0,1,20);
 		editablePanel.add(birthday, c);
-		c.gridx = 2;
+		c.gridwidth = 1;
+		c.gridx = 4;
 		c.insets = new Insets(0,0,1,0);
 		editablePanel.add(loadExisting, c);
+		c.gridx = 5;
+		editablePanel.add(clearPatient, c);
+		c.gridwidth = 2;
 		c.gridx = 0;
 		c.gridy = 3;
 		c.fill = GridBagConstraints.NONE;
 		c.insets = new Insets(0,0,5,20);
 		editablePanel.add(genderLabel, c);
-		c.gridx = 1;
-		c.gridwidth = 1;
+		c.gridx = 2;
 		c.insets = new Insets(0,0,5,20);
 		editablePanel.add(birthdayLabel, c);
 		
@@ -256,6 +274,9 @@ public class PatientForm extends JPanel
 		lastNameValue.setBorder(defaultTextField.getBorder());
 		firstNameValue.setBorder(defaultTextField.getBorder());
 		middleNameValue.setBorder(defaultTextField.getBorder());
+		
+		if(isLoadable)
+			setFieldsEditable(false);
 	}
 	
 	public void setViewOnly(boolean isViewOnly)
@@ -300,7 +321,6 @@ public class PatientForm extends JPanel
 	{
 		if(isFemaleOnly)
 			genderValue.removeItem("M");
-		else genderValue.addItem("M");
 	}
 
 	public boolean areFieldsValid() 
@@ -362,5 +382,28 @@ public class PatientForm extends JPanel
 		loadExisting.addActionListener(listener);
 		loadExisting.setActionCommand(Constants.ActionConstants.LOAD_PATIENT);
 		loadExisting.addMouseListener(listener);
+		clearPatient.addActionListener(listener);
+		clearPatient.setActionCommand(ActionConstants.CLEAR_PATIENT);
+		clearPatient.addMouseListener(listener);
+	}
+	
+	public void clearPatient()
+	{
+		patientID = -1;
+		lastNameValue.setText("");
+		firstNameValue.setText("");
+		middleNameValue.setText("");
+		genderValue.setSelectedIndex(0);
+		birthday.reset();
+		setFieldsEditable(true);
+	}
+	
+	private void setFieldsEditable(boolean isEditable)
+	{
+		lastNameValue.setEditable(isEditable);
+		firstNameValue.setEditable(isEditable);
+		middleNameValue.setEditable(isEditable);
+		genderValue.setEnabled(isEditable);
+		this.birthday.setEnabled(isEditable);
 	}
 }

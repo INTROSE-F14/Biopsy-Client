@@ -15,4 +15,5 @@ public interface RecordForm
 	public void setFields(Record record, Patient patient);
 	public void addListener(CustomListener listener);
 	public void setLoadPatientEnabled(boolean isEnabled);
+	public PatientForm getPatientForm();
 }

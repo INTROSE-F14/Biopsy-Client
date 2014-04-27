@@ -136,6 +136,8 @@ public abstract class Constants
 	
 	public abstract class ActionConstants
 	{
+		public static final String DELETE_CURRENT ="delete current";
+		public static final String CLEAR_PATIENT = "Clear Patient";
 		public static final String DELETE = "Delete";
 		public static final String ADD_WORD = "Add word";
 		public static final String SELECT_EXPORT = "Select export";

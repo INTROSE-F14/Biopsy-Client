@@ -1515,4 +1515,153 @@ public class ProjectDriver
 			dialog.showGui();
 		}
 	}
+	
+	public void clearPatient()
+	{
+		if(detailPanel instanceof RecordPanel)
+		{
+			RecordPanel rp = (RecordPanel)detailPanel;
+			rp.getRecordForm().getPatientForm().clearPatient();
+		}
+	}
+	
+	public void deleteCurrentForm()
+	{
+		final LoadingDialog loadingDialog = new LoadingDialog(mainMenu, "Loading", "Deleting selected item, please wait");
+		PopupDialog dialog = null;
+		if(detailPanel instanceof RecordPanel)
+		{
+			final Record r = (Record) detailPanel.getObject();
+			dialog = new PopupDialog(mainMenu, "Confirm delete",
+					TitleConstants.CONFIRM_DELETE_RECORD, "Yes", "No");
+			dialog.addPropertyChangeListener(new PropertyChangeListener() {
+				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if(evt.getPropertyName().equals("POSITIVE"))
+					{
+						final DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, r);
+						diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
+							
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) {
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									final RecordUpdateWorker recordDeleter = new 
+											RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
+									recordDeleter.addPropertyChangeListener(new PropertyChangeListener() 
+									{	
+										@Override
+										public void propertyChange(PropertyChangeEvent evt) 
+										{
+											if(evt.getPropertyName().equals("DONE"))
+											{
+												loadingDialog.dispose();
+												changeView(getPreviousView());
+											}
+										}
+									});
+									recordDeleter.execute();
+								}
+							}
+						});
+						diagnosisWorker.execute();
+						loadingDialog.showGui();
+					}
+					
+				}
+			});
+			dialog.showGui();
+		}
+		else if(detailPanel instanceof PatientPanel)
+		{
+			final Patient p = (Patient)detailPanel.getObject();
+			dialog= new PopupDialog(mainMenu, "Confirm delete", 
+					TitleConstants.CONFIRM_DELETE_PATIENT,
+					"Yes","No");
+			dialog.addPropertyChangeListener(new PropertyChangeListener() 
+			{	
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) 
+				{
+					if(evt.getPropertyName().equals("POSITIVE"))
+					{
+						final Record r = new Record();
+						final int patientId =  (int)p.getAttribute(PatientTable.PATIENT_ID);
+						r.putAttribute(RecordTable.PATIENT_ID,patientId);
+						final RecordRetrieveWorker countGetter = new RecordRetrieveWorker(recordDao, r, RecordRetrieveWorker.GET_COUNT);
+						countGetter.addPropertyChangeListener(new PropertyChangeListener() 
+						{	
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) 
+							{
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									
+									final RecordRetrieveWorker recordSearcher = new RecordRetrieveWorker(recordDao,r, RecordRetrieveWorker.SEARCH);
+									recordSearcher.addPropertyChangeListener(new PropertyChangeListener() 
+									{							
+										@Override
+										public void propertyChange(PropertyChangeEvent evt) 
+										{
+											if(evt.getPropertyName().equals("DONE"))
+											{
+												List<Record> records;
+												try 
+												{
+													records = (List<Record>)recordSearcher.get();
+													Iterator<Record> i = records.iterator();
+													while(i.hasNext())
+													{
+														Record curRecord = i.next();
+														DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, curRecord);
+														diagnosisWorker.execute();
+													}
+													final RecordUpdateWorker recordDeleter = new 
+															RecordUpdateWorker(recordDao, r, RecordUpdateWorker.DELETE);
+													recordDeleter.addPropertyChangeListener(new PropertyChangeListener() 
+													{	
+														@Override
+														public void propertyChange(PropertyChangeEvent evt) 
+														{
+															if(evt.getPropertyName().equals("DONE"))
+															{
+																PatientUpdateWorker patientDeleter = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.DELETE);
+																patientDeleter.addPropertyChangeListener(new PropertyChangeListener() {
+																	
+																	@Override
+																	public void propertyChange(PropertyChangeEvent evt) {
+																		if(evt.getPropertyName().equals("DONE"))
+																		{
+																			loadingDialog.dispose();
+																			changeView(getPreviousView());
+																		}
+																		
+																	}
+																});
+																patientDeleter.execute();	
+															}
+														}
+													});
+													recordDeleter.execute();
+													
+												} catch (InterruptedException
+														| ExecutionException e) 
+												{e.printStackTrace();}
+											}
+											
+										}
+									});
+									recordSearcher.execute();
+								}
+							}
+						});
+						countGetter.execute();
+						loadingDialog.showGui();
+					}
+				}
+			});
+			dialog.showGui();
+		}
+	}
 }

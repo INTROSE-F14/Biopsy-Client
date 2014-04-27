@@ -281,6 +281,9 @@ public class RecordOverview extends JPanel
 		physicianValue.setEnabled(isEditable);
 		pathologistValue.setEnabled(isEditable);
 		roomValue.setEditable(isEditable);
+		
+		if(isEditable)
+			completedDate.setDate(Calendar.getInstance());
 	}
 	
 	public void setPatientEditable(boolean isEditable)

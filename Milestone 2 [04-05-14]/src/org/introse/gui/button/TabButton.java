@@ -6,6 +6,7 @@ import java.awt.Insets;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import org.introse.Constants;
 import org.introse.gui.window.LoginWindow;
@@ -37,7 +38,7 @@ public class TabButton extends JPanel{
 		title.setOpaque(true);
 		title.setBackground(getBackground());
 		title.setFont(LoginWindow.SECONDARY_FONT.deriveFont(Constants.StyleConstants.SUBHEADER));
-		
+		title.setHorizontalAlignment(SwingConstants.CENTER);
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;

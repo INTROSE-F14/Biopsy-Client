@@ -199,6 +199,7 @@ public class PopupDialog extends JDialog implements ActionListener, MouseListene
 		y -= getHeight() / 2;
 		setLocation(x, y);
 		setVisible(true);
+		toFront();
 	}
 
 	@Override

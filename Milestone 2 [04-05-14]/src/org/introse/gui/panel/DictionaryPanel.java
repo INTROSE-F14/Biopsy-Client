@@ -2,9 +2,9 @@ package org.introse.gui.panel;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -14,9 +14,9 @@ import java.awt.event.KeyListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 
 import org.introse.Constants.ActionConstants;
 import org.introse.Constants.DictionaryConstants;
@@ -53,17 +53,14 @@ public class DictionaryPanel extends JPanel implements FocusListener
 	
 	private void initUI()
 	{
-		buttonPanel = new JPanel(new GridLayout(1,3,1,0));
-		buttonPanel.setBackground(Color.LIGHT_GRAY);
+		buttonPanel = new JPanel(new GridBagLayout());
+		buttonPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
 		pathologistButton = new TabButton(StyleConstants.PRIMARY_COLOR, StyleConstants.SECONDARY_COLOR, 
 				TitleConstants.PATHOLOGISTS, true);
 		physicianButton = new TabButton(StyleConstants.PRIMARY_COLOR, StyleConstants.SECONDARY_COLOR,
 				TitleConstants.PHYSICIANS, false);
 		specimenButton = new TabButton(StyleConstants.PRIMARY_COLOR, StyleConstants.SECONDARY_COLOR,
 				TitleConstants.SPECIMENS, false);
-		pathologistButton.setBorder(new EmptyBorder(0,15,0,15));
-		physicianButton.setBorder(new EmptyBorder(0,15,0,15));
-		specimenButton.setBorder(new EmptyBorder(0,15,0,15));
 		pathologistButton.setName(TitleConstants.PATHOLOGISTS);
 		physicianButton.setName(TitleConstants.PHYSICIANS);
 		specimenButton.setName(TitleConstants.SPECIMENS);
@@ -111,7 +108,7 @@ public class DictionaryPanel extends JPanel implements FocusListener
 	{
 		int y = 0;
 		GridBagConstraints c= new GridBagConstraints();
-		c.anchor = GridBagConstraints.LINE_START;
+		c.anchor = GridBagConstraints.WEST;
 		c.fill = GridBagConstraints.NONE;
 		c.gridx = 0;
 		c.gridy = y;
@@ -124,20 +121,43 @@ public class DictionaryPanel extends JPanel implements FocusListener
 		c.weightx = 1.0;
 		c.insets = new Insets(0,0,10,0);
 		topPanel.add(addButton, c);
-		c.anchor = GridBagConstraints.CENTER;
 		c.weightx = 1.0;	
 		c.gridx = 0;
 		c.gridwidth = 3;
 		c.gridy = y;
-		c.insets = new Insets(0,0,10,0);
+		c.insets = new Insets(0,0,0,0);
 		topPanel.add(buttonPanel, c);
 		
 		cardPanel.add(TitleConstants.PATHOLOGISTS, pathologistPanel);
 		cardPanel.add(TitleConstants.PHYSICIANS, physicianPanel);
 		cardPanel.add(TitleConstants.SPECIMENS, specimenPanel);
-		buttonPanel.add(pathologistButton);
-		buttonPanel.add(physicianButton);
-		buttonPanel.add(specimenButton);
+		
+		y = 0;
+		c = new GridBagConstraints();
+		c.anchor = GridBagConstraints.CENTER;
+		c.weighty = 1.0;
+		c.fill = GridBagConstraints.NONE;
+		c.gridx = 0;
+		c.gridy = y;
+		c.ipadx = 15;
+		buttonPanel.add(pathologistButton, c);
+		JSeparator divider1 = new JSeparator(SwingConstants.VERTICAL);
+		divider1.setPreferredSize(new Dimension(1,20));
+		c.gridx = 1;
+		c.ipadx = 0;
+		buttonPanel.add(divider1, c);
+		c.gridx = 2;
+		c.ipadx = 20;
+		buttonPanel.add(physicianButton, c);
+		JSeparator divider2 = new JSeparator(SwingConstants.VERTICAL);
+		divider2.setPreferredSize(divider1.getPreferredSize());
+		c.gridx = 3;
+		c.ipadx = 0;
+		buttonPanel.add(divider2, c);
+		c.gridx = 4;
+		c.ipadx = 15;
+		c.insets = new Insets(0,0,0,0);
+		buttonPanel.add(specimenButton, c);
 		
 		y = 0;
 		c = new GridBagConstraints();
@@ -146,6 +166,14 @@ public class DictionaryPanel extends JPanel implements FocusListener
 		c.weightx = 1.0;
 		c.gridy = y++;
 		add(topPanel, c);
+		
+		JSeparator divider = new JSeparator(SwingConstants.HORIZONTAL);
+		divider.setPreferredSize(new Dimension(20, 1));
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,15,0);
+		add(divider, c);
+		
 		c.fill = GridBagConstraints.BOTH;
 		c.gridy = y;
 		c.weighty = 1.0;
