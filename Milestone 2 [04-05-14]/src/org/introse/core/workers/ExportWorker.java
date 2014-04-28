@@ -8,25 +8,34 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
-import org.introse.Constants;
 import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordTable;
-import org.introse.core.HealthData;
-import org.introse.core.dao.MysqlHealthDataDao;
+import org.introse.Constants.ResultCategoriesConstants;
+import org.introse.core.CustomCalendar;
+import org.introse.core.Patient;
+import org.introse.core.Record;
+import org.introse.core.Result;
+import org.introse.core.dao.PatientDao;
+import org.introse.core.dao.RecordDao;
+import org.introse.core.dao.ResultDao;
 import org.introse.gui.panel.ExportPanel;
 
 public class ExportWorker extends SwingWorker<Void, String> 
 {
-	private MysqlHealthDataDao healthDataDao;
 	private File exportFile;
 	private ExportPanel exportPanel;
 	private int recordCount;
+	private RecordDao recordDao;
+	private PatientDao patientDao;
+	private ResultDao resultDao;
 	
-	public ExportWorker(File exportFile, ExportPanel exportPanel)
+	public ExportWorker(File exportFile, ExportPanel exportPanel, RecordDao recordDao, PatientDao patientDao, ResultDao resultDao)
 	{
 		this.exportFile = exportFile;
-		this.healthDataDao = new MysqlHealthDataDao();
 		this.exportPanel = exportPanel;
+		this.recordDao = recordDao;
+		this.patientDao = patientDao;
+		this.resultDao = resultDao;
 	}
 	
 	@Override
@@ -34,63 +43,109 @@ public class ExportWorker extends SwingWorker<Void, String>
 	{
 		setProgress(0);
 		publish("Exporting data:Please wait");
-		healthDataExport();
+		export();
 		setProgress(100);
 		return null;
 	}
 	
-	private void healthDataExport() throws Exception
+	private void export() throws Exception
 	{
-		List<HealthData> hdList = healthDataDao.getData();
+		List<Record> records = recordDao.getAll();
 		PrintWriter writer = null;
-		int total = hdList.size();
+		int total = records.size();
 		try
 		{
 			writer = new PrintWriter(new FileWriter(exportFile, false));
-			writer.println("Patient ID,Last Name,First Name,Middle Name,Birthdate,Gender,Record ID,Pathologist,Physician,"
-					+ "Specimen,Remarks,Room,Gross Description,Microscopic Notes,Date Received,Date Completed,Category ID,Diagnosis");
-			Iterator<HealthData> i = hdList.iterator();
+			writer.println("Last Name, First Name, Middle Name, Birthday, " +
+					"Internal Reference Number,Physician,Pathologist,Specimen Type, Specimen," +
+					"Patient's Room,Patient's Age,Date Received,Date Completed," +
+					"Specimen Adequacy,Hormonal Evaluation,Remarks,Gross Description,Microscopic Notes,Diagnosis");
+			Iterator<Record> i = records.iterator();
 			while(i.hasNext())
 			{
+				Record curRecord = i.next();
+				Patient p = new Patient();
+				p.putAttribute(PatientTable.PATIENT_ID, curRecord.getAttribute(RecordTable.PATIENT_ID));
+				p = patientDao.get(p);
+				String lastName = (String)p.getAttribute(PatientTable.LAST_NAME);
+				String firstName = (String)p.getAttribute(PatientTable.FIRST_NAME);
+				String middleName = (String)p.getAttribute(PatientTable.MIDDLE_NAME);
+				String birthday = "n/a";
+				CustomCalendar bDay = (CustomCalendar)p.getAttribute(PatientTable.BIRTHDAY);
+				if(bDay != null)
+					birthday = bDay.toNumericFormat();
+				String irn = ""+curRecord.getAttribute(RecordTable.RECORD_TYPE)+ 
+						curRecord.getAttribute(RecordTable.RECORD_YEAR) + "-" + 
+						curRecord.getAttribute(RecordTable.RECORD_NUMBER);
+				String physician = (String)curRecord.getAttribute(RecordTable.PHYSICIAN);
+				String pathologist = (String)curRecord.getAttribute(RecordTable.PATHOLOGIST);
+				String specimenType = (String)curRecord.getAttribute(RecordTable.SPEC_TYPE);
+				String specimen = (String)curRecord.getAttribute(RecordTable.SPECIMEN);
+				String room = "n/a";
+				String rm = (String)curRecord.getAttribute(RecordTable.ROOM);
+				if(rm != null)
+					room = rm;
+				CustomCalendar dR = (CustomCalendar)curRecord.getAttribute(RecordTable.DATE_RECEIVED);
+				CustomCalendar dC = (CustomCalendar)curRecord.getAttribute(RecordTable.DATE_COMPLETED);
+				String dateReceived = dR.toNumericFormat();
+				String dateCompleted = dC.toNumericFormat();
+				String age = "n/a";
+				if(bDay != null)
+					age = ""+bDay.getYearDifference(dR);
+				
 				String remarks = "";
+				String microscopicNotes = "";
 				String grossDesc = "";
-				String microNote = "";
-				String room = "";
-				HealthData tempHealthData = i.next();
-				
-				String expStr = tempHealthData.getAttribute(PatientTable.PATIENT_ID.toString()) + "," +
-						tempHealthData.getAttribute(PatientTable.LAST_NAME.toString()) + "," +
-						tempHealthData.getAttribute(PatientTable.FIRST_NAME.toString()) + "," +
-						tempHealthData.getAttribute(PatientTable.MIDDLE_NAME.toString()) + "," + 
-						parseStr(tempHealthData.getAttribute(PatientTable.BIRTHDAY).toString()) + "," +
-						tempHealthData.getAttribute(PatientTable.GENDER.toString()) + "," +
-						tempHealthData.getAttribute(Constants.RecordTable.RECORD_TYPE.toString()) +
-						tempHealthData.getAttribute(Constants.RecordTable.RECORD_YEAR.toString()) + "-" +
-						tempHealthData.getAttribute(RecordTable.RECORD_NUMBER.toString()) + "," +
-						tempHealthData.getAttribute(Constants.RecordTable.PATHOLOGIST.toString())  + "," +
-						tempHealthData.getAttribute(Constants.RecordTable.PHYSICIAN.toString())  + "," +
-						tempHealthData.getAttribute(Constants.RecordTable.SPECIMEN.toString())  + ",";
-				
-				if((remarks = (String)tempHealthData.getAttribute(RecordTable.REMARKS)) != null)
-					remarks = parseStr(remarks);
-				if((room = (String)tempHealthData.getAttribute(RecordTable.ROOM)) != null)
-					room = parseStr(room);
-				if((grossDesc = (String)tempHealthData.getAttribute(RecordTable.GROSS_DESC)) != null)
-					grossDesc = parseStr(grossDesc);
-				if((microNote = (String)tempHealthData.getAttribute(RecordTable.MICRO_NOTE)) != null)
-					microNote = parseStr(microNote);
-
-				expStr = expStr + remarks + "," + room + "," + grossDesc + "," + microNote + "," +
-						parseStr(tempHealthData.getAttribute(RecordTable.DATE_COMPLETED).toString())  + "," +
-						parseStr(tempHealthData.getAttribute(RecordTable.DATE_RECEIVED).toString()) + "," +
-						tempHealthData.getAttribute(Constants.DiagnosisTable.CATEGORY_ID.toString()) + "," +
-						parseStr((String)tempHealthData.getAttribute(Constants.DiagnosisTable.VALUE));
-				writer.println(expStr);
-				System.out.println(expStr);
+				String diagnosis = "";
+				String specimenAdequacy = "n/a";
+				String superficials = "";
+				String intermediates = "";
+				String parabasals = "";
+				String hormonalEvaluation = "";
+				List<Result> results = resultDao.getDiagnosis(curRecord);
+				if(results != null)
+				{
+					Iterator<Result> j = results.iterator();
+					while(j.hasNext())
+					{
+						Result curResult = j.next();
+						int category = curResult.getCategory();
+						String value = curResult.getValue();
+						System.out.println(category + "-" + value);
+						switch(category)
+						{
+						case ResultCategoriesConstants.R: remarks = value;
+						break;
+						case ResultCategoriesConstants.MN: microscopicNotes = value;
+						break;
+						case ResultCategoriesConstants.GD: grossDesc = value;
+						break;
+						case ResultCategoriesConstants.SA: specimenAdequacy = value;
+						break;
+						case ResultCategoriesConstants.S: superficials = "Superficials " + value;
+						break;
+						case ResultCategoriesConstants.I: intermediates = "Intermediates " + value;
+						break;
+						case ResultCategoriesConstants.P: parabasals = "Parabasals "+ value;
+						break;
+						default: diagnosis = value;
+						}
+					}
+					hormonalEvaluation = superficials + " " + intermediates + " " + parabasals;
+					if(hormonalEvaluation.replaceAll("\\s", "").length() < 1)
+						hormonalEvaluation = "n/a";
+				}
+				String row = lastName + ","+firstName+","+middleName+","+birthday+","+
+				irn+","+physician+","+pathologist+","+specimenType+","+specimen+","+room+","+age+","+
+						dateReceived+","+dateCompleted+","+specimenAdequacy+","+hormonalEvaluation+","+
+				remarks+","+grossDesc+","+microscopicNotes+","+diagnosis;
+				writer.println(row);
 				recordCount++;
 				setProgress(recordCount * 100 / total);
 				publish("Exporting data:Please wait");
 			}
+			
+			
 		}
 		catch(Exception e)
 		{

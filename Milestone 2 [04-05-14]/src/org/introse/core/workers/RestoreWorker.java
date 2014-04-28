@@ -11,12 +11,13 @@ import javax.swing.SwingWorker;
 import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
+import org.introse.Constants.ResultsTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
-import org.introse.core.Diagnosis;
+import org.introse.core.Result;
 import org.introse.core.Patient;
 import org.introse.core.Record;
-import org.introse.core.dao.DiagnosisDao;
+import org.introse.core.dao.ResultDao;
 import org.introse.core.dao.DictionaryDao;
 import org.introse.core.dao.PatientDao;
 import org.introse.core.dao.RecordDao;
@@ -26,7 +27,7 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 
 	private RecordDao recordDao;
 	private PatientDao patientDao;
-	private DiagnosisDao diagnosisDao;
+	private ResultDao diagnosisDao;
 	private static final String SEPARATOR = ":::";
 	private File backupFile;
 	private RestorePanel restorePanel;
@@ -34,7 +35,7 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 	private DictionaryDao dictionaryDao;
 	
 	public RestoreWorker(File backupFile, PatientDao patientDao, RecordDao recordDao,
-			DiagnosisDao diagnosisDao, DictionaryDao dictionaryDao, RestorePanel restorePanel)
+			ResultDao diagnosisDao, DictionaryDao dictionaryDao, RestorePanel restorePanel)
 	{
 		this.backupFile = backupFile;
 		this.patientDao = patientDao;
@@ -91,7 +92,7 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 						{
 							currentType = RecordConstants.OTHERS;
 						}
-						else if(curLine.equals(TitleConstants.DIAGNOSIS))
+						else if(curLine.equals(ResultsTable.TABLE_NAME))
 							currentType = RecordConstants.DIAGNOSIS;
 					}
 					else if(curLine.endsWith("$"))
@@ -186,9 +187,6 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 		String specType = curRecord[8];
 		String specimen = curRecord[9];
 		String room = curRecord[10];
-		String remarks = curRecord[11];
-		String gross = curRecord[12];
-		String micro = curRecord[13];
 		
 		Record record = new Record();
 		record.putAttribute(RecordTable.RECORD_TYPE, recordType);
@@ -200,12 +198,6 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 		record.putAttribute(RecordTable.PATHOLOGIST, pathologist);
 		record.putAttribute(RecordTable.PHYSICIAN, physician);
 		
-		if(!remarks.equals("null"))
-			record.putAttribute(RecordTable.REMARKS, remarks);
-		if(!gross.equals("null"))
-			record.putAttribute(RecordTable.GROSS_DESC, gross);
-		if(!micro.equals("null"))
-			record.putAttribute(RecordTable.MICRO_NOTE, micro);
 		if(!room.equals("null"))
 			record.putAttribute(RecordTable.ROOM, room);
 		record.putAttribute(RecordTable.DATE_RECEIVED, dR);
@@ -231,7 +223,7 @@ public class RestoreWorker extends SwingWorker<Void, String> {
 		int recordNumber = Integer.parseInt(curDiagnosis[3]);
 		String value = curDiagnosis[4];
 		
-		Diagnosis diagnosis = new Diagnosis(category, value, recordType, recordYear, recordNumber);
+		Result diagnosis = new Result(category, value, recordType, recordYear, recordNumber);
 		diagnosisDao.add(diagnosis);
 	}
 

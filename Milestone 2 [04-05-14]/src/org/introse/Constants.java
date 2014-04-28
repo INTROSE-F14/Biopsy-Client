@@ -33,11 +33,8 @@ public abstract class Constants
 		public static final int OTHERS = 3;
 		public static final int RECORD = 0;
 		public static final int DIAGNOSIS = 1;
-		public static final int REMARKS_LENGTH = 10000;
 		public static final int ROOM_LENGTH = 15;
-		public static final int DIAGNOSIS_LENGTH = 10000;
-		public static final int GROSS_LENGTH = 10000;
-		public static final int MICRO_LENGTH = 10000;
+		public static final int RESULTS_LENGTH = 10000;
 	}
 	
 	public abstract class PatientConstants
@@ -65,7 +62,6 @@ public abstract class Constants
 		public static final String LIST_PANEL = "List";
 		public static final String LOGIN_WINDOW = "Login - Biopsy Client";
 		public static final String ALL="ALL";
-		public static final String DIAGNOSIS = "Diagnosis";
 		public static final String SEARCH_RECORD = "Search record";
 		public static final String SEARCH_PATIENT = "Search patient";
 		public static final String RECORD_OVERVIEW = "Record Overview";
@@ -178,6 +174,7 @@ public abstract class Constants
 	
 	public abstract class RecordTable
 	{
+		public static final String TABLE_NAME = "records";
 		public static final String PATIENT = "Patient";
 		public static final String RECORD_YEAR = "recordyear";
 		public static final String RECORD_NUMBER = "recordnumber";
@@ -188,16 +185,14 @@ public abstract class Constants
 		public static final String DATE_RECEIVED =  "datereceived";
 		public static final String DATE_COMPLETED = "datecompleted";
 		public static final String SPECIMEN = "specimen";
-		public static final String REMARKS = "remarks";
-		public static final String DIAGNOSIS = "diagnosis";
+		public static final String RESULTS = "results";
 		public static final String ROOM = "room";
 		public static final String SPEC_TYPE = "specimentype";
-		public static final String GROSS_DESC = "grossdescription";
-		public static final String MICRO_NOTE = "microscopicNotes";
 	}
 	
 	public abstract class PatientTable
 	{
+		public static final String TABLE_NAME = "patients";
 		public static final String PATIENT_ID = "patientid";
 		public static final String LAST_NAME = "lastname";
 		public static final String FIRST_NAME = "firstname";
@@ -206,8 +201,9 @@ public abstract class Constants
 		public static final String GENDER = "gender";
 	}
 	
-	public abstract class DiagnosisTable
+	public abstract class ResultsTable
 	{
+		public static final String TABLE_NAME = "Results";
 		public static final String CATEGORY_ID = "category_id";	
 		public static final String RECORD_YEAR = "recordyear";
 		public static final String RECORD_NUMBER = "recordnumber";
@@ -215,29 +211,35 @@ public abstract class Constants
 		public static final String VALUE = "diagnosis_value";
 	}
 	
-	public abstract class CategoriesTable
+	public abstract class ResultCategoriesTable
 	{
+		public static final String TABLE_NAME = "Resultcategories";
 		public static final String CATEGORY_ID = "category_id";
 		public static final String NAME = "category_name";
 		public static final String PARENT_CATEGORY = "parent_category";
 	}
 	
-	public abstract class CategoriesConstants
+	public abstract class ResultCategoriesConstants
 	{
-		public static final int NILM = 1;
-		public static final int ECA = 2;
-		public static final int OMN = 3;
-		public static final int OTHERS = 4;
-		public static final int ORGANISMS = 5;
-		public static final int ONF = 6;
-		public static final int OTHER = 7;
-		public static final int SC = 8;
-		public static final int GC = 9;
-		public static final int SA = 10;
-		public static final int HE = 11;
-		public static final int S = 12;
-		public static final int I = 13;
-		public static final int P = 14;
+		public static final int DIAGNOSIS = 1;
+		public static final int COMMENT = 2;
+		public static final int NILM = 3;
+		public static final int ECA = 4;
+		public static final int OMN = 5;
+		public static final int OTHERS = 6;
+		public static final int ORGANISMS = 7;
+		public static final int ONF = 8;
+		public static final int OTHER_NILM = 9;
+		public static final int SC = 10;
+		public static final int GC = 11;
+		public static final int SA = 12;
+		public static final int HE = 13;
+		public static final int S = 14;
+		public static final int I = 15;
+		public static final int P = 16;
+		public static final int R = 17;
+		public static final int GD = 18;
+		public static final int MN = 19;
 	}
 	
 	public abstract class StatusConstants

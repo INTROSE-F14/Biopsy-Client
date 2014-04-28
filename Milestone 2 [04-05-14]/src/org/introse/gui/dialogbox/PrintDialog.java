@@ -33,11 +33,11 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import org.introse.Constants;
-import org.introse.Constants.CategoriesConstants;
+import org.introse.Constants.ResultCategoriesConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
-import org.introse.core.Diagnosis;
+import org.introse.core.Result;
 import org.introse.core.Patient;
 import org.introse.core.Record;
 import org.introse.core.WrapEditorKit;
@@ -232,7 +232,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 			String dateReceived =  ((CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED)).toNumericFormat();;
 			String dateCompleted = ((CustomCalendar) record.getAttribute(Constants.RecordTable.DATE_COMPLETED)).toNumericFormat();
 			
-			List<Diagnosis> l_diagnosis = (List)record.getAttribute(RecordTable.DIAGNOSIS);
+			List<Result> l_diagnosis = (List)record.getAttribute(RecordTable.RESULTS);
 			
 			String comments = (String) record.getAttribute(Constants.RecordTable.REMARKS);
 			String grossdesc = "";
@@ -347,7 +347,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 	}
 }
 	
-	private void addHistoCytoDiagnosis(List<Diagnosis> l_diagnosis, char type){
+	private void addHistoCytoDiagnosis(List<Result> l_diagnosis, char type){
 		MutableAttributeSet mas_boldunderline = new SimpleAttributeSet();
 		StyleConstants.setBold(mas_boldunderline, true);
 		StyleConstants.setUnderline(mas_boldunderline, true);
@@ -373,7 +373,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 		}
 	}
 	
-	private void addGynecologyDiagnosis(List<Diagnosis> l_diagnosis){
+	private void addGynecologyDiagnosis(List<Result> l_diagnosis){
 		MutableAttributeSet mas_boldunderline = new SimpleAttributeSet();
 		StyleConstants.setBold(mas_boldunderline, true);
 		StyleConstants.setUnderline(mas_boldunderline, true);
@@ -386,20 +386,20 @@ public class PrintDialog extends JDialog implements ActionListener{
 				String value = l_diagnosis.get(i).getValue();
 				
 				switch(category){
-				case Constants.CategoriesConstants.ORGANISMS: 
-				case Constants.CategoriesConstants.ONF:
-				case Constants.CategoriesConstants.OTHER:	
-				case Constants.CategoriesConstants.SC:
-				case Constants.CategoriesConstants.GC: 		
-				case Constants.CategoriesConstants.OMN: 
-					if(category == Constants.CategoriesConstants.ORGANISMS||category == Constants.CategoriesConstants.ONF||category == Constants.CategoriesConstants.OTHER){
+				case Constants.ResultCategoriesConstants.ORGANISMS: 
+				case Constants.ResultCategoriesConstants.ONF:
+				case Constants.ResultCategoriesConstants.OTHER_NILM:	
+				case Constants.ResultCategoriesConstants.SC:
+				case Constants.ResultCategoriesConstants.GC: 		
+				case Constants.ResultCategoriesConstants.OMN: 
+					if(category == Constants.ResultCategoriesConstants.ORGANISMS||category == Constants.ResultCategoriesConstants.ONF||category == Constants.ResultCategoriesConstants.OTHER_NILM){
 						diagnosis = diagnosis + "[X] " + Constants.PrintConstants.NILM;
 						cat = 0;
-						if(category == Constants.CategoriesConstants.ORGANISMS){
+						if(category == Constants.ResultCategoriesConstants.ORGANISMS){
 							diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.ORGANISMS;
 							diagnosis = diagnosis + "\n              -" + value;
 						}
-						else if (category == Constants.CategoriesConstants.ONF){
+						else if (category == Constants.ResultCategoriesConstants.ONF){
 							diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.ONF;
 							diagnosis = diagnosis + "\n              -" + value;
 						}
@@ -408,23 +408,23 @@ public class PrintDialog extends JDialog implements ActionListener{
 							diagnosis = diagnosis + "\n              -" + value;
 						}
 					}
-					else if(category == CategoriesConstants.SC){
+					else if(category == ResultCategoriesConstants.SC){
 						cat = 1;
 						diagnosis = diagnosis + "[X] " + Constants.PrintConstants.SQUAMOUS;
 						diagnosis = diagnosis + "\n              -" + value;
 					}
-					else if(category == CategoriesConstants.GC){
+					else if(category == ResultCategoriesConstants.GC){
 						cat = 2;
 						diagnosis = diagnosis + "[X] " + Constants.PrintConstants.GLANDULAR;
 						diagnosis = diagnosis + "\n              -" + value;
 					}
-					else if(category == CategoriesConstants.OMN){
+					else if(category == ResultCategoriesConstants.OMN){
 						cat = 3;
 						diagnosis = diagnosis + "[X] " + Constants.PrintConstants.OMN;
 						diagnosis = diagnosis + "\n              -" + value;
 					}
 				break;
-				case Constants.CategoriesConstants.SA: 
+				case Constants.ResultCategoriesConstants.SA: 
 					sd_doc.insertString(sd_doc.getLength(),Constants.PrintConstants.SPEC_ADEQ, null);
 					if(value.contains(TitleConstants.SATISFACTORY)){
 						sd_doc.insertString(sd_doc.getLength(), "\n" + "      [X] " + value.toUpperCase(), null);
@@ -436,11 +436,11 @@ public class PrintDialog extends JDialog implements ActionListener{
 						sd_doc.insertString(sd_doc.getLength(), "\n" + "      [X] " + value.toUpperCase(), null);
 					}
 				break;
-				case Constants.CategoriesConstants.S: S = value;
+				case Constants.ResultCategoriesConstants.S: S = value;
 				break;
-				case Constants.CategoriesConstants.I: I = value;
+				case Constants.ResultCategoriesConstants.I: I = value;
 				break;
-				case Constants.CategoriesConstants.P: P = value;
+				case Constants.ResultCategoriesConstants.P: P = value;
 				}
 			}
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);

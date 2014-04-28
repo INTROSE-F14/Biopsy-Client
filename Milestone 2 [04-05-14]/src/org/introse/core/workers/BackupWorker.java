@@ -11,13 +11,14 @@ import javax.swing.SwingWorker;
 
 import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordTable;
+import org.introse.Constants.ResultsTable;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
-import org.introse.core.Diagnosis;
+import org.introse.core.Result;
 import org.introse.core.DictionaryWord;
 import org.introse.core.Patient;
 import org.introse.core.Record;
-import org.introse.core.dao.DiagnosisDao;
+import org.introse.core.dao.ResultDao;
 import org.introse.core.dao.DictionaryDao;
 import org.introse.core.dao.PatientDao;
 import org.introse.core.dao.RecordDao;
@@ -26,7 +27,7 @@ import org.introse.gui.panel.BackupPanel;
 public class BackupWorker extends SwingWorker<Void, String> 
 {
 	private static final String SEPARATOR = ":::";
-	private DiagnosisDao diagnosisDao;
+	private ResultDao diagnosisDao;
 	private RecordDao recordDao;
 	private PatientDao patientDao;
 	private DictionaryDao dictionaryDao;
@@ -34,7 +35,7 @@ public class BackupWorker extends SwingWorker<Void, String>
 	private BackupPanel backupPanel;
 	private int patientCount, recordCount, dictionaryCount;
 	
-	public BackupWorker(DiagnosisDao diagnosisDao, RecordDao recordDao, PatientDao patientDao, 
+	public BackupWorker(ResultDao diagnosisDao, RecordDao recordDao, PatientDao patientDao, 
 			DictionaryDao dictionaryDao, File backupFile, BackupPanel backupPanel)
 	{
 		this.backupFile = backupFile;
@@ -50,7 +51,7 @@ public class BackupWorker extends SwingWorker<Void, String>
 	{
 		List<Patient> patients = patientDao.getAll(0, patientDao.getCount());
 		List<Record> records = recordDao.getAll();
-		List<Diagnosis> diagnosis = diagnosisDao.getAll();
+		List<Result> diagnosis = diagnosisDao.getAll();
 		List<DictionaryWord> dictionary = dictionaryDao.getAll();
 		
 		PrintWriter writer = null;
@@ -105,13 +106,9 @@ public class BackupWorker extends SwingWorker<Void, String>
 				String specType = (String)record.getAttribute(RecordTable.SPEC_TYPE);
 				String specimen = (String)record.getAttribute(RecordTable.SPECIMEN);
 				String room = (String)record.getAttribute(RecordTable.ROOM);
-				String remarks = (String)record.getAttribute(RecordTable.REMARKS);
-				String grossDesc = (String)record.getAttribute(RecordTable.GROSS_DESC);
-				String microNote = (String)record.getAttribute(RecordTable.MICRO_NOTE);
 				writer.println(patientId + SEPARATOR + recordType + SEPARATOR + recordYear + SEPARATOR + recordNumber + 
 						SEPARATOR+physician + SEPARATOR + pathologist + SEPARATOR+ dateReceived + SEPARATOR + dateCompleted + 
-						SEPARATOR + specType + SEPARATOR+ specimen + SEPARATOR + room + SEPARATOR + remarks + SEPARATOR+grossDesc + 
-						SEPARATOR + microNote + "$");
+						SEPARATOR + specType + SEPARATOR+ specimen + SEPARATOR + room + "$");
 				recordCount++;
 				setProgress(recordCount * 100 / recordSize);
 				publish("Step 2/4:Backing up records");
@@ -120,13 +117,13 @@ public class BackupWorker extends SwingWorker<Void, String>
 			int completedDiagnosis = 0;
 			int diagnosisSize = diagnosis.size();
 			setProgress(0);
-			publish("Step 3/4: Backing up diagnosis'");
+			publish("Step 3/4: Backing up record results'");
 			writer.println();
-			writer.println("#" + TitleConstants.DIAGNOSIS + "#");
-			Iterator<Diagnosis> diagnosisIterator = diagnosis.iterator();
+			writer.println("#" + ResultsTable.TABLE_NAME + "#");
+			Iterator<Result> diagnosisIterator = diagnosis.iterator();
 			while(diagnosisIterator.hasNext())
 			{
-				Diagnosis curDiagnosis = diagnosisIterator.next();
+				Result curDiagnosis = diagnosisIterator.next();
 				int category = curDiagnosis.getCategory();
 				int number = curDiagnosis.getRecordNumber();
 				char type = curDiagnosis.getRecordType();

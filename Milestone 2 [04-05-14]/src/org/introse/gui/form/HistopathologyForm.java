@@ -1,25 +1,35 @@
 package org.introse.gui.form;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import org.introse.Constants;
-import org.introse.Constants.CategoriesConstants;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
+import org.introse.Constants.ResultCategoriesConstants;
+import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomDocument;
-import org.introse.core.Diagnosis;
+import org.introse.core.Result;
 import org.introse.core.Patient;
 import org.introse.core.Preferences;
 import org.introse.core.Record;
@@ -27,18 +37,21 @@ import org.introse.gui.event.CustomListener;
 import org.introse.gui.panel.RecordOverview;
 import org.introse.gui.window.LoginWindow;
 
-public class HistopathologyForm extends JPanel implements RecordForm
+public class HistopathologyForm extends JPanel implements RecordForm, ActionListener
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel findingsPanel;
+	private JPanel findings1Panel, findings2Panel, cardPanel, bottomPanel;
 	private JTextArea diagnosisValue, remarksValue, grossDescValue, microNoteValue;
 	private JScrollPane diagnosisScroller, remarksScroller, grossDescScroller, 
 	microNoteScroller;
-	private JLabel diagnosisLabel, remarksLabel, grossDescLabel, microNoteLabel;
+	private JLabel diagnosisLabel, remarksLabel, grossDescLabel, microNoteLabel, pageLabel,
+	findings1Label, findings2Label;
 	private RecordOverview overviewPanel;
+	private JButton nextButton, previousButton;
+	private int page;
 	
 	public HistopathologyForm()
 	{
@@ -46,69 +59,120 @@ public class HistopathologyForm extends JPanel implements RecordForm
 		setBackground(Color.white);
 		initializeComponents();
 		layoutComponents();
+		page = 1;
 	}
 	
 	private void layoutComponents()
 	{
 		GridBagConstraints c = new GridBagConstraints();
 		int y = 0;
+		JSeparator divider1 = new JSeparator(SwingConstants.HORIZONTAL);
+		JSeparator divider2 = new JSeparator(SwingConstants.HORIZONTAL);
+		divider1.setPreferredSize(new Dimension(1,1));
+		divider2.setPreferredSize(divider1.getPreferredSize());
+		divider1.setBackground(Color.LIGHT_GRAY);
+		divider2.setBackground(divider1.getBackground());
+		c.anchor = GridBagConstraints.NORTHWEST;
+		c.weightx = 1.0;
+		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridy = y++;
+		findings1Panel.add(findings1Label, c);
+		c.gridy = y++;
+		c.insets = new Insets(0,0,30,0);
+		findings1Panel.add(divider1, c);
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = y++;
+		c.insets = new Insets(0,0,0,0);
+		findings1Panel.add(diagnosisLabel, c);
+		c.fill = GridBagConstraints.BOTH;
+		c.gridy = y++;
+		c.weighty = 1.0;
+		c.insets = new Insets(0,0,20,0);
+		findings1Panel.add(diagnosisScroller, c);
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = y++;
+		c.weighty = 0.0;
+		c.insets = new Insets(0,0,0,0);
+		findings1Panel.add(remarksLabel, c);
+		c.fill = GridBagConstraints.BOTH;
+		c.gridy = y++;
+		c.weighty = 1.0;
+		c.insets = new Insets(0,0,0,0);
+		findings1Panel.add(remarksScroller, c);
 		
 		y = 0;
-		c = new GridBagConstraints();
-		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.NORTHWEST;
-		c.gridx = 0;
+		c.weightx = 1.0;
+		c.weighty = 0.0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.gridy = y++;
-		add(overviewPanel, c);
-		c.anchor = GridBagConstraints.LINE_START;
-		c.gridx = 0;
-		c.gridy = y;
-		c.insets = new Insets(0,0,0,0);
-		findingsPanel.add(diagnosisLabel, c);
+		findings2Panel.add(findings2Label, c);
+		c.gridy = y++;
+		c.insets = new Insets(0,0,30,0);
+		findings2Panel.add(divider2, c);
 		c.fill = GridBagConstraints.NONE;
 		c.gridy = y++;
-		c.gridx = 1;
 		c.insets = new Insets(0,0,0,0);
-		findingsPanel.add(remarksLabel, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = y;
-		c.insets = new Insets(0,0,10,30);
-		findingsPanel.add(diagnosisScroller, c);
-		c.gridx = 1;
+		findings2Panel.add(grossDescLabel, c);
+		c.fill = GridBagConstraints.BOTH;
 		c.gridy = y++;
-		c.insets = new Insets(0,0,10,0);
-		findingsPanel.add(remarksScroller, c);
+		c.weighty = 1.0;
+		c.insets = new Insets(0,0,20,0);
+		findings2Panel.add(grossDescScroller, c);
 		c.fill = GridBagConstraints.NONE;
-		c.gridx = 0;
-		c.gridy = y;
+		c.gridy = y++;
+		c.weighty = 0.0;
 		c.insets = new Insets(0,0,0,0);
-		findingsPanel.add(grossDescLabel, c);
+		findings2Panel.add(microNoteLabel, c);
+		c.fill = GridBagConstraints.BOTH;
 		c.gridy = y++;
-		c.gridx = 1;
-		findingsPanel.add(microNoteLabel, c);
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.gridx = 0;
-		c.gridy = y;
-		c.insets = new Insets(0,0,10,30);
-		findingsPanel.add(grossDescScroller, c);
-		c.gridx = 1;
-		c.gridy = y++;
-		c.insets = new Insets(0,0,10,0);
-		findingsPanel.add(microNoteScroller, c);
+		c.weighty = 1.0;
+		c.insets = new Insets(0,0,0,0);
+		findings2Panel.add(microNoteScroller, c);
 		
-		c.gridx = 0;
+		cardPanel.add("OVERVIEW", overviewPanel);
+		cardPanel.add("FINDINGS1", findings1Panel);
+		cardPanel.add("FINDINGS2", findings2Panel);
+		
+		bottomPanel.add(previousButton);
+		bottomPanel.add(pageLabel);
+		bottomPanel.add(nextButton);
+		
+		c = new GridBagConstraints();
+		c.fill = GridBagConstraints.BOTH;
+		c.anchor = GridBagConstraints.CENTER;
+		c.gridy = 0;
+		c.weightx = 1.0;
+		c.weighty = 1.0;
+		add(cardPanel, c);
+		c.fill = GridBagConstraints.NONE;
 		c.gridy = 1;
-		add(findingsPanel, c);
+		c.weighty = 0.0;
+		c.weightx = 0.0;
+		add(bottomPanel, c);
 	}
 	
 	private void initializeComponents()
 	{	
+		findings1Label = new JLabel("Interpretation and Results");
+		findings2Label = new JLabel("Interpretation and Results");
+		findings1Label.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
+		findings2Label.setBackground(findings1Label.getBackground());
+		findings1Label.setFont(LoginWindow.SECONDARY_FONT.deriveFont(StyleConstants.CATEGORY));
+		findings2Label.setFont(findings1Label.getFont());
+		findings1Label.setForeground(Color.gray);
+		findings2Label.setForeground(findings1Label.getForeground());
+		bottomPanel = new JPanel(new GridLayout(1, 3, 1, 1));
+		bottomPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
 		overviewPanel = new RecordOverview(RecordConstants.HISTOPATHOLOGY_RECORD);
-		findingsPanel = new JPanel(new GridBagLayout());
-		
-		overviewPanel.setBackground(Color.white);
-		findingsPanel.setBackground(Color.white);
+		cardPanel = new JPanel(new CardLayout());
+		findings1Panel = new JPanel(new GridBagLayout());
+		findings2Panel = new JPanel(new GridBagLayout());
+		cardPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
+		overviewPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
+		findings1Panel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
+		findings2Panel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
 		
 		diagnosisLabel = new JLabel("Diagnosis");
 		remarksLabel = new JLabel("Remarks");
@@ -148,10 +212,34 @@ public class HistopathologyForm extends JPanel implements RecordForm
 		grossDescValue.setFont(diagnosisValue.getFont());
 		microNoteValue.setFont(diagnosisValue.getFont());
 		
-		remarksValue.setDocument(new CustomDocument(RecordConstants.REMARKS_LENGTH));
-		grossDescValue.setDocument(new CustomDocument(RecordConstants.GROSS_LENGTH));
-		microNoteValue.setDocument(new CustomDocument(RecordConstants.MICRO_LENGTH));
-		diagnosisValue.setDocument(new CustomDocument(RecordConstants.DIAGNOSIS_LENGTH));
+		remarksValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
+		grossDescValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
+		microNoteValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
+		diagnosisValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
+		
+		pageLabel = new JLabel("1 of 3");
+		pageLabel.setOpaque(true);
+		pageLabel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
+		pageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		nextButton = new JButton();
+		nextButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_next.png")));
+		nextButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_next_hover.png")));
+		nextButton.setContentAreaFilled(false);
+		nextButton.setBorderPainted(false);
+		nextButton.setOpaque(true);
+		nextButton.setBackground(Color.white);
+		previousButton = new JButton();
+		previousButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_previous.png")));
+		previousButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_previous_hover.png")));
+		previousButton.setContentAreaFilled(false);
+		previousButton.setBorderPainted(false);
+		previousButton.setOpaque(true);
+		previousButton.setBackground(Color.white);
+		previousButton.setVisible(false);
+		
+		nextButton.addActionListener(this);
+		previousButton.addActionListener(this);
 	}
 	
 	@Override
@@ -160,21 +248,27 @@ public class HistopathologyForm extends JPanel implements RecordForm
 		overviewPanel.setRecordFields(record);
 		overviewPanel.setPatientFields(patient);
 		
-		List<Diagnosis> diagnosis = (List<Diagnosis>)record.getAttribute(RecordTable.DIAGNOSIS);
-		if(diagnosis != null && diagnosis.size() > 0)
-			diagnosisValue.setText(diagnosis.get(0).getValue());
-		
-		String remarks = (String)record.getAttribute(RecordTable.REMARKS);
-		if(remarks != null)
-			remarksValue.setText(remarks);
-		
-		String microNote = (String)record.getAttribute(RecordTable.MICRO_NOTE);
-		if(microNote != null)
-			microNoteValue.setText(microNote);
-		
-		String grossdesc = (String)record.getAttribute(RecordTable.GROSS_DESC);
-		if(grossdesc != null)
-			grossDescValue.setText(grossdesc);
+		List<Result> diagnosis = (List<Result>)record.getAttribute(RecordTable.RESULTS);
+		if(diagnosis != null)
+		{
+			Iterator<Result> i = diagnosis.iterator();
+			while(i.hasNext())
+			{
+				Result curDiagnosis = i.next();
+				String value = curDiagnosis.getValue();
+				int category = curDiagnosis.getCategory();
+				switch(category)
+				{
+				case ResultCategoriesConstants.R: remarksValue.setText(value);
+				break;
+				case ResultCategoriesConstants.MN: microNoteValue.setText(value);
+				break;
+				case ResultCategoriesConstants.GD: grossDescValue.setText(value);
+				break;
+				case ResultCategoriesConstants.OTHERS: diagnosisValue.setText(value);
+				}
+			}
+		}
 	}
 	
 	public boolean areFieldsValid()
@@ -189,20 +283,30 @@ public class HistopathologyForm extends JPanel implements RecordForm
 	public Record getRecord() 
 	{
 		Record record = overviewPanel.getRecord();
+		record.putAttribute(RecordTable.SPEC_TYPE, TitleConstants.OTHERS);
+		
+		List<Result> results = new Vector<Result>();
 		if(diagnosisValue.getText().length() > 0)
 		{
-			Diagnosis diagnosis = new Diagnosis(CategoriesConstants.OTHERS, diagnosisValue.getText());
-			List<Diagnosis> newDiagnosis = new Vector<Diagnosis>();
-			newDiagnosis.add(diagnosis);
-			record.putAttribute(RecordTable.DIAGNOSIS, newDiagnosis);
+			Result diagnosis = new Result(ResultCategoriesConstants.OTHERS, diagnosisValue.getText());
+			results.add(diagnosis);
 		}
-		record.putAttribute(RecordTable.SPEC_TYPE, TitleConstants.OTHERS);
 		if(remarksValue.getText().length() > 0)
-			record.putAttribute(RecordTable.REMARKS, remarksValue.getText());
+		{
+			Result remark = new Result(ResultCategoriesConstants.R, remarksValue.getText());
+			results.add(remark);
+		}
 		if(grossDescValue.getText().length() > 0)
-			record.putAttribute(RecordTable.GROSS_DESC, grossDescValue.getText());
+		{
+			Result gd = new Result(ResultCategoriesConstants.GD, grossDescValue.getText());
+			results.add(gd);
+		}
 		if(microNoteValue.getText().length() > 0)
-			record.putAttribute(RecordTable.MICRO_NOTE, microNoteValue.getText());
+		{
+			Result mn = new Result(ResultCategoriesConstants.MN, microNoteValue.getText());
+			results.add(mn);
+		}
+		record.putAttribute(RecordTable.RESULTS, results);
 		return record;
 	}
 
@@ -248,8 +352,44 @@ public class HistopathologyForm extends JPanel implements RecordForm
 	}
 
 	@Override
-	public PatientForm getPatientForm() {
-		// TODO Auto-generated method stub
+	public PatientForm getPatientForm() 
+	{
 		return overviewPanel.getPatientForm();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		CardLayout cl = (CardLayout)cardPanel.getLayout();
+		Object source = e.getSource();
+		if(source.equals(nextButton))
+		{
+			if(page < 3)
+			{
+				page++;
+				cl.next(cardPanel);
+			}
+		}
+		else
+		{
+			if(page > 1)
+			{
+				page--;
+				cl.previous(cardPanel);
+			}
+		}
+		updateGUI();
+	}
+	
+	private void updateGUI()
+	{
+		if(page > 1)
+			previousButton.setVisible(true);
+		else previousButton.setVisible(false);
+		if(page < 3)
+			nextButton.setVisible(true);
+		else nextButton.setVisible(false);
+		
+		pageLabel.setText(page + " of 3");
 	}
 }

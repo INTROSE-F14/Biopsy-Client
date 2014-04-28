@@ -25,20 +25,20 @@ import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.StatusConstants;
 import org.introse.Constants.TitleConstants;
-import org.introse.core.Diagnosis;
+import org.introse.core.Result;
 import org.introse.core.Dictionary;
 import org.introse.core.DictionaryWord;
 import org.introse.core.Patient;
 import org.introse.core.Record;
-import org.introse.core.dao.MysqlDiagnosisDao;
+import org.introse.core.dao.MysqlResultDao;
 import org.introse.core.dao.MysqlDictionaryDao;
 import org.introse.core.dao.MysqlPatientDao;
 import org.introse.core.dao.MysqlRecordDao;
 import org.introse.core.database.FileHelper;
 import org.introse.core.network.Client;
 import org.introse.core.workers.BackupWorker;
-import org.introse.core.workers.DiagnosisRetrieveWorker;
-import org.introse.core.workers.DiagnosisUpdateWorker;
+import org.introse.core.workers.ResultRetrieveWorker;
+import org.introse.core.workers.ResultUpdateWorker;
 import org.introse.core.workers.DictionaryListGenerator;
 import org.introse.core.workers.DictionaryRetrieveWorker;
 import org.introse.core.workers.DictionaryUpdateWorker;
@@ -87,7 +87,7 @@ public class ProjectDriver
 	private MainMenu mainMenu;
 	private MysqlRecordDao recordDao;
 	private MysqlPatientDao patientDao;
-	private MysqlDiagnosisDao diagnosisDao;
+	private MysqlResultDao diagnosisDao;
 	private MysqlDictionaryDao dictionaryDao;
 	private DetailPanel detailPanel;
 	private SearchDialog searchDialog;
@@ -150,7 +150,7 @@ public class ProjectDriver
 		loginWindow = null;
 		recordDao = new MysqlRecordDao();
 		patientDao = new MysqlPatientDao();
-		diagnosisDao = new MysqlDiagnosisDao();
+		diagnosisDao = new MysqlResultDao();
 		dictionaryDao = new MysqlDictionaryDao();
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -535,7 +535,7 @@ public class ProjectDriver
 					try 
 					{
 						final Patient p = (Patient)patientFinder.get();
-						final DiagnosisRetrieveWorker diagnosisRetriever = new DiagnosisRetrieveWorker(diagnosisDao, record);
+						final ResultRetrieveWorker diagnosisRetriever = new ResultRetrieveWorker(diagnosisDao, record);
 						diagnosisRetriever.addPropertyChangeListener(new PropertyChangeListener() {
 							
 							@Override
@@ -543,10 +543,10 @@ public class ProjectDriver
 								if(evt.getPropertyName().equals("DONE"))
 								{
 									RecordForm recordForm = null;
-									List<Diagnosis> diagnosis;
+									List<Result> diagnosis;
 									try {
-										diagnosis = (List<Diagnosis>)diagnosisRetriever.get();
-										record.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
+										diagnosis = (List<Result>)diagnosisRetriever.get();
+										record.putAttribute(RecordTable.RESULTS, diagnosis);
 										record.putAttribute(RecordTable.PATIENT, p);
 										
 										char recordType = (char)record.getAttribute(RecordTable.RECORD_TYPE);
@@ -625,7 +625,7 @@ public class ProjectDriver
 						r.putAttribute(RecordTable.PATIENT_ID, patientID);
 					else p.putAttribute(PatientTable.PATIENT_ID, null);
 					
-					final DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, r);
+					final ResultUpdateWorker diagnosisWorker = new ResultUpdateWorker(diagnosisDao, r);
 					diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() 
 					{
 						@Override
@@ -633,17 +633,17 @@ public class ProjectDriver
 						{
 							if(evt.getPropertyName().equals("DONE"))
 							{
-								List<Diagnosis> diagnosis = (List<Diagnosis>)r.getAttribute(RecordTable.DIAGNOSIS);
+								List<Result> diagnosis = (List<Result>)r.getAttribute(RecordTable.RESULTS);
 								if(diagnosis != null)
 								{
-									Iterator<Diagnosis> i = diagnosis.iterator();
+									Iterator<Result> i = diagnosis.iterator();
 									while(i.hasNext())
 									{
-										Diagnosis d = i.next();
+										Result d = i.next();
 										d.setReferenceNumber(((char)r.getAttribute(RecordTable.RECORD_TYPE)),
 												(int)r.getAttribute(RecordTable.RECORD_YEAR), (int)r.getAttribute(RecordTable.RECORD_NUMBER));
 									}
-									final DiagnosisUpdateWorker addWorker = new DiagnosisUpdateWorker(diagnosisDao, diagnosis);
+									final ResultUpdateWorker addWorker = new ResultUpdateWorker(diagnosisDao, diagnosis);
 									addWorker.addPropertyChangeListener(new PropertyChangeListener()
 									{	
 										@Override
@@ -808,18 +808,18 @@ public class ProjectDriver
 							try 
 							{
 								final Record actualRecord = (Record)recordGetter.get();
-								final DiagnosisRetrieveWorker diagnosisWorker = new DiagnosisRetrieveWorker(diagnosisDao, actualRecord);
+								final ResultRetrieveWorker diagnosisWorker = new ResultRetrieveWorker(diagnosisDao, actualRecord);
 								diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() 
 								{	
 									@Override
 									public void propertyChange(PropertyChangeEvent evt) {
 										if(evt.getPropertyName().equals("DONE"))
 										{
-											List<Diagnosis> diagnosis;
+											List<Result> diagnosis;
 											try 
 											{
-												diagnosis = (List<Diagnosis>)diagnosisWorker.get();
-												actualRecord.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
+												diagnosis = (List<Result>)diagnosisWorker.get();
+												actualRecord.putAttribute(RecordTable.RESULTS, diagnosis);
 												Patient patient = new Patient();
 												patient.putAttribute(PatientTable.PATIENT_ID, actualRecord.getAttribute(RecordTable.PATIENT_ID));
 												
@@ -894,18 +894,18 @@ public class ProjectDriver
 		final Record r = ((RecordPanel)detailPanel).getRecordForm().getRecord();
 		final Patient p = ((RecordPanel)detailPanel).getRecordForm().getPatient();
 		r.putAttribute(RecordTable.PATIENT, p);
-		final DiagnosisRetrieveWorker diagnosisWorker = new DiagnosisRetrieveWorker(diagnosisDao, r);
+		final ResultRetrieveWorker diagnosisWorker = new ResultRetrieveWorker(diagnosisDao, r);
 		diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if(evt.getPropertyName().equals("DONE"))
 				{
-					List<Diagnosis> diagnosis;
+					List<Result> diagnosis;
 					try 
 					{
-						diagnosis = (List<Diagnosis>)diagnosisWorker.get();
-						r.putAttribute(RecordTable.DIAGNOSIS, diagnosis);
+						diagnosis = (List<Result>)diagnosisWorker.get();
+						r.putAttribute(RecordTable.RESULTS, diagnosis);
 						loadingDialog.dispose();
 						PrintDialog pd = new PrintDialog(r);
 					} catch (InterruptedException | ExecutionException e) 
@@ -1180,7 +1180,7 @@ public class ProjectDriver
 		final ExportPanel exportPanel = mainMenu.getContentPanel().getToolsPanel().getExportPanel();
 		String exportPath = exportPanel.getExportPath();
 		File exportFile = new File(exportPath);
-		final ExportWorker exportWorker = new ExportWorker(exportFile, exportPanel);
+		final ExportWorker exportWorker = new ExportWorker(exportFile, exportPanel, recordDao, patientDao, diagnosisDao);
 		exportWorker.addPropertyChangeListener(new PropertyChangeListener(){
 
 			@Override
@@ -1359,7 +1359,7 @@ public class ProjectDriver
 				public void propertyChange(PropertyChangeEvent evt) {
 					if(evt.getPropertyName().equals("POSITIVE"))
 					{
-						final DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, r);
+						final ResultUpdateWorker diagnosisWorker = new ResultUpdateWorker(diagnosisDao, r);
 						diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
 							
 							@Override
@@ -1433,7 +1433,7 @@ public class ProjectDriver
 													while(i.hasNext())
 													{
 														Record curRecord = i.next();
-														DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, curRecord);
+														ResultUpdateWorker diagnosisWorker = new ResultUpdateWorker(diagnosisDao, curRecord);
 														diagnosisWorker.execute();
 													}
 													final RecordUpdateWorker recordDeleter = new 
@@ -1540,7 +1540,7 @@ public class ProjectDriver
 				public void propertyChange(PropertyChangeEvent evt) {
 					if(evt.getPropertyName().equals("POSITIVE"))
 					{
-						final DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, r);
+						final ResultUpdateWorker diagnosisWorker = new ResultUpdateWorker(diagnosisDao, r);
 						diagnosisWorker.addPropertyChangeListener(new PropertyChangeListener() {
 							
 							@Override
@@ -1614,7 +1614,7 @@ public class ProjectDriver
 													while(i.hasNext())
 													{
 														Record curRecord = i.next();
-														DiagnosisUpdateWorker diagnosisWorker = new DiagnosisUpdateWorker(diagnosisDao, curRecord);
+														ResultUpdateWorker diagnosisWorker = new ResultUpdateWorker(diagnosisDao, curRecord);
 														diagnosisWorker.execute();
 													}
 													final RecordUpdateWorker recordDeleter = new 

@@ -86,44 +86,31 @@ public class PatientPanel extends DetailPanel
 	private void layoutComponents()
 	{
 		GridBagConstraints c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.WEST;
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		topPanel.add(backButton, c);
-		
-		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTH;
 		c.gridy = 0;
 		c.insets = new Insets(20,5,35,0);
-		buttonPanel.add(editOrSaveButton, c);
+		buttonPanel.add(backButton, c);
 		c.gridy = 1;
-		c.weighty = 1.0;
 		c.insets = new Insets(0,5,35,0);
+		buttonPanel.add(editOrSaveButton, c);
+		c.gridy = 2;
+		c.weighty = 1.0;
 		buttonPanel.add(deleteOrCancelButton, c);
 		
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.NORTHWEST;
-		c.fill = GridBagConstraints.NONE;
-		c.weightx = 1.0;
-		c.weighty = 0.0;
+		c.anchor = GridBagConstraints.NORTH;
 		c.gridx = 0;
 		c.gridy = 0;
-		add(topPanel, c);
-		c.anchor = GridBagConstraints.NORTH;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridheight = 2;
 		c.weighty = 1.0;
+		c.weightx = 1.0;
+		c.insets = new Insets(40,0,0,0);
 		add(patientForm, c);
+		c.insets = new Insets(0,0,0,0);
 		c.fill = GridBagConstraints.VERTICAL;
-		c.anchor = GridBagConstraints.NORTH;
 		JSeparator divider = new JSeparator(SwingConstants.VERTICAL);
 		divider.setPreferredSize(new Dimension(1, 1));
 		divider.setBackground(Color.LIGHT_GRAY);
 		c.gridy = 0;
-		c.gridheight = 3;
 		c.weightx = 0.0;
 		c.gridx = 1;
 		add(divider, c);

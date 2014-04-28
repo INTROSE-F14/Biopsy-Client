@@ -49,14 +49,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 						result.getString(Constants.RecordTable.PHYSICIAN));
 				record.putAttribute(Constants.RecordTable.SPECIMEN, 
 						result.getString(Constants.RecordTable.SPECIMEN));
-				record.putAttribute(Constants.RecordTable.REMARKS,
-						result.getString(Constants.RecordTable.REMARKS));
 				record.putAttribute(Constants.RecordTable.ROOM, 
 						result.getString(RecordTable.ROOM));
-				record.putAttribute(RecordTable.GROSS_DESC,
-						result.getString(RecordTable.GROSS_DESC));
-				record.putAttribute(RecordTable.MICRO_NOTE, 
-						result.getString(RecordTable.MICRO_NOTE));
 				Calendar dateReceived = Calendar.getInstance();
 				Calendar dateCompleted = Calendar.getInstance();
 				dateCompleted.clear();
@@ -137,14 +131,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 						result.getString(Constants.RecordTable.PHYSICIAN));
 				record.putAttribute(Constants.RecordTable.SPECIMEN, 
 						result.getString(Constants.RecordTable.SPECIMEN));
-				record.putAttribute(Constants.RecordTable.REMARKS,
-						result.getString(Constants.RecordTable.REMARKS));
 				record.putAttribute(Constants.RecordTable.ROOM, 
 						result.getString(Constants.RecordTable.ROOM));
-				record.putAttribute(RecordTable.GROSS_DESC,
-						result.getString(RecordTable.GROSS_DESC));
-				record.putAttribute(RecordTable.MICRO_NOTE, 
-						result.getString(RecordTable.MICRO_NOTE));
 				Calendar dateReceived = Calendar.getInstance();
 				Calendar dateCompleted = Calendar.getInstance();
 				dateCompleted.clear();
@@ -373,14 +361,8 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 						result.getString(Constants.RecordTable.PHYSICIAN));
 				record.putAttribute(Constants.RecordTable.SPECIMEN, 
 						result.getString(Constants.RecordTable.SPECIMEN));
-				record.putAttribute(Constants.RecordTable.REMARKS,
-						result.getString(Constants.RecordTable.REMARKS));
 				record.putAttribute(RecordTable.ROOM, 
 						result.getString(RecordTable.ROOM));
-				record.putAttribute(RecordTable.GROSS_DESC,
-						result.getString(RecordTable.GROSS_DESC));
-				record.putAttribute(RecordTable.MICRO_NOTE, 
-						result.getString(RecordTable.MICRO_NOTE));
 				Calendar dateReceived = Calendar.getInstance();
 				Calendar dateCompleted = Calendar.getInstance();
 				dateCompleted.clear();
@@ -430,19 +412,10 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		String specimenType = "\""+ (String)record.getAttribute(RecordTable.SPEC_TYPE) +"\"";
 		CustomCalendar received = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED);
 		CustomCalendar completed = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_COMPLETED);
-		//nullables
-		String grossdesc = null;
-		String micronote = null;
-		String remarks = null;
+		
 		String room = null;
 		if(record.getAttribute(RecordTable.ROOM)!= null)
 			room = "\"" + ((String)record.getAttribute(RecordTable.ROOM)).replace("\"", "\\\"") + "\"";
-		if(record.getAttribute(RecordTable.MICRO_NOTE) != null)
-			micronote = "\"" + ((String)record.getAttribute(RecordTable.MICRO_NOTE)).replace("\"", "\\\"") + "\"";
-		if(record.getAttribute(RecordTable.GROSS_DESC) != null)
-			grossdesc = "\"" + ((String)record.getAttribute(RecordTable.GROSS_DESC)).replace("\"", "\\\"") + "\"";
-		if(record.getAttribute(Constants.RecordTable.REMARKS) != null)
-			remarks = "\"" + ((String)record.getAttribute(Constants.RecordTable.REMARKS)).replace("\"", "\\\"") + "\"";
 		String dateReceived = "\"" + received.getYear() + 
 				"-" + (received.getMonth() + 1) + "-" + received.getDay() + "\"";
 		String dateCompleted = "\"" + completed.getYear() + 
@@ -451,12 +424,12 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		
 		String sql = "Insert into Records(" + Constants.RecordTable.PATIENT_ID + ", "+ Constants.RecordTable.RECORD_YEAR+", "+
 					Constants.RecordTable.SPECIMEN + ", " + Constants.RecordTable.PATHOLOGIST + ", " +
-					Constants.RecordTable.PHYSICIAN + ", " + Constants.RecordTable.REMARKS + ", " + 
+					Constants.RecordTable.PHYSICIAN + ", " + 
 					Constants.RecordTable.DATE_RECEIVED +", " + Constants.RecordTable.DATE_COMPLETED + ", " + 
-					Constants.RecordTable.RECORD_TYPE + ", " + RecordTable.ROOM + ", " + RecordTable.SPEC_TYPE + ", " + 
-					RecordTable.GROSS_DESC + ", " + RecordTable.MICRO_NOTE + ") value (" + patientId + ", " + recordYear + ", " + specimen + ", " + pathologist + ", " + 
-					physician + ", " + remarks + ", " + dateReceived + ", "+ dateCompleted + "," + recordType + 
-					", " + room + ", " + specimenType +", " + grossdesc + ", " + micronote + ")";
+					Constants.RecordTable.RECORD_TYPE + ", " + RecordTable.ROOM + ", " + RecordTable.SPEC_TYPE + 
+					") value (" + patientId + ", " + recordYear + ", " + specimen + ", " + pathologist + ", " + 
+					physician + ", " + dateReceived + ", "+ dateCompleted + "," + recordType + 
+					", " + room + ", " + specimenType +")";
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet result = null;
@@ -497,18 +470,10 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 		pathologist = "\""+pathologist+"\"";
 		String physician = ((String)record.getAttribute(Constants.RecordTable.PHYSICIAN)).replace("\"", "\\\"");
 		physician =	"\"" + physician +"\"";
-		String grossdesc = null;
-		String micronote = null;
-		String remarks = null;
+		
 		String room = null;
 		if(record.getAttribute(RecordTable.ROOM)!= null)
 			room = "\"" + ((String)record.getAttribute(RecordTable.ROOM)).replace("\"", "\\\"") + "\"";
-		if(record.getAttribute(RecordTable.MICRO_NOTE) != null)
-			micronote = "\"" + ((String)record.getAttribute(RecordTable.MICRO_NOTE)).replace("\"", "\\\"") + "\"";
-		if(record.getAttribute(RecordTable.GROSS_DESC) != null)
-			grossdesc = "\"" + ((String)record.getAttribute(RecordTable.GROSS_DESC)).replace("\"", "\\\"") + "\"";
-		if(record.getAttribute(Constants.RecordTable.REMARKS) != null)
-			remarks = "\"" + ((String)record.getAttribute(Constants.RecordTable.REMARKS)).replace("\"", "\\\"") + "\"";
 		
 		CustomCalendar received = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_RECEIVED);
 		CustomCalendar completed = (CustomCalendar)record.getAttribute(Constants.RecordTable.DATE_COMPLETED);
@@ -523,13 +488,10 @@ public class MysqlRecordDao extends MysqlDao implements RecordDao
 				Constants.RecordTable.SPECIMEN + " = " + specimen +", " + 
 				Constants.RecordTable.PATHOLOGIST + " = " + pathologist + ", " + 
 				Constants.RecordTable.PHYSICIAN + " = " + physician + ", "+
-				Constants.RecordTable.REMARKS   + " = " + remarks + ", " + 
 				Constants.RecordTable.DATE_RECEIVED +" = " + dateReceived + ", "+
 				Constants.RecordTable.DATE_COMPLETED + " = " + dateCompleted + ", " + 
 				RecordTable.ROOM + " = " + room + ", " +
-				RecordTable.SPEC_TYPE + " = " + specimenType + ", " + 
-				RecordTable.GROSS_DESC + " = " + grossdesc + ", " + 
-				RecordTable.MICRO_NOTE + " = " + micronote +
+				RecordTable.SPEC_TYPE + " = " + specimenType + 
 					" WHERE " + Constants.RecordTable.RECORD_TYPE + " = " + recordType + 
 					" AND " + RecordTable.RECORD_YEAR + " = " + recordYear + " AND " +  
 					RecordTable.RECORD_NUMBER + " = " + recordNumber;

@@ -28,9 +28,6 @@ CREATE TABLE Records
 	specimen VARCHAR(100) NOT NULL,
 	specimenType VARCHAR (30) NOT NULL,
 	room VARCHAR(15),
-	remarks VARCHAR(10000),
-	grossDescription VARCHAR(10000),
-	microscopicNotes VARCHAR(10000),
 	PRIMARY KEY(recordType, recordYear, recordNumber),
 	FOREIGN KEY(patientID) REFERENCES Patients(patientID)
 ) ENGINE = MyISAM;
@@ -43,8 +40,8 @@ CREATE TABLE Dictionary
 	PRIMARY KEY(word, wordtype)
 )ENGINE = MyISAM;
 
-DROP TABLE IF EXISTS Categories;
-CREATE TABLE Categories
+DROP TABLE IF EXISTS ResultCategories;
+CREATE TABLE ResultCategories
 (
 	category_id INT UNSIGNED AUTO_INCREMENT,
 	category_name varchar(100) NOT NULL,
@@ -52,8 +49,8 @@ CREATE TABLE Categories
 	PRIMARY KEY(category_id)
 )ENGINE = MyISAM;
 
-DROP TABLE IF EXISTS Diagnosis;
-CREATE TABLE Diagnosis
+DROP TABLE IF EXISTS Results;
+CREATE TABLE Results
 (
 	category_id INT UNSIGNED NOT NULL,
 	recordYear TINYINT NOT NULL,
@@ -66,19 +63,24 @@ CREATE TABLE Diagnosis
 ) ENGINE = MyISAM;
 
 
-insert into categories values
-(1, 'Negative for Intraepithelial Lesion or Malignancy (NILM)', null),
-(2, 'Epithelial Cell Abnormalities', null),
-(3, 'Other Malignant Neoplasms', null),
-(4, 'Others', null),
-(5, 'Organisms', 1),
-(6, 'Other non-neoplastic findings', 1),
-(7, 'Other', 1),
-(8, 'Squamous Cell', 2),
-(9, 'Glandular Cell', 2), 
-(10, 'Specimen Adequacy', null),
-(11, 'Hormonal Evaluation', null),
-(12, 'Superficials', 11),
-(13, 'Intermediates', 11),
-(14, 'Parabasals', 11);
+insert into resultcategories values
+(1, 'Diagnosis', null),
+(2, 'Comment', null),
+(3, 'Negative for Intraepithelial Lesion or Malignancy (NILM)', 1),
+(4, 'Epithelial Cell Abnormalities', 1),
+(5, 'Other Malignant Neoplasms', 1),
+(6, 'Others', 1),
+(7, 'Organisms', 3),
+(8, 'Other non-neoplastic findings', 3),
+(9, 'Other NILM', 3),
+(10, 'Squamous Cell', 4),
+(11, 'Glandular Cell', 4), 
+(12, 'Specimen Adequacy', 6),
+(13, 'Hormonal Evaluation', 6),
+(14, 'Superficials', 13),
+(15, 'Intermediates', 13),
+(16, 'Parabasals', 13),
+(17, 'Remarks', 2),
+(18, 'Gross Description', 2),
+(19, 'Microscopic Notes', 2);
 

@@ -24,7 +24,7 @@ public class RecordPanel extends DetailPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel topPanel, recordForm, buttonPanel;
+	private JPanel recordForm, buttonPanel;
 	private JButton editOrSaveButton, printOrCancelButton, backButton, deleteButton;
 	private ImageIcon editIcon, printIcon, saveIcon, editIconRollover,
 	printIconRollover, cancelIcon, saveIconRollover, cancelIconRollover;
@@ -51,8 +51,6 @@ public class RecordPanel extends DetailPanel
 		saveIconRollover = new ImageIcon(getClass().getResource("/res/icons/ic_action_accept_hover.png"));
 		cancelIcon = new ImageIcon(getClass().getResource("/res/icons/ic_action_cancel.png"));
 		cancelIconRollover = new ImageIcon(getClass().getResource("/res/icons/ic_action_cancel_hover.png"));
-		topPanel = new JPanel(new GridBagLayout());
-		topPanel.setBackground(new Color(0f,0f,0f,0f));
 		backButton = new JButton();
 		backButton.setFocusable(false);
 		backButton.setBorderPainted(false);
@@ -96,14 +94,6 @@ public class RecordPanel extends DetailPanel
 	private void layoutComponents()
 	{
 		GridBagConstraints c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.WEST;
-		c.gridx = 0;
-		c.gridy = 0;
-		c.weightx = 1.0;
-		c.weighty = 1.0;
-		topPanel.add(backButton, c);
-		
-		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.NORTH;
 		c.gridy = 0;
 		c.insets = new Insets(20,5,35,0);
@@ -119,27 +109,21 @@ public class RecordPanel extends DetailPanel
 		buttonPanel.add(deleteButton, c);
 		
 		c = new GridBagConstraints();
-		c.anchor = GridBagConstraints.NORTHWEST;
+		c.anchor = GridBagConstraints.NORTH;
 		c.fill = GridBagConstraints.NONE;
-		c.weightx = 1.0;
-		c.weighty = 0.0;
 		c.gridx = 0;
 		c.gridy = 0;
-		add(topPanel, c);
-		c.fill = GridBagConstraints.BOTH;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 5;
-		c.gridheight = 2;
 		c.weighty = 1.0;
+		c.weightx = 1.0;
+		c.insets = new Insets(30,0,0,20);
 		add(recordForm, c);
+		c.insets = new Insets(0,0,0,0);
 		c.fill = GridBagConstraints.VERTICAL;
 		c.anchor = GridBagConstraints.NORTH;
 		JSeparator divider = new JSeparator(SwingConstants.VERTICAL);
 		divider.setPreferredSize(new Dimension(1, 1));
 		divider.setBackground(Color.LIGHT_GRAY);
 		c.gridy = 0;
-		c.gridheight = 3;
 		c.weightx = 0.0;
 		c.gridx = 1;
 		add(divider, c);
