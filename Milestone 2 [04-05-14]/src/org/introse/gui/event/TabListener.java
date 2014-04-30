@@ -46,7 +46,7 @@ public class TabListener implements MouseListener
 		if(source.contains(e.getPoint()))
 		{
 			final String name = source.getName();
-			driver.changeView(name);
+			driver.changeView(name, false);
 		}
 	}
 

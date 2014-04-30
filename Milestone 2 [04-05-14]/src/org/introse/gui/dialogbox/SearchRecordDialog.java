@@ -14,6 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -22,10 +24,13 @@ import org.introse.Constants.ActionConstants;
 import org.introse.Constants.PatientTable;
 import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
+import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
+import org.introse.core.CustomDocument;
 import org.introse.core.Patient;
 import org.introse.core.Record;
+import org.introse.core.ResultCriteria;
 import org.introse.gui.combobox.DatePicker;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.window.LoginWindow;
@@ -38,10 +43,14 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
 	private static final long serialVersionUID = 1L;
 	private JTextField tf_refNum, tf_specimen, tf_pathologist, tf_physician, tf_room,  tf_patient;
     private JLabel lbl_refNum, lbl_specimen, lbl_dReceived, lbl_dCompleted, 
-    lbl_pathologist, lbl_physician, lbl_room, lbl_dash, lbl_patient;
+    lbl_pathologist, lbl_physician, lbl_room, lbl_dash, lbl_patient, 
+    diagnosisLabel, remarksLabel, grossDescLabel, microNoteLabel;
+    private JTextArea diagnosisValue, remarksValue, grossDescValue, microNoteValue;
+    private JScrollPane diagnosisScroller, remarksScroller, grossDescScroller, 
+	microNoteScroller;
     private JComboBox<String> cb_type, cb_year;
     private JButton b_search, b_clear, b_load, b_patientClear;
-    private JPanel pane;
+    private JPanel pane, resultsPanel, recordPanel;
     private DatePicker dR, dC;
     private int patientID;
 	
@@ -58,8 +67,11 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
    {
 	   pane = new JPanel(new GridBagLayout());
 	   pane.setBorder(new EmptyBorder(20,20,20,20));
-	   pane.setBackground(Color.white);
-	 
+	   pane.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
+	   recordPanel = new JPanel(new GridBagLayout());
+	   recordPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
+	   resultsPanel = new JPanel(new GridBagLayout());
+	   resultsPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
 	   tf_refNum = new JTextField(4);
 	   tf_specimen = new JTextField(25);
 	   tf_pathologist = new JTextField(25);
@@ -128,6 +140,37 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
         b_clear.setFont(b_search.getFont());
         b_load.setFont(b_search.getFont());
         b_patientClear.setFont(b_search.getFont());
+        
+        diagnosisLabel = new JLabel("Diagnosis");
+		remarksLabel = new JLabel("Remarks");
+		grossDescLabel = new JLabel("Gross Description");
+		microNoteLabel = new JLabel("Microscopic Notes");
+		
+        diagnosisValue= new JTextArea(5,32);
+		grossDescValue = new JTextArea(5,32);
+		microNoteValue = new JTextArea(5,32);
+		remarksValue= new JTextArea(5,32);
+		diagnosisValue.setLineWrap(true);
+		diagnosisValue.setWrapStyleWord(true);
+		grossDescValue.setLineWrap(true);
+		grossDescValue.setWrapStyleWord(true);
+		microNoteValue.setLineWrap(true);
+		microNoteValue.setWrapStyleWord(true);
+		remarksValue.setLineWrap(true);
+		remarksValue.setWrapStyleWord(true);
+		remarksValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
+		grossDescValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
+		microNoteValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
+		diagnosisValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
+		
+        diagnosisScroller = new JScrollPane(diagnosisValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		remarksScroller = new JScrollPane(remarksValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		grossDescScroller = new JScrollPane(grossDescValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		microNoteScroller = new JScrollPane(microNoteValue, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, 
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
    }
     @Override
 	public void showGUI()
@@ -155,103 +198,143 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
 	   GridBagConstraints c = new GridBagConstraints();
 	   c.anchor = GridBagConstraints.WEST;
 	   c.fill = GridBagConstraints.HORIZONTAL;
+	   c.weightx = 1.0;
+	   c.weighty = 1.0;
+	   c.insets = new Insets(0,0,0,0);
+	   resultsPanel.add(remarksLabel, c);
+	   c.gridheight = 2;
+	   c.gridy = ++y;
+	   c.insets = new Insets(0,0,10,0);
+	   resultsPanel.add(remarksScroller, c);
+	   c.gridheight = 1;
+	   y += 2;
+	   c.gridy = y;
+	   c.insets = new Insets(0,0,0,0);
+	   resultsPanel.add(grossDescLabel, c);
+	   c.gridy = ++y;
+	   c.gridheight = 2;
+	   c.insets = new Insets(0,0,10,0);
+	   resultsPanel.add(grossDescScroller, c);
+	   c.gridheight = 1;
+	   y += 2;
+	   c.gridy = y;
+	   c.insets = new Insets(0,0,0,0);
+	   resultsPanel.add(microNoteLabel, c);
+	   c.gridheight = 2;
+	   c.gridy = ++y;
+	   c.insets = new Insets(0,0,10,0);
+	   resultsPanel.add(microNoteScroller, c);
+	   c.gridheight = 1;
+	   y += 2;
+	   c.gridy = y;
+	   c.insets = new Insets(0,0,0,0);
+	   resultsPanel.add(diagnosisLabel, c);
+	   c.gridheight = 2;
+	   c.gridy = ++y;
+	   resultsPanel.add(diagnosisScroller, c);
+	   
+	   y = 0;
+	   c = new GridBagConstraints();
+	   c.anchor = GridBagConstraints.WEST;
+	   c.fill = GridBagConstraints.HORIZONTAL;
 	   c.insets = new Insets(0,0,5,20);
 	   c.weightx = 1.0;
+	   c.weighty = 1.0;
 	   c.gridx = 0;
 	   c.gridy = y++;
-	   pane.add(lbl_refNum, c);
+	   recordPanel.add(lbl_refNum, c);
 	   c.gridx  = 1;
 	   c.insets = new Insets(0,0,5,5);
-	   pane.add(cb_type, c);
+	   recordPanel.add(cb_type, c);
 	   c.gridx = 2;
-	   pane.add(cb_year, c);
+	   recordPanel.add(cb_year, c);
 	   c.gridx = 3;
 	   c.weightx = 0.0;
 	   c.fill = GridBagConstraints.NONE;
-	   pane.add(lbl_dash, c);
+	   recordPanel.add(lbl_dash, c);
 	   c.weightx = 1.0;
 	   c.gridx = 4;
 	   c.gridwidth =2;
 	   c.insets = new Insets(0,0,5,0);
 	   c.fill = GridBagConstraints.HORIZONTAL;
-	   pane.add(tf_refNum, c);
+	   recordPanel.add(tf_refNum, c);
 	   
 	   c.gridwidth = 2;
 	   c.weightx = 1.0;
 	   c.gridy = y++;
 	   c.gridx = 0;
 	   c.insets = new Insets(0,0,5,20);
-	   pane.add(lbl_specimen, c);
+	   recordPanel.add(lbl_specimen, c);
 	   c.gridx  = 1;
 	   c.gridwidth = 5;
 	   c.insets = new Insets(0,0,5,0);
-	   pane.add(tf_specimen, c);
+	   recordPanel.add(tf_specimen, c);
 	   
 	   c.gridwidth = 1;
 	   c.gridy = y++;
 	   c.gridx = 0;
 	   c.insets = new Insets(0,0,5,20);
-	   pane.add(lbl_pathologist, c);
+	   recordPanel.add(lbl_pathologist, c);
 	   c.gridx  = 1;
 	   c.gridwidth = 5;
 	   c.insets = new Insets(0,0,5,0);
-	   pane.add(tf_pathologist, c);
+	   recordPanel.add(tf_pathologist, c);
 	   
 	   c.gridwidth = 1;
 	   c.gridy = y++;
 	   c.gridx = 0;
 	   c.insets = new Insets(0,0,5,20);
-	   pane.add(lbl_physician, c);
+	   recordPanel.add(lbl_physician, c);
 	   c.gridx  = 1;
 	   c.gridwidth = 5;
 	   c.insets = new Insets(0,0,5,0);
-	   pane.add(tf_physician, c);
+	   recordPanel.add(tf_physician, c);
 	   
 	   c.gridy = y++;
 	   c.gridx = 0;
 	   c.gridwidth = 1;
 	   c.insets = new Insets(0,0,5,20);
-	   pane.add(lbl_room, c);
+	   recordPanel.add(lbl_room, c);
 	   c.gridx  = 1;
 	   c.gridwidth = 5;
 	   c.insets = new Insets(0,0,5,0);
-	   pane.add(tf_room, c);
+	   recordPanel.add(tf_room, c);
 	   
 	   c.gridy = y++;
 	   c.gridwidth = 1;
 	   c.gridx = 0;
 	   c.insets = new Insets(0,0,5,20);
-	   pane.add(lbl_dReceived, c);
+	   recordPanel.add(lbl_dReceived, c);
 	   c.gridx  = 1;
 	   c.gridwidth = 5;
 	   c.insets = new Insets(0,0,5,0);
-	   pane.add(dR, c);
+	   recordPanel.add(dR, c);
 	   
 	   c.gridwidth = 1;
 	   c.gridy = y++;
 	   c.gridx = 0;
 	   c.insets = new Insets(0,0,5,20);
-	   pane.add(lbl_dCompleted, c);
+	   recordPanel.add(lbl_dCompleted, c);
 	   c.gridx  = 1;
 	   c.gridwidth = 5;
 	   c.insets = new Insets(0,0,5,0);
-	   pane.add(dC, c);
+	   recordPanel.add(dC, c);
 	   
 	   c.gridwidth = 1;
 	   c.gridy = y++;
 	   c.gridx = 0;
 	   c.insets = new Insets(0,0,20,20);
-	   pane.add(lbl_patient, c);
+	   recordPanel.add(lbl_patient, c);
 	   c.gridx  = 1;
 	   c.gridwidth = 3;
 	   c.insets = new Insets(0,0,20,5);
-	   pane.add(tf_patient, c);
+	   recordPanel.add(tf_patient, c);
 	   c.gridx = 4;
 	   c.gridwidth = 1;
-	   pane.add(b_load, c);
+	   recordPanel.add(b_load, c);
 	   c.gridx = 5;
 	   c.insets = new Insets(0,0,20,0);
-	   pane.add(b_patientClear, c);
+	   recordPanel.add(b_patientClear, c);
 	   
 	   c.fill = GridBagConstraints.NONE;
 	   c.anchor = GridBagConstraints.CENTER;
@@ -259,10 +342,21 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
 	   c.gridwidth = 1;
 	   c.gridx = 1;
 	   c.gridy = y;
-	   pane.add(b_search, c);
+	   recordPanel.add(b_search, c);
 	   c.gridx = 2;
 	   c.insets = new Insets(0,0,5,0);
-	   pane.add(b_clear, c);
+	   recordPanel.add(b_clear, c);
+	   
+	   c = new GridBagConstraints();
+	   c.anchor = GridBagConstraints.NORTH;
+	   c.fill = GridBagConstraints.BOTH;
+	   c.weightx = 1.0;
+	   c.weighty = 1.0;
+	   c.gridx = 0;
+	   pane.add(recordPanel, c);
+	   c.gridx = 1;
+	   c.insets = new Insets(0,20,0,0);
+	   pane.add(resultsPanel, c);
    }
    
    public void clear()
@@ -383,5 +477,19 @@ public class SearchRecordDialog extends SearchDialog implements KeyListener, Act
 			setPatient(null);
 		
 	}  
+	
+	public ResultCriteria getResultCriteria()
+	{
+		String diagnosis = null, remarks = null, microNotes = null, grossDesc = null;
+		if(diagnosisValue.getText().replaceAll("\\s", "").length() > 0)
+			diagnosis = diagnosisValue.getText();
+		if(remarksValue.getText().replaceAll("\\s", "").length() > 0)
+			remarks = remarksValue.getText();
+		if(microNoteValue.getText().replaceAll("\\s", "").length() > 0)
+			microNotes = microNoteValue.getText();
+		if(grossDescValue.getText().replaceAll("\\s", "").length() > 0)
+			grossDesc = grossDescValue.getText();
+		return new ResultCriteria(diagnosis,remarks,grossDesc, microNotes);
+	}
 }
 

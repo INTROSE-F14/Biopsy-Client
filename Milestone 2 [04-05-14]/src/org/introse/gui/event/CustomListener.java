@@ -88,7 +88,7 @@ public class CustomListener implements ActionListener, MouseListener
    						if(evt.getPropertyName().equals("POSITIVE"))
    						{
    							projectDriver.cancelCurrentForm();
-   							projectDriver.changeView(projectDriver.getPreviousView());
+   							projectDriver.changeView(projectDriver.getPreviousView(), false);
    							projectDriver.setSelectedButton(projectDriver.getPreviousView());
    						}
    					}
@@ -97,8 +97,7 @@ public class CustomListener implements ActionListener, MouseListener
    			}
    			else
    			{
-   				projectDriver.removeDetailsPanel();
-   				projectDriver.changeView(projectDriver.getPreviousView());
+   				projectDriver.changeView(projectDriver.getPreviousView(), false);
    				projectDriver.setSelectedButton(projectDriver.getPreviousView());
    			}
         						   break;

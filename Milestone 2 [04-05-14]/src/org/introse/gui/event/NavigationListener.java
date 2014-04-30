@@ -68,7 +68,7 @@ public class NavigationListener implements MouseListener {
 							if(evt.getPropertyName().equals("POSITIVE"))
 							{
 								projectDriver.cancelCurrentForm();
-								projectDriver.changeView(name);
+								projectDriver.changeView(name, false);
 								projectDriver.setSelectedButton(source);
 								source.setBackground(Color.decode(Constants.StyleConstants.QUARTERNARY_COLOR));
 							}
@@ -99,7 +99,7 @@ public class NavigationListener implements MouseListener {
 				else
 				{
 					projectDriver.removeDetailsPanel();
-					projectDriver.changeView(name);
+					projectDriver.changeView(name, false);
 					projectDriver.setSelectedButton(source);
 					source.setBackground(Color.decode(Constants.StyleConstants.QUARTERNARY_COLOR));
 				}

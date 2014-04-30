@@ -547,7 +547,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 
 
 	@Override
-	public List<Patient> get(char start, char end) 
+	public List<Patient> get(char start, char end, boolean isInRange) 
 	{
 		List<Patient> patients = new Vector<Patient>();
 		Connection conn = null;
@@ -555,13 +555,21 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		ResultSet result = null;
 		String sql = "Select * from patients WHERE ";
 		boolean hasPrevious = false;
+		String conjunction = " OR ";
+		String comparator = " LIKE ";
+		if(!isInRange)
+		{
+			conjunction = " AND ";
+			comparator = " NOT LIKE ";
+		}
+		
 		
 		while(start <= end)
 		{
 			String lastName = "\"" + start + "%\"";
 			if(hasPrevious)
-				sql = sql.concat(" OR ");
-			sql = sql.concat(PatientTable.LAST_NAME + " LIKE " + lastName);
+				sql = sql.concat(conjunction);
+			sql = sql.concat(PatientTable.LAST_NAME + comparator + lastName);
 			start++;
 			hasPrevious = true;
 		}
@@ -613,7 +621,7 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 	}
 	
 	@Override
-	public List<Patient> get(char start, char end, char gender) 
+	public List<Patient> get(char start, char end, char gender, boolean isInRange) 
 	{
 		List<Patient> patients = new Vector<Patient>();
 		Connection conn = null;
@@ -621,13 +629,20 @@ public class MysqlPatientDao extends MysqlDao implements PatientDao
 		ResultSet result = null;
 		String sql = "Select * from patients WHERE (";
 		boolean hasPrevious = false;
+		String conjunction = " OR ";
+		String comparator = " LIKE ";
+		if(!isInRange)
+		{
+			conjunction = " AND ";
+			comparator = " NOT LIKE ";
+		}
 		
 		while(start <= end)
 		{
 			String lastName = "\"" + start + "%\"";
 			if(hasPrevious)
-				sql = sql.concat(" OR ");
-			sql = sql.concat(PatientTable.LAST_NAME + " LIKE " + lastName);
+				sql = sql.concat(conjunction);
+			sql = sql.concat(PatientTable.LAST_NAME + comparator + lastName);
 			start++;
 			hasPrevious = true;
 		}

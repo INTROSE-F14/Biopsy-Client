@@ -46,7 +46,7 @@ public class PatientLoader extends JDialog implements ActionListener
 	private List<ListItem> patients; 
 	private JPanel pane, emptyPanel, refreshPanel, cardPanel;
 	private PatientDao patientDao;
-	private JButton aC, dF, gI, jL, mO, pR, sV, wZ;
+	private JButton aC, dF, gI, jL, mO, pR, sV, wZ, others;
 	private JPanel listPanel;
 	private JScrollPane listScroller;
 	private ListListener listListener;
@@ -54,11 +54,14 @@ public class PatientLoader extends JDialog implements ActionListener
 	public static final char MALE = 'M';
 	public static final char FEMALE = 'F';
 	public static final char ANY = 'A';
+	private boolean isInRange;
+	
 	public PatientLoader(PatientDao patientDao, char gender)
 	{
 		super(null, TitleConstants.LOAD_PATIENT, ModalityType.APPLICATION_MODAL);
 		this.patientDao = patientDao;
 		this.gender = gender;
+		isInRange = true;
 		start = 'A';
 		end = 'C';
 		initUI();
@@ -71,12 +74,12 @@ public class PatientLoader extends JDialog implements ActionListener
 	{
 		int y = 0;
 		GridBagConstraints c = new GridBagConstraints();
-		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(10,10,10,5);
-		c.gridx = 0;
+		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
+		c.insets = new Insets(10,10,5,5);
+		c.gridx = 0;
 		pane.add(aC, c);
-		c.insets = new Insets(10,0,10,5);
+		c.insets = new Insets(10,0,5,5);
 		c.gridx = 1;
 		pane.add(dF, c);
 		c.gridx = 2;
@@ -84,22 +87,31 @@ public class PatientLoader extends JDialog implements ActionListener
 		c.gridx = 3;
 		pane.add(jL, c);
 		c.gridx = 4;
+		c.insets = new Insets(10,0,5,10);
 		pane.add(mO, c);
-		c.gridx = 5;
+		c.gridy = ++y;
+		c.gridx = 0;
+		c.insets = new Insets(0,10,10,5);
 		pane.add(pR, c);
-		c.gridx = 6;
+		c.gridx = 1;
+		c.insets = new Insets(0,0,10,5);
 		pane.add(sV, c);
-		c.gridx = 7;
-		c.insets = new Insets(10,0,10,10);
+		c.gridx = 2;
 		pane.add(wZ, c);
+		c.gridwidth = 2;
+		c.gridx = 3;
+		c.insets = new Insets(0,0,10,10);
+		pane.add(others, c);
+		c.anchor = GridBagConstraints.NORTH;
+		c.fill = GridBagConstraints.BOTH;
 		c.insets = new Insets(0,10,10,10);
 		c.weighty = 1.0;
-		c.gridwidth = 8;
+		c.gridwidth = 9;
 		c.gridx = 0;
 		c.gridy = ++y;
 		pane.add(cardPanel, c);
 		setContentPane(pane);
-		setPreferredSize(new Dimension(520, 
+		setPreferredSize(new Dimension(510, 
 				(int)(Preferences.getScreenHeight() * 0.8)));
 	}
 	
@@ -116,6 +128,7 @@ public class PatientLoader extends JDialog implements ActionListener
 		pR = new JButton("P-R");
 		sV = new JButton("S-V");
 		wZ = new JButton("W-Z");
+		others = new JButton("Others");
 		
 		aC.addActionListener(this);
 		dF.addActionListener(this);
@@ -125,7 +138,7 @@ public class PatientLoader extends JDialog implements ActionListener
 		pR.addActionListener(this);
 		sV.addActionListener(this);
 		wZ.addActionListener(this);
-		
+		others.addActionListener(this);
 		cardPanel = new JPanel(new CardLayout());
 		listPanel = new JPanel(new GridBagLayout());
 		emptyPanel = new JPanel(new GridBagLayout());
@@ -206,8 +219,8 @@ public class PatientLoader extends JDialog implements ActionListener
 
 		final PatientRetrieveWorker worker;
 		if(gender == 'A')
-			worker = new PatientRetrieveWorker(patientDao, start, end);
-		else worker = new PatientRetrieveWorker(patientDao, start, end, gender);
+			worker = new PatientRetrieveWorker(patientDao, start, end, isInRange);
+		else worker = new PatientRetrieveWorker(patientDao, start, end, gender, isInRange);
 		
 		worker.addPropertyChangeListener(new PropertyChangeListener() 
 		{	
@@ -259,22 +272,25 @@ public class PatientLoader extends JDialog implements ActionListener
 		pR.setEnabled(true);
 		sV.setEnabled(true);
 		wZ.setEnabled(true);
-		if(start == 'A')
+		others.setEnabled(true);
+		if(start == 'A' && end =='C')
 			aC.setEnabled(false);
-		else if(start == 'D')
+		else if(start == 'D' && end =='F')
 			dF.setEnabled(false);
-		else if(start == 'G')
+		else if(start == 'G' && end =='I')
 			gI.setEnabled(false);
-		else if(start == 'J')
+		else if(start == 'J' && end =='L')
 			jL.setEnabled(false);
-		else if(start =='M')
+		else if(start =='M' && end =='O')
 			mO.setEnabled(false);
-		else if(start =='P')
+		else if(start =='P' && end =='R')
 			pR.setEnabled(false);
-		else if(start== 'S')
+		else if(start== 'S' && end =='V')
 			sV.setEnabled(false);
-		else if(start == 'W')
+		else if(start == 'W' && end =='Z')
 			wZ.setEnabled(false);
+		else if(start == 'A' && end =='Z')
+			others.setEnabled(false);
 	}
 
 	@Override
@@ -285,41 +301,55 @@ public class PatientLoader extends JDialog implements ActionListener
 		{
 			start = 'A';
 			end = 'C';
+			isInRange = true;
 		}
 		else if(source.equals(dF))
 		{
 			start = 'D';
 			end = 'F';
+			isInRange = true;
 		}
 		else if(source.equals(gI))
 		{
 			start = 'G';
 			end = 'I';
+			isInRange = true;
 		}
 		else if(source.equals(jL))
 		{
 			start = 'J';
 			end = 'L';
+			isInRange = true;
 		}
 		else if(source.equals(mO))
 		{
 			start = 'M';
 			end = 'O';
+			isInRange = true;
 		}
 		else if(source.equals(pR))
 		{
 			start = 'P';
 			end = 'R';
+			isInRange = true;
 		}
 		else if(source.equals(sV))
 		{
 			start = 'S';
 			end = 'V';
+			isInRange = true;
 		}
 		else if(source.equals(wZ))
 		{
 			start = 'W';
 			end = 'Z';
+			isInRange = true;
+		}
+		else if(source.equals(others))
+		{
+			start = 'A';
+			end = 'Z';
+			isInRange = false;
 		}
 		updatePList();
 		updateButtons();

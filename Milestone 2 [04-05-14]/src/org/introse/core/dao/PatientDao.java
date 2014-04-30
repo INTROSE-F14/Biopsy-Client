@@ -14,6 +14,6 @@ public interface PatientDao
 	public List<Patient> getAll(int start, int range);
 	public int getCount(Patient patient);
 	public int getCount();
-	public List<Patient> get(char start, char end);
-	public List<Patient> get(char start, char end, char gender);
+	public List<Patient> get(char start, char end, boolean isInRange);
+	public List<Patient> get(char start, char end, char gender, boolean isInRange);
 }

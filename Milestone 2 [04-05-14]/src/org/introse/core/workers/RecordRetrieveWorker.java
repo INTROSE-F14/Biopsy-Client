@@ -10,10 +10,17 @@ public class RecordRetrieveWorker extends SwingWorker<Object, Void>
 	public static final int SEARCH = 0;
 	public static final int GET = 1;
 	public static final int GET_COUNT = 2;
+	public static final int GET_ALL = 3;
 	private int operation;
 	private RecordDao recordDao;
 	private int start, range;
 	private Record model;
+	
+	public RecordRetrieveWorker(RecordDao recordDao)
+	{
+		this.recordDao = recordDao;
+		operation = GET_ALL;
+	}
 	
 	public RecordRetrieveWorker(RecordDao recordDao, Record model, int operation)
 	{
@@ -38,6 +45,7 @@ public class RecordRetrieveWorker extends SwingWorker<Object, Void>
 			case SEARCH: return recordDao.search(model, start, range);
 			case GET: return recordDao.get(model);
 			case GET_COUNT: return recordDao.getCount(model);
+			case GET_ALL: return recordDao.getAll();
 		}
 		return null;
 	}

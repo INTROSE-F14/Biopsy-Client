@@ -25,20 +25,19 @@ import org.introse.Constants.RecordConstants;
 import org.introse.Constants.RecordTable;
 import org.introse.Constants.StatusConstants;
 import org.introse.Constants.TitleConstants;
-import org.introse.core.Result;
 import org.introse.core.Dictionary;
 import org.introse.core.DictionaryWord;
 import org.introse.core.Patient;
 import org.introse.core.Record;
-import org.introse.core.dao.MysqlResultDao;
+import org.introse.core.Result;
+import org.introse.core.ResultCriteria;
 import org.introse.core.dao.MysqlDictionaryDao;
 import org.introse.core.dao.MysqlPatientDao;
 import org.introse.core.dao.MysqlRecordDao;
+import org.introse.core.dao.MysqlResultDao;
 import org.introse.core.database.FileHelper;
 import org.introse.core.network.Client;
 import org.introse.core.workers.BackupWorker;
-import org.introse.core.workers.ResultRetrieveWorker;
-import org.introse.core.workers.ResultUpdateWorker;
 import org.introse.core.workers.DictionaryListGenerator;
 import org.introse.core.workers.DictionaryRetrieveWorker;
 import org.introse.core.workers.DictionaryUpdateWorker;
@@ -51,6 +50,9 @@ import org.introse.core.workers.RecordListGenerator;
 import org.introse.core.workers.RecordRetrieveWorker;
 import org.introse.core.workers.RecordUpdateWorker;
 import org.introse.core.workers.RestoreWorker;
+import org.introse.core.workers.ResultComparator;
+import org.introse.core.workers.ResultRetrieveWorker;
+import org.introse.core.workers.ResultUpdateWorker;
 import org.introse.gui.dialogbox.LoadingDialog;
 import org.introse.gui.dialogbox.PatientLoader;
 import org.introse.gui.dialogbox.PopupDialog;
@@ -93,6 +95,7 @@ public class ProjectDriver
 	private SearchDialog searchDialog;
 	private PatientLoader loader;
 	private Object lastSearch;
+	private ResultCriteria criteria;
 	private SwingWorker<Integer, Void> loginWorker;
 	private static final ProjectDriver driver = new ProjectDriver();
 	private static final CustomListener listener =  new CustomListener(driver);
@@ -162,7 +165,7 @@ public class ProjectDriver
 				mainMenu.addNavigationListener(navListener);
 				mainMenu.addTabListener(tabListener);
 				loadWords();
-				changeView(TitleConstants.HISTOPATHOLOGY);
+				changeView(TitleConstants.HISTOPATHOLOGY, false);
 				mainMenu.showGUI();
 			}});
 	}
@@ -224,9 +227,13 @@ public class ProjectDriver
 		specimenWorker.execute();
 	}
 	
-	public void changeView(String view)
+	public void changeView(String view, boolean reset)
 	{
-		refresh(view, false);
+		if(!view.equals(TitleConstants.DETAIL_PANEL))
+		{
+			removeDetailsPanel();
+			refresh(view, reset);
+		}
 		mainMenu.getContentPanel().changeView(view);
 	}
 	
@@ -280,7 +287,7 @@ public class ProjectDriver
 										break;
 					case Constants.TitleConstants.SEARCH_RESULT:
 						if(lastSearch instanceof Record)
-							updateRList((Record)lastSearch, view, reset);
+							updateRSearchList((Record)lastSearch);
 						else updatePList((Patient)lastSearch, view, reset);
 									  break;
 					case TitleConstants.DICTIONARY: 
@@ -353,6 +360,73 @@ public class ProjectDriver
 			}
 		});
 		countGetter.execute();
+	}
+	
+	public void updateRSearchList(final Record record)
+	{
+		final ListPanel listPanel = 
+				mainMenu.getContentPanel().getPanel(TitleConstants.SEARCH_RESULT);
+		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
+		listPanel.setStart(0);
+		
+		final RecordRetrieveWorker recordGetter = new RecordRetrieveWorker(recordDao);
+		recordGetter.addPropertyChangeListener(new PropertyChangeListener() 
+		{	
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(evt.getPropertyName().equals("DONE"))
+				{
+					try 
+					{
+						List<Record> records = (List<Record>)recordGetter.get();
+						final ResultComparator resultComparator = new ResultComparator(diagnosisDao, criteria, records);
+						resultComparator.addPropertyChangeListener(new PropertyChangeListener() {
+							
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) {
+								if(evt.getPropertyName().equals("DONE"))
+								{
+									List<Record> matches;
+									try 
+									{
+										matches = resultComparator.get();
+										listPanel.setListSize(matches.size());
+										setCountLabel(TitleConstants.SEARCH_RESULT, listPanel.getListSize());
+										final RecordListGenerator listWorker = new RecordListGenerator(matches, patientDao);
+										listWorker.addPropertyChangeListener(new PropertyChangeListener()
+										{
+											@Override
+											public void propertyChange(PropertyChangeEvent evt) 
+											{
+												if(evt.getPropertyName().equals("DONE"))
+												{
+													try 
+													{
+														List<ListItem> list = listWorker.get();
+														listPanel.updateViewable(list);
+														if(list.size() < 1)
+															listPanel.showPanel(TitleConstants.EMPTY_PANEL);
+														else listPanel.showPanel(TitleConstants.LIST_PANEL);
+													} catch (InterruptedException | ExecutionException e) 
+													{e.printStackTrace();}
+												}
+											}
+										});
+										listWorker.execute();
+									} catch (InterruptedException
+											| ExecutionException e) {
+										e.printStackTrace();
+									}
+								}
+							}
+						});
+						resultComparator.execute();
+					} catch (InterruptedException | ExecutionException e) 
+					{e.printStackTrace();}
+				}
+			}
+		});
+		recordGetter.execute();
 	}
 	
 	public void updateRList(final Record record, final String view, boolean reset)
@@ -563,7 +637,7 @@ public class ProjectDriver
 										detailPanel.addListener(listener);
 										mainMenu.getContentPanel().setDetailsPanel(detailPanel);
 										loadingDialog.dispose();
-										mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
+										changeView(TitleConstants.DETAIL_PANEL, false);
 									} catch (InterruptedException
 											| ExecutionException e) 
 									{e.printStackTrace();}
@@ -589,7 +663,7 @@ public class ProjectDriver
 			detailPanel = new PatientPanel(form, Constants.ActionConstants.VIEW);
 			detailPanel.addListener(listener);
 			mainMenu.getContentPanel().setDetailsPanel(detailPanel);
-			mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
+			changeView(TitleConstants.DETAIL_PANEL, false);
 		}
 		
 	}
@@ -752,22 +826,39 @@ public class ProjectDriver
 				}
 				else if(detailPanel instanceof PatientPanel)
 				{
-					PatientUpdateWorker worker = null;
-					Patient p = (Patient)detailPanel.getObject();
+					final Patient p = (Patient)detailPanel.getObject();
 					DetailPanel rP = (DetailPanel)detailPanel;
 					switch(rP.getMode())
 					{
 					case ActionConstants.NEW:	p.putAttribute(PatientTable.PATIENT_ID, null);
-												worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.ADD);
+												final PatientUpdateWorker addWorker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.ADD);
+												addWorker.addPropertyChangeListener(new PropertyChangeListener() {
+													
+													@Override
+													public void propertyChange(PropertyChangeEvent evt) {
+														if(evt.getPropertyName().equals("DONE"))
+														{
+															int id;
+															try 
+															{
+																id = addWorker.get();
+																p.putAttribute(PatientTable.PATIENT_ID, id);
+																((PatientPanel)detailPanel).getPatientForm().setFields(p);
+															} catch (InterruptedException
+																	| ExecutionException e) {
+																e.printStackTrace();
+															}
+														}
+													}
+												});
+												addWorker.execute();
 												break;
-					case ActionConstants.EDIT:	worker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.UPDATE);
+					case ActionConstants.EDIT:	PatientUpdateWorker updateWorker = new PatientUpdateWorker(patientDao, p, PatientUpdateWorker.UPDATE);
+												updateWorker.execute();
 					}
-					if(worker != null)
-						worker.execute();
 				}
 				return null;
 				}
-				
 			};
 			bigWorker.addPropertyChangeListener(new PropertyChangeListener() 
 			{	
@@ -785,7 +876,7 @@ public class ProjectDriver
 			loadingDialog.showGui();
 			
 		}
-		else new PopupDialog(mainMenu, "Save Error", "Please fill up all required fields.", "OK").showGui();
+		else new PopupDialog(mainMenu, "Save Error", "Please fill up all the required fields properly.", "OK").showGui();
 	}
 	
 	public void cancelCurrentForm()
@@ -881,11 +972,7 @@ public class ProjectDriver
 				loadingDialog.showGui();
 			}
 		}
-		else 
-		{
-			removeDetailsPanel();
-			changeView(getPreviousView());
-		}
+		else changeView(getPreviousView(), false);
 	}
 	
 	public void printCurrentForm()
@@ -953,7 +1040,7 @@ public class ProjectDriver
 		}
 		this.detailPanel = (DetailPanel)panel;
 		mainMenu.getContentPanel().setDetailsPanel(panel);
-		mainMenu.getContentPanel().changeView(TitleConstants.DETAIL_PANEL);
+		changeView(TitleConstants.DETAIL_PANEL, false);
 	}
 	
 	public void loadExistingPatient(Patient patient)
@@ -964,33 +1051,15 @@ public class ProjectDriver
 	
 	public void openPatientSearch()
 	{
-		if(searchDialog == null)
-		{
-			searchDialog = new SearchPatientDialog();
-			searchDialog.addListener(listener);
-		}
-		else if(searchDialog instanceof SearchRecordDialog)
-		{
-			((SearchRecordDialog)searchDialog).dispose();
-			searchDialog = new SearchPatientDialog();
-			searchDialog.addListener(listener);
-		}
+		searchDialog = new SearchPatientDialog();
+		searchDialog.addListener(listener);
 		searchDialog.showGUI();
 	}
 	
 	public void openRecordSearch()
 	{
-		if(searchDialog == null)
-		{
-			searchDialog = new SearchRecordDialog();
-			searchDialog.addListener(listener);
-		}
-		else if(searchDialog instanceof SearchPatientDialog)
-		{
-			((SearchPatientDialog)searchDialog).dispose();
-			searchDialog = new SearchRecordDialog();
-			searchDialog.addListener(listener);
-		}
+		searchDialog = new SearchRecordDialog();
+		searchDialog.addListener(listener);
 		searchDialog.showGUI();
 	}
 
@@ -1000,6 +1069,7 @@ public class ProjectDriver
 		{
 			Record record = (Record)searchDialog.getSearchCriteria();
 			lastSearch = record;
+			criteria = ((SearchRecordDialog)searchDialog).getResultCriteria();
 		}
 		else
 		{
@@ -1008,9 +1078,7 @@ public class ProjectDriver
 		}
 		searchDialog.dispose();
 		searchDialog = null;
-		refresh(TitleConstants.SEARCH_RESULT, true);
-		mainMenu.getContentPanel().changeView(TitleConstants.SEARCH_RESULT);
-		removeDetailsPanel();
+		changeView(TitleConstants.SEARCH_RESULT, true);
 		setSelectedButton("");
 	}
 	
@@ -1326,7 +1394,7 @@ public class ProjectDriver
 											if(evt.getPropertyName().equals("DONE"))
 											{
 												panel.reset();
-												changeView(getCurrentView());
+												changeView(getCurrentView(), false);
 											}
 										}
 									});
@@ -1376,7 +1444,7 @@ public class ProjectDriver
 											if(evt.getPropertyName().equals("DONE"))
 											{
 												loadingDialog.dispose();
-												changeView(getCurrentView());
+												changeView(getCurrentView(), false);
 											}
 										}
 									});
@@ -1453,7 +1521,7 @@ public class ProjectDriver
 																		if(evt.getPropertyName().equals("DONE"))
 																		{
 																			loadingDialog.dispose();
-																			changeView(getCurrentView());
+																			changeView(getCurrentView(), false);
 																		}
 																		
 																	}
@@ -1503,7 +1571,7 @@ public class ProjectDriver
 								if(evt.getPropertyName().equals("DONE"))
 								{
 									loadingDialog.dispose();
-									changeView(getCurrentView());
+									changeView(getCurrentView(), false);
 								}
 							}
 						});
@@ -1557,7 +1625,7 @@ public class ProjectDriver
 											if(evt.getPropertyName().equals("DONE"))
 											{
 												loadingDialog.dispose();
-												changeView(getPreviousView());
+												changeView(getPreviousView(), false);
 											}
 										}
 									});
@@ -1634,7 +1702,7 @@ public class ProjectDriver
 																		if(evt.getPropertyName().equals("DONE"))
 																		{
 																			loadingDialog.dispose();
-																			changeView(getPreviousView());
+																			changeView(getPreviousView(), false);
 																		}
 																		
 																	}
