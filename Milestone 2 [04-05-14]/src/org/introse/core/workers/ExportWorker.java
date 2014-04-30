@@ -114,19 +114,19 @@ public class ExportWorker extends SwingWorker<Void, String>
 						System.out.println(category + "-" + value);
 						switch(category)
 						{
-						case ResultCategoriesConstants.R: remarks = value;
+						case ResultCategoriesConstants.REMARKS: remarks = value;
 						break;
-						case ResultCategoriesConstants.MN: microscopicNotes = value;
+						case ResultCategoriesConstants.MICROSCOPIC_NOTES: microscopicNotes = value;
 						break;
-						case ResultCategoriesConstants.GD: grossDesc = value;
+						case ResultCategoriesConstants.GROSS_DESCRIPTION: grossDesc = value;
 						break;
-						case ResultCategoriesConstants.SA: specimenAdequacy = value;
+						case ResultCategoriesConstants.SPECIMEN_ADEQUACY: specimenAdequacy = value;
 						break;
-						case ResultCategoriesConstants.S: superficials = "Superficials " + value;
+						case ResultCategoriesConstants.SUPERFICIALS: superficials = "Superficials " + value;
 						break;
-						case ResultCategoriesConstants.I: intermediates = "Intermediates " + value;
+						case ResultCategoriesConstants.INTERMEDIATES: intermediates = "Intermediates " + value;
 						break;
-						case ResultCategoriesConstants.P: parabasals = "Parabasals "+ value;
+						case ResultCategoriesConstants.PARABASALS: parabasals = "Parabasals "+ value;
 						break;
 						default: diagnosis = value;
 						}

@@ -633,111 +633,112 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 				
 				switch(category)
 				{
-				case ResultCategoriesConstants.ORGANISMS: 
-				case ResultCategoriesConstants.ONF:
-				case ResultCategoriesConstants.OTHER_NILM:	
-					
-					if(category == ResultCategoriesConstants.ORGANISMS)
+				case ResultCategoriesConstants.DIAGNOSIS:
+					if(value.contains(TitleConstants.NILM))
 					{
-						organisms.setSelected(true);
-						if(value.contains(TitleConstants.ORG1))
-							org1.setSelected(true);
-						else if(value.contains(TitleConstants.ORG2))
-							org2.setSelected(true);
-						else if(value.contains(TitleConstants.ORG3))
-							org3.setSelected(true);
-						else if(value.contains(TitleConstants.ORG4))
-							org4.setSelected(true);
-						else if(value.contains(TitleConstants.ORG5))
-							org5.setSelected(true);
-					}
-					else if(category == ResultCategoriesConstants.ONF)
-					{
-						onf.setSelected(true);
-						if(value.contains(TitleConstants.ONF1))
+						nilm.setSelected(true);
+						if(value.contains(TitleConstants.ORGANISMS))
 						{
-							onf1.setSelected(true);
-							if(value.contains(TitleConstants.ONF1BOX1))
-								onf1Box.setSelectedItem(TitleConstants.ONF1BOX1);
-							else if(value.contains(TitleConstants.ONF1BOX2))
-								onf1Box.setSelectedItem(TitleConstants.ONF1BOX2);
-							else onf1Box.setSelectedItem(TitleConstants.ONF1BOX3);
+							organisms.setSelected(true);
+							if(value.contains(TitleConstants.ORG1))
+								org1.setSelected(true);
+							else if(value.contains(TitleConstants.ORG2))
+								org2.setSelected(true);
+							else if(value.contains(TitleConstants.ORG3))
+								org3.setSelected(true);
+							else if(value.contains(TitleConstants.ORG4))
+								org4.setSelected(true);
+							else if(value.contains(TitleConstants.ORG5))
+								org5.setSelected(true);
 						}
-						else if(value.contains(TitleConstants.ONF2))
-							onf2.setSelected(true);
-						else if(value.contains(TitleConstants.ONF3)) 
-							onf3.setSelected(true);
-					}
-					else
-					{
-						other.setSelected(true);
-						other1.setSelected(true);
-					}
-					nilm.setSelected(true);
-					break;
-				case ResultCategoriesConstants.SC:
-				case ResultCategoriesConstants.GC: 
-							
-					if(category == ResultCategoriesConstants.SC)
-					{
-						squamousCell.setSelected(true);
-						if(value.contains(TitleConstants.SQUAMOUS1))
+						else if(value.contains(TitleConstants.ONF))
 						{
-							squamous1.setSelected(true);
-							if(value.contains(TitleConstants.SQUAMOUS1BOX1))
-								squamous1Box.setSelectedItem(TitleConstants.SQUAMOUS1BOX1);
-							else if(value.contains(TitleConstants.SQUAMOUS1BOX2))
-								squamous1Box.setSelectedItem(TitleConstants.SQUAMOUS1BOX2);
+							onf.setSelected(true);
+							if(value.contains(TitleConstants.ONF1))
+							{
+								onf1.setSelected(true);
+								if(value.contains(TitleConstants.ONF1BOX1))
+									onf1Box.setSelectedItem(TitleConstants.ONF1BOX1);
+								else if(value.contains(TitleConstants.ONF1BOX2))
+									onf1Box.setSelectedItem(TitleConstants.ONF1BOX2);
+								else onf1Box.setSelectedItem(TitleConstants.ONF1BOX3);
+							}
+							else if(value.contains(TitleConstants.ONF2))
+								onf2.setSelected(true);
+							else if(value.contains(TitleConstants.ONF3)) 
+								onf3.setSelected(true);
 						}
-						else if(value.contains(TitleConstants.SQUAMOUS2))
-							squamous2.setSelected(true);
-						else if(value.contains(TitleConstants.SQUAMOUS3))
+						else
 						{
-							squamous3.setSelected(true);
-							if(value.contains(TitleConstants.SQUAMOUS3BOX1))
-								squamous3Box.setSelectedItem(TitleConstants.SQUAMOUS3BOX1);
-							else if(value.contains(TitleConstants.SQUAMOUS3BOX2))
-								squamous3Box.setSelectedItem(TitleConstants.SQUAMOUS3BOX2);
-						}
-						else if(value.contains(TitleConstants.SQUAMOUS4))
-							squamous4.setSelected(true);
-					}
-					else
-					{
-						glandularCell.setSelected(true);
-						if(value.contains(TitleConstants.GLANDULAR1))
-						{
-							glandular1.setSelected(true);
-							if(value.contains(TitleConstants.GLANDULAR1BOX1))
-								glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX1);
-							else if(value.contains(TitleConstants.GLANDULAR1BOX2))
-								glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX2);
-							else if(value.contains(TitleConstants.GLANDULAR1BOX3))
-								glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX3);
-							else if(value.contains(TitleConstants.GLANDULAR1BOX4))
-								glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX4);
-							else glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX5);
-						}
-						else if(value.contains(TitleConstants.GLANDULAR2))
-							glandular2.setSelected(true);
-						else if(value.contains(TitleConstants.GLANDULAR3))
-						{
-							glandular3.setSelected(true);
-							if(value.contains(TitleConstants.GLANDULAR3BOX1))
-								glandular3Box.setSelectedItem(TitleConstants.GLANDULAR3BOX1);
-							else if(value.contains(TitleConstants.GLANDULAR3BOX2))
-								glandular3Box.setSelectedItem(TitleConstants.GLANDULAR3BOX2);
-							else if(value.contains(TitleConstants.GLANDULAR3BOX3))
-								glandular3Box.setSelectedItem(TitleConstants.GLANDULAR3BOX3);
-							else glandular3Box.setSelectedItem(TitleConstants.GLANDULAR3BOX4);
+							others.setSelected(true);
+							other1.setSelected(true);
 						}
 					}
-					eca.setSelected(true);
-					break;
-				case ResultCategoriesConstants.OMN: omn.setSelected(true);
-											  omnArea.setText(value);
+					else if(value.contains(TitleConstants.ECA))
+					{
+						eca.setSelected(true);
+						if(value.contains(TitleConstants.SQUAMOUS_CELL))
+						{
+							squamousCell.setSelected(true);
+							if(value.contains(TitleConstants.SQUAMOUS1))
+							{
+								squamous1.setSelected(true);
+								if(value.contains(TitleConstants.SQUAMOUS1BOX1))
+									squamous1Box.setSelectedItem(TitleConstants.SQUAMOUS1BOX1);
+								else if(value.contains(TitleConstants.SQUAMOUS1BOX2))
+									squamous1Box.setSelectedItem(TitleConstants.SQUAMOUS1BOX2);
+							}
+							else if(value.contains(TitleConstants.SQUAMOUS2))
+								squamous2.setSelected(true);
+							else if(value.contains(TitleConstants.SQUAMOUS3))
+							{
+								squamous3.setSelected(true);
+								if(value.contains(TitleConstants.SQUAMOUS3BOX1))
+									squamous3Box.setSelectedItem(TitleConstants.SQUAMOUS3BOX1);
+								else if(value.contains(TitleConstants.SQUAMOUS3BOX2))
+									squamous3Box.setSelectedItem(TitleConstants.SQUAMOUS3BOX2);
+							}
+							else if(value.contains(TitleConstants.SQUAMOUS4))
+								squamous4.setSelected(true);
+						}
+						else
+						{
+							glandularCell.setSelected(true);
+							if(value.contains(TitleConstants.GLANDULAR1))
+							{
+								glandular1.setSelected(true);
+								if(value.contains(TitleConstants.GLANDULAR1BOX1))
+									glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX1);
+								else if(value.contains(TitleConstants.GLANDULAR1BOX2))
+									glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX2);
+								else if(value.contains(TitleConstants.GLANDULAR1BOX3))
+									glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX3);
+								else if(value.contains(TitleConstants.GLANDULAR1BOX4))
+									glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX4);
+								else glandular1Box.setSelectedItem(TitleConstants.GLANDULAR1BOX5);
+							}
+							else if(value.contains(TitleConstants.GLANDULAR2))
+								glandular2.setSelected(true);
+							else if(value.contains(TitleConstants.GLANDULAR3))
+							{
+								glandular3.setSelected(true);
+								if(value.contains(TitleConstants.GLANDULAR3BOX1))
+									glandular3Box.setSelectedItem(TitleConstants.GLANDULAR3BOX1);
+								else if(value.contains(TitleConstants.GLANDULAR3BOX2))
+									glandular3Box.setSelectedItem(TitleConstants.GLANDULAR3BOX2);
+								else if(value.contains(TitleConstants.GLANDULAR3BOX3))
+									glandular3Box.setSelectedItem(TitleConstants.GLANDULAR3BOX3);
+								else glandular3Box.setSelectedItem(TitleConstants.GLANDULAR3BOX4);
+							}
+						}
+					}
+					else if(value.contains(TitleConstants.OMN))
+					{
+						omn.setSelected(true);
+						omnArea.setText(value.replace(TitleConstants.OMN + ": ", ""));
+					}						  
 											  break;
-				case ResultCategoriesConstants.SA: if(value.contains(TitleConstants.SATISFACTORY))
+				case ResultCategoriesConstants.SPECIMEN_ADEQUACY: if(value.contains(TitleConstants.SATISFACTORY))
 												satisfactory.setSelected(true);
 											 else if(value.contains(TitleConstants.UNSATISFACTORY))
 											 {
@@ -746,17 +747,17 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 														 value.substring(TitleConstants.UNSATISFACTORY.length() + 1));
 											 }
 											break;
-				case ResultCategoriesConstants.S: superficialValue.setText(value);
+				case ResultCategoriesConstants.SUPERFICIALS: superficialValue.setText(value);
 				break;
-				case ResultCategoriesConstants.I: intermediatesValue.setText(value);
+				case ResultCategoriesConstants.INTERMEDIATES: intermediatesValue.setText(value);
 				break;
-				case ResultCategoriesConstants.P: parabasalsValue.setText(value);
+				case ResultCategoriesConstants.PARABASALS: parabasalsValue.setText(value);
 				break;
-				case ResultCategoriesConstants.R: remarksValue.setText(value);
+				case ResultCategoriesConstants.REMARKS: remarksValue.setText(value);
 				break;
-				case ResultCategoriesConstants.MN: microNoteValue.setText(value);
+				case ResultCategoriesConstants.MICROSCOPIC_NOTES: microNoteValue.setText(value);
 				break;
-				case ResultCategoriesConstants.GD: grossDescValue.setText(value);
+				case ResultCategoriesConstants.GROSS_DESCRIPTION: grossDescValue.setText(value);
 				break;
 				}
 			}
@@ -809,6 +810,8 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 	
 	public void updateGUI()
 	{	
+		if(!unsatisfactory.isSelected())
+			unsatisfactoryDueTo.setText("");
 		if(!nilm.isSelected())
 			nilmGroup.clearSelection();
 		
@@ -1036,77 +1039,105 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		
 		List<Result> diagnosisList = new Vector<Result>();
 		if(satisfactory.isSelected())
-			diagnosisList.add(new Result(ResultCategoriesConstants.SA, satisfactory.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.SPECIMEN_ADEQUACY, satisfactory.getText()));
 		else if(unsatisfactory.isSelected())
-			diagnosisList.add(new Result(ResultCategoriesConstants.SA, 
+			diagnosisList.add(new Result(ResultCategoriesConstants.SPECIMEN_ADEQUACY, 
 					unsatisfactory.getText() + " " + unsatisfactoryDueTo.getText()));
 		
 		if(org1.isSelected() && org1.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.ORGANISMS, org1.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.NILM + ": " + TitleConstants.ORGANISMS + " - " + org1.getText()));
 		else if(org2.isSelected() && org2.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.ORGANISMS, org2.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.NILM + ": " + TitleConstants.ORGANISMS + " - " + org2.getText()));
 		else if(org3.isSelected() && org3.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.ORGANISMS, org3.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.NILM + ": " + TitleConstants.ORGANISMS + " - " + org3.getText()));
 		else if(org4.isSelected() && org4.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.ORGANISMS, org4.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.NILM + ": " + TitleConstants.ORGANISMS + " - " + org4.getText()));
 		else if(org5.isSelected() && org5.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.ORGANISMS, org5.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.NILM + ": " + TitleConstants.ORGANISMS + " - " + org5.getText()));
 		
 		if(onf1.isSelected() && onf1.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.ONF, 
-					onf1.getText() + " " + onf1Box.getSelectedItem()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.NILM + ": " + TitleConstants.ONF + " - " + 
+							onf1.getText() + " " + onf1Box.getSelectedItem()));
 		else if(onf2.isSelected() && onf2.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.ONF, onf2.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.NILM + ": " + TitleConstants.ONF + " - " + 
+							onf2.getText()));
 		else if(onf3.isSelected() && onf3.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.ONF, onf3.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.NILM + ": " + TitleConstants.ONF + " - " + 
+							onf3.getText()));
 		
 		if(other1.isSelected() && other1.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.OTHER_NILM, other1.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.NILM + ": " + TitleConstants.OTHER + " - " + 
+							other1.getText()));
 		
 		if(squamous1.isSelected() && squamous1.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.SC, 
-					squamous1.getText() + " " + squamous1Box.getSelectedItem()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.ECA + ": " + TitleConstants.SQUAMOUS_CELL + " - " + 
+							squamous1.getText() + " " + squamous1Box.getSelectedItem()));
+		
 		else if(squamous2.isSelected() && squamous2.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.SC, squamous2.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.ECA + ": " + TitleConstants.SQUAMOUS_CELL + " - " + 
+							squamous2.getText()));
+		
 		else if(squamous3.isSelected() && squamous3.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.SC, 
-				squamous3.getText() + " " + squamous3Box.getSelectedItem()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.ECA + ": " + TitleConstants.SQUAMOUS_CELL + " - " + 
+							squamous3.getText() + " " + squamous3Box.getSelectedItem()));
+		
 		else if(squamous4.isSelected() && squamous4.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.SC, squamous4.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.ECA + ": " + TitleConstants.SQUAMOUS_CELL + " - " + 
+							squamous4.getText()));
 		
 		if(glandular1.isSelected() && glandular1.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.GC, 
-					glandular1.getText() + " " + glandular1Box.getSelectedItem()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.ECA + ": " + TitleConstants.GLANDULAR_CELL + " - " + 
+							glandular1.getText() + " " + glandular1Box.getSelectedItem()));
+		
 		else if(glandular2.isSelected() && glandular2.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.GC, glandular2.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.ECA + ": " + TitleConstants.GLANDULAR_CELL + " - " + 
+							glandular2.getText()));
+		
 		if(glandular3.isSelected() && glandular3.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.GC, 
-					glandular3.getText() + " " + glandular3Box.getSelectedItem()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.ECA + ": " + TitleConstants.GLANDULAR_CELL + " - " + 
+							glandular3.getText() + " " + glandular3Box.getSelectedItem()));
 		
 		if(omn.isSelected() && omn.isEnabled())
-			diagnosisList.add(new Result(ResultCategoriesConstants.OMN, omnArea.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.DIAGNOSIS, 
+					TitleConstants.OMN + ": " + omnArea.getText()));
 		
 		if(remarksValue.getText().length() > 0)
 		{
-			Result remark = new Result(ResultCategoriesConstants.R, remarksValue.getText());
+			Result remark = new Result(ResultCategoriesConstants.REMARKS, remarksValue.getText());
 			diagnosisList.add(remark);
 		}
 		if(grossDescValue.getText().length() > 0)
 		{
-			Result gd = new Result(ResultCategoriesConstants.GD, grossDescValue.getText());
+			Result gd = new Result(ResultCategoriesConstants.GROSS_DESCRIPTION, grossDescValue.getText());
 			diagnosisList.add(gd);
 		}
 		if(microNoteValue.getText().length() > 0)
 		{
-			Result mn = new Result(ResultCategoriesConstants.MN, microNoteValue.getText());
+			Result mn = new Result(ResultCategoriesConstants.MICROSCOPIC_NOTES, microNoteValue.getText());
 			diagnosisList.add(mn);
 		}
 		if(superficialValue.getText().replaceAll("\\s", "").length() > 0)
-			diagnosisList.add(new Result(ResultCategoriesConstants.S, superficialValue.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.SUPERFICIALS, superficialValue.getText()));
 		if(intermediatesValue.getText().replaceAll("\\s", "").length() > 0)
-			diagnosisList.add(new Result(ResultCategoriesConstants.I, intermediatesValue.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.INTERMEDIATES, intermediatesValue.getText()));
 		if(parabasalsValue.getText().replaceAll("\\s", "").length() > 0)
-			diagnosisList.add(new Result(ResultCategoriesConstants.P, parabasalsValue.getText()));
+			diagnosisList.add(new Result(ResultCategoriesConstants.PARABASALS, parabasalsValue.getText()));
 		
 		record.putAttribute(RecordTable.RESULTS, diagnosisList);
 		return record;

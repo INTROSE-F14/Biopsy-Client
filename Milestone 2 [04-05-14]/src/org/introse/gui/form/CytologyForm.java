@@ -259,13 +259,13 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 				int category = curDiagnosis.getCategory();
 				switch(category)
 				{
-				case ResultCategoriesConstants.R: remarksValue.setText(value);
+				case ResultCategoriesConstants.REMARKS: remarksValue.setText(value);
 				break;
-				case ResultCategoriesConstants.MN: microNoteValue.setText(value);
+				case ResultCategoriesConstants.MICROSCOPIC_NOTES: microNoteValue.setText(value);
 				break;
-				case ResultCategoriesConstants.GD: grossDescValue.setText(value);
+				case ResultCategoriesConstants.GROSS_DESCRIPTION: grossDescValue.setText(value);
 				break;
-				case ResultCategoriesConstants.OTHERS: diagnosisValue.setText(value);
+				case ResultCategoriesConstants.DIAGNOSIS: diagnosisValue.setText(value);
 				}
 			}
 		}
@@ -288,22 +288,22 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 		List<Result> results = new Vector<Result>();
 		if(diagnosisValue.getText().length() > 0)
 		{
-			Result diagnosis = new Result(ResultCategoriesConstants.OTHERS, diagnosisValue.getText());
+			Result diagnosis = new Result(ResultCategoriesConstants.DIAGNOSIS, diagnosisValue.getText());
 			results.add(diagnosis);
 		}
 		if(remarksValue.getText().length() > 0)
 		{
-			Result remark = new Result(ResultCategoriesConstants.R, remarksValue.getText());
+			Result remark = new Result(ResultCategoriesConstants.REMARKS, remarksValue.getText());
 			results.add(remark);
 		}
 		if(grossDescValue.getText().length() > 0)
 		{
-			Result gd = new Result(ResultCategoriesConstants.GD, grossDescValue.getText());
+			Result gd = new Result(ResultCategoriesConstants.GROSS_DESCRIPTION, grossDescValue.getText());
 			results.add(gd);
 		}
 		if(microNoteValue.getText().length() > 0)
 		{
-			Result mn = new Result(ResultCategoriesConstants.MN, microNoteValue.getText());
+			Result mn = new Result(ResultCategoriesConstants.MICROSCOPIC_NOTES, microNoteValue.getText());
 			results.add(mn);
 		}
 		record.putAttribute(RecordTable.RESULTS, results);

@@ -223,23 +223,14 @@ public abstract class Constants
 	{
 		public static final int DIAGNOSIS = 1;
 		public static final int COMMENT = 2;
-		public static final int NILM = 3;
-		public static final int ECA = 4;
-		public static final int OMN = 5;
-		public static final int OTHERS = 6;
-		public static final int ORGANISMS = 7;
-		public static final int ONF = 8;
-		public static final int OTHER_NILM = 9;
-		public static final int SC = 10;
-		public static final int GC = 11;
-		public static final int SA = 12;
-		public static final int HE = 13;
-		public static final int S = 14;
-		public static final int I = 15;
-		public static final int P = 16;
-		public static final int R = 17;
-		public static final int GD = 18;
-		public static final int MN = 19;
+		public static final int SPECIMEN_ADEQUACY = 12;
+		public static final int HORMONAL_EVALUATION = 13;
+		public static final int SUPERFICIALS = 14;
+		public static final int INTERMEDIATES = 15;
+		public static final int PARABASALS = 16;
+		public static final int REMARKS = 17;
+		public static final int GROSS_DESCRIPTION = 18;
+		public static final int MICROSCOPIC_NOTES = 19;
 	}
 	
 	public abstract class StatusConstants

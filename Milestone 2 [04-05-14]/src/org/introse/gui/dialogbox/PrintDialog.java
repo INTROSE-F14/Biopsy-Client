@@ -13,13 +13,12 @@ import java.awt.print.PageFormat;
 import java.awt.print.Paper;
 import java.awt.print.PrinterException;
 import java.text.MessageFormat;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.MediaPrintableArea;
-import javax.print.attribute.standard.MediaSize;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -28,18 +27,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import org.introse.Constants;
-import org.introse.Constants.ResultCategoriesConstants;
 import org.introse.Constants.RecordTable;
+import org.introse.Constants.ResultCategoriesConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomCalendar;
-import org.introse.core.Result;
 import org.introse.core.Patient;
 import org.introse.core.Record;
+import org.introse.core.Result;
 import org.introse.core.WrapEditorKit;
 import org.introse.gui.event.CustomListener;
 
@@ -50,6 +48,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 	private JTextPane tp_textpane;
 	private JScrollPane sp_scrollpane;	
 	private StyledDocument sd_doc;
+	private String description, comments;
 		
 	public PrintDialog(Record record){
 	
@@ -234,16 +233,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 			
 			List<Result> l_diagnosis = (List)record.getAttribute(RecordTable.RESULTS);
 			
-			String comments = (String) record.getAttribute(Constants.RecordTable.REMARKS);
-			String grossdesc = "";
-			String micronote = "";
-			if((String) record.getAttribute(Constants.RecordTable.GROSS_DESC) != null)
-				grossdesc = (String) record.getAttribute(Constants.RecordTable.GROSS_DESC);
-			if((String) record.getAttribute(Constants.RecordTable.MICRO_NOTE) != null)
-				micronote = (String) record.getAttribute(Constants.RecordTable.MICRO_NOTE);
-
-			String description = grossdesc + "\n\n" + micronote;				
-			
+			comments = null;
 			MutableAttributeSet mas_bold = new SimpleAttributeSet();
 			MutableAttributeSet mas_boldunderline = new SimpleAttributeSet();
 			StyleConstants.setBold(mas_bold, true);
@@ -264,7 +254,7 @@ public class PrintDialog extends JDialog implements ActionListener{
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				this.leftAlign();
 				switch((char)record.getAttribute(Constants.RecordTable.RECORD_TYPE)){
-				case 'G': this.addGynecologyDiagnosis(l_diagnosis);
+				case 'G': this.addGynecologyResult(l_diagnosis);
 						break;
 				default: this.addHistoCytoDiagnosis(l_diagnosis, (char)record.getAttribute(Constants.RecordTable.RECORD_TYPE));
 				}
@@ -347,84 +337,116 @@ public class PrintDialog extends JDialog implements ActionListener{
 	}
 }
 	
-	private void addHistoCytoDiagnosis(List<Result> l_diagnosis, char type){
+	private void addHistoCytoDiagnosis(List<Result> l_result, char type)
+	{
 		MutableAttributeSet mas_boldunderline = new SimpleAttributeSet();
 		StyleConstants.setBold(mas_boldunderline, true);
 		StyleConstants.setUnderline(mas_boldunderline, true);
-		try{
+		try
+		{
 			String diagnosisLabel = "";
-			switch(type){
+			
+			switch(type)
+			{
 			case 'H': diagnosisLabel = Constants.PrintConstants.DIAGNOSIS_LABEL_H;
 					break;
 			case 'C':diagnosisLabel = Constants.PrintConstants.DIAGNOSIS_LABEL_C;
 					break;
-			default: break;
 			}
-			sd_doc.insertString(sd_doc.getLength(), "\n" + diagnosisLabel, mas_boldunderline);
-			if(l_diagnosis.get(0) != null){
-				sd_doc.insertString(sd_doc.getLength(), "\n" + l_diagnosis.get(0).getValue(), null);
-			}
-			else{
-				sd_doc.insertString(sd_doc.getLength(), "\n", null);
-			}
-		}
-		catch(Exception e){
 			
+			Iterator<Result> i = l_result.iterator();
+			String diagnosis = null, grossDesc = "", microNote = "";
+			while(i.hasNext())
+			{
+				Result curResult = i.next();
+				int category = curResult.getCategory();
+				String value = curResult.getValue();
+				switch(category)
+				{
+				case ResultCategoriesConstants.DIAGNOSIS:
+					diagnosis = value;
+				break;
+				case ResultCategoriesConstants.GROSS_DESCRIPTION: grossDesc = value;
+				break;
+				case ResultCategoriesConstants.MICROSCOPIC_NOTES: microNote = value;
+				break;
+				case ResultCategoriesConstants.REMARKS: comments = value;
+				}
+			}
+			description = grossDesc + "\n\n" + microNote;
+			sd_doc.insertString(sd_doc.getLength(), "\n" + diagnosisLabel, mas_boldunderline);
+			if(diagnosis != null)
+				sd_doc.insertString(sd_doc.getLength(), "\n" + diagnosis, null);
+			else sd_doc.insertString(sd_doc.getLength(), "\n", null);
 		}
+		catch(Exception e){e.printStackTrace();}
 	}
 	
-	private void addGynecologyDiagnosis(List<Result> l_diagnosis){
+	private void addGynecologyResult(List<Result> l_result)
+	{
 		MutableAttributeSet mas_boldunderline = new SimpleAttributeSet();
 		StyleConstants.setBold(mas_boldunderline, true);
 		StyleConstants.setUnderline(mas_boldunderline, true);
-		try{
+		try
+		{
 			String diagnosis = "";
 			String S = "", I = "", P = "";
+			String grossDesc = "", microNote ="";
 			int cat = -1;
-			for(int i=0; i<l_diagnosis.size();i++){
-				int category = l_diagnosis.get(i).getCategory();
-				String value = l_diagnosis.get(i).getValue();
+			Iterator<Result> i = l_result.iterator();
+			while(i.hasNext())
+			{
+				Result curResult = i.next();
+				int category = curResult.getCategory();
+				String value = curResult.getValue();
 				
-				switch(category){
-				case Constants.ResultCategoriesConstants.ORGANISMS: 
-				case Constants.ResultCategoriesConstants.ONF:
-				case Constants.ResultCategoriesConstants.OTHER_NILM:	
-				case Constants.ResultCategoriesConstants.SC:
-				case Constants.ResultCategoriesConstants.GC: 		
-				case Constants.ResultCategoriesConstants.OMN: 
-					if(category == Constants.ResultCategoriesConstants.ORGANISMS||category == Constants.ResultCategoriesConstants.ONF||category == Constants.ResultCategoriesConstants.OTHER_NILM){
+				switch(category)
+				{
+				case ResultCategoriesConstants.DIAGNOSIS:
+					
+					if(value.contains(TitleConstants.NILM))
+					{
 						diagnosis = diagnosis + "[X] " + Constants.PrintConstants.NILM;
 						cat = 0;
-						if(category == Constants.ResultCategoriesConstants.ORGANISMS){
+						if(value.contains(TitleConstants.ORGANISMS))
+						{
 							diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.ORGANISMS;
-							diagnosis = diagnosis + "\n              -" + value;
+							diagnosis = diagnosis + "\n              -" + value.replace(TitleConstants.NILM + ": " + TitleConstants.ORGANISMS + " - ", "");
 						}
-						else if (category == Constants.ResultCategoriesConstants.ONF){
+						else if(value.contains(TitleConstants.ONF))
+						{
 							diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.ONF;
-							diagnosis = diagnosis + "\n              -" + value;
+							diagnosis = diagnosis + "\n              -" + value.replace(TitleConstants.NILM + ": " + TitleConstants.ONF + " - ", "");
 						}
-						else{
+						else
+						{
 							diagnosis = diagnosis + "\n      [X] " + Constants.PrintConstants.OTHER;
-							diagnosis = diagnosis + "\n              -" + value;
+							diagnosis = diagnosis + "\n              -" + value.replace(TitleConstants.NILM + ": " + TitleConstants.OTHER + " - ", "");
 						}
 					}
-					else if(category == ResultCategoriesConstants.SC){
-						cat = 1;
-						diagnosis = diagnosis + "[X] " + Constants.PrintConstants.SQUAMOUS;
-						diagnosis = diagnosis + "\n              -" + value;
+					else if(value.contains(TitleConstants.ECA))
+					{
+						if(value.contains(TitleConstants.SQUAMOUS_CELL))
+						{
+							cat = 1;
+							diagnosis = diagnosis + "[X] " + Constants.PrintConstants.SQUAMOUS;
+							diagnosis = diagnosis + "\n              -" + value.replace(TitleConstants.ECA + ": " + TitleConstants.SQUAMOUS_CELL + " - ", "");
+						}
+						else
+						{
+							cat = 2;
+							diagnosis = diagnosis + "[X] " + Constants.PrintConstants.GLANDULAR;
+							diagnosis = diagnosis + "\n              -" + value.replace(TitleConstants.ECA + ": " + TitleConstants.GLANDULAR_CELL + " - ", "");
+						}
 					}
-					else if(category == ResultCategoriesConstants.GC){
-						cat = 2;
-						diagnosis = diagnosis + "[X] " + Constants.PrintConstants.GLANDULAR;
-						diagnosis = diagnosis + "\n              -" + value;
-					}
-					else if(category == ResultCategoriesConstants.OMN){
+					else if(value.contains(TitleConstants.OMN))
+					{
 						cat = 3;
 						diagnosis = diagnosis + "[X] " + Constants.PrintConstants.OMN;
-						diagnosis = diagnosis + "\n              -" + value;
+						diagnosis = diagnosis + "\n              -" + value.replace(TitleConstants.OMN + ": ", "");
 					}
 				break;
-				case Constants.ResultCategoriesConstants.SA: 
+				case Constants.ResultCategoriesConstants.SPECIMEN_ADEQUACY: 
 					sd_doc.insertString(sd_doc.getLength(),Constants.PrintConstants.SPEC_ADEQ, null);
 					if(value.contains(TitleConstants.SATISFACTORY)){
 						sd_doc.insertString(sd_doc.getLength(), "\n" + "      [X] " + value.toUpperCase(), null);
@@ -436,13 +458,20 @@ public class PrintDialog extends JDialog implements ActionListener{
 						sd_doc.insertString(sd_doc.getLength(), "\n" + "      [X] " + value.toUpperCase(), null);
 					}
 				break;
-				case Constants.ResultCategoriesConstants.S: S = value;
+				case Constants.ResultCategoriesConstants.SUPERFICIALS: S = value;
 				break;
-				case Constants.ResultCategoriesConstants.I: I = value;
+				case Constants.ResultCategoriesConstants.INTERMEDIATES: I = value;
 				break;
-				case Constants.ResultCategoriesConstants.P: P = value;
+				case Constants.ResultCategoriesConstants.PARABASALS: P = value;
+				break;
+				case ResultCategoriesConstants.GROSS_DESCRIPTION: grossDesc = value;
+				break;
+				case ResultCategoriesConstants.MICROSCOPIC_NOTES: microNote = value;
+				break;
+				case ResultCategoriesConstants.REMARKS: comments = value;
 				}
 			}
+			description = grossDesc + "\n\n" + microNote;
 				sd_doc.insertString(sd_doc.getLength(), "\n", null);
 				this.centerAlign();
 				sd_doc.insertString(sd_doc.getLength(), "\n" + Constants.PrintConstants.INTER_RES, mas_boldunderline);
