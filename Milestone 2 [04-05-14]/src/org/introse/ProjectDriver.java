@@ -369,7 +369,7 @@ public class ProjectDriver
 		listPanel.showPanel(TitleConstants.REFRESH_PANEL);
 		listPanel.setStart(0);
 		
-		final RecordRetrieveWorker recordGetter = new RecordRetrieveWorker(recordDao);
+		final RecordRetrieveWorker recordGetter = new RecordRetrieveWorker(recordDao, record, RecordRetrieveWorker.SEARCH);
 		recordGetter.addPropertyChangeListener(new PropertyChangeListener() 
 		{	
 			@Override
