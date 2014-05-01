@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,8 +14,6 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,31 +31,27 @@ import org.introse.Constants.ResultCategoriesConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomDocument;
-import org.introse.core.Result;
 import org.introse.core.Patient;
 import org.introse.core.Preferences;
 import org.introse.core.Record;
+import org.introse.core.Result;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.panel.RecordOverview;
 import org.introse.gui.window.LoginWindow;
 
 
-public class GynecologyForm extends JPanel implements ActionListener, RecordForm
+public class GynecologyForm extends RecordForm implements ActionListener
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int page;
-	private JPanel cardPanel;
-	private JLabel pageLabel, findings1Label, findings2Label;
-	private JPanel firstPanel, secondPanel, findingsPanel, bottomPanel;
-	private JButton nextButton, previousButton;
+	private JLabel findings1Label, findings2Label;
+	private JPanel firstPanel, secondPanel, findingsPanel;
 	private JTextArea remarksValue, grossDescValue, microNoteValue;
 	private JScrollPane remarksScroller, grossDescScroller, 
 	microNoteScroller;
 	private JLabel remarksLabel, grossDescLabel, microNoteLabel;
-	private RecordOverview overviewPanel;
 	private JScrollPane omnScroller;
 	
 	private JLabel specimenTypeLabel;
@@ -107,7 +100,6 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		initializeComponents();
 		layoutComponents();
 		updateGUI();
-		page = 1;
 	}
 	
 	private void layoutComponents()
@@ -380,13 +372,6 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		add(cardPanel, c);
-		c.gridy = 1;
-		c.weighty = 0.0;
-		add(bottomPanel, c);
-		
-		bottomPanel.add(previousButton);
-		bottomPanel.add(pageLabel);
-		bottomPanel.add(nextButton);
 	}
 	
 	private void initializeComponents()
@@ -400,27 +385,6 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		findings1Label.setForeground(Color.gray);
 		findings2Label.setForeground(findings1Label.getForeground());
 		cardPanel = new JPanel(new CardLayout());
-		bottomPanel = new JPanel(new GridLayout(1, 3, 1, 1));
-		bottomPanel.setBackground(Color.white);
-		nextButton = new JButton();
-		nextButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_next.png")));
-		nextButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_next_hover.png")));
-		nextButton.setContentAreaFilled(false);
-		nextButton.setBorderPainted(false);
-		nextButton.setOpaque(true);
-		nextButton.setBackground(Color.white);
-		previousButton = new JButton();
-		previousButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_previous.png")));
-		previousButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_previous_hover.png")));
-		previousButton.setContentAreaFilled(false);
-		previousButton.setBorderPainted(false);
-		previousButton.setOpaque(true);
-		previousButton.setBackground(Color.white);
-		previousButton.setVisible(false);
-		pageLabel = new JLabel("1 of 3");
-		pageLabel.setOpaque(true);
-		pageLabel.setBackground(Color.white);
-		pageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		overviewPanel = new RecordOverview(RecordConstants.GYNECOLOGY_RECORD);
 		overviewPanel.setBackground(Color.white);
 		firstPanel = new JPanel(new GridBagLayout());
@@ -802,11 +766,6 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		}
 		updateGUI();
 	}
-	@Override
-	public void setPatientEditable(boolean isEditable)
-	{
-		overviewPanel.setPatientEditable(isEditable);
-	}
 	
 	public void updateGUI()
 	{	
@@ -931,49 +890,18 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 	@Override
 	public void actionPerformed(ActionEvent e) 
 	{
-		CardLayout cl = (CardLayout)cardPanel.getLayout();
 		Object source = e.getSource();
-		if(source.equals(nextButton) || source.equals(previousButton))
+		JRadioButton button = (JRadioButton) source;
+		if(button.equals(nilm) || button.equals(eca) || button.equals(omn))
 		{
-			if(source.equals(nextButton))
-			{
-				if(page < 3)
-				{
-					page++;
-					cl.next(cardPanel);
-				}
-			}
-			else if(source.equals(previousButton))
-			{
-				if(page > 1)
-				{
-					page--;
-					cl.previous(cardPanel);
-				}
-			}
-			if(page > 1)
-				previousButton.setVisible(true);
-			else previousButton.setVisible(false);
-			if(page < 3)
-				nextButton.setVisible(true);
-			else nextButton.setVisible(false);
-			pageLabel.setText(page + " of 3");
+			if(nilm.isSelected() && !nilm.equals(source))
+				nilm.setSelected(false);
+			if(eca.isSelected() && !eca.equals(source))
+				eca.setSelected(false);
+			if(omn.isSelected() && !omn.equals(source))
+				omn.setSelected(false);
 		}
-		else 
-		{
-			
-			JRadioButton button = (JRadioButton) source;
-			if(button.equals(nilm) || button.equals(eca) || button.equals(omn))
-			{
-				if(nilm.isSelected() && !nilm.equals(source))
-					nilm.setSelected(false);
-				if(eca.isSelected() && !eca.equals(source))
-					eca.setSelected(false);
-				if(omn.isSelected() && !omn.equals(source))
-					omn.setSelected(false);
-			}
-			updateGUI();
-		}
+		updateGUI();
 	}
 
 	@Override
@@ -1002,9 +930,6 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		unsatisfactory.addActionListener(this);
 		satisfactory.addActionListener(this);	
 		overviewPanel.addListener(listener);
-		
-		nextButton.addActionListener(this);
-		previousButton.addActionListener(this);
 	}
 	
 	public void resetButtons()
@@ -1142,31 +1067,4 @@ public class GynecologyForm extends JPanel implements ActionListener, RecordForm
 		record.putAttribute(RecordTable.RESULTS, diagnosisList);
 		return record;
 	}
-
-	@Override
-	public Patient getPatient() 
-	{
-		return overviewPanel.getPatient();
-	}
-
-	@Override
-	public void setPatient(Patient patient) 
-	{
-		overviewPanel.setPatientFields(patient);
-	}
-	
-
-	@Override
-	public void setLoadPatientEnabled(boolean isEnabled) 
-	{
-		overviewPanel.getPatientForm().setLoadExisting(isEnabled);
-		overviewPanel.getPatientForm().setClearExisting(isEnabled);
-	}
-
-	@Override
-	public PatientForm getPatientForm() {
-		// TODO Auto-generated method stub
-		return overviewPanel.getPatientForm();
-	} 
-	
 }

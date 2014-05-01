@@ -5,11 +5,17 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
 
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
 import org.introse.Constants;
@@ -81,6 +87,19 @@ public class PatientPanel extends DetailPanel
 		editOrSaveButton.setBackground(Color.decode(Constants.StyleConstants.PRIMARY_COLOR));
 		editOrSaveButton.setIconTextGap(7);
 		deleteOrCancelButton.setIconTextGap(7);
+		
+		deleteOrCancelButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, KeyEvent.VK_ALT, true), "cancel");
+		deleteOrCancelButton.getActionMap().put("cancel", new Cancel());
+		
+		editOrSaveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.VK_ALT, true), "save");
+		editOrSaveButton.getActionMap().put("save", new Save());
+		editOrSaveButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.VK_ALT, true), "edit");
+		editOrSaveButton.getActionMap().put("edit", new Edit());
+		
+		deleteOrCancelButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, KeyEvent.VK_ALT, true), "delete");
+		deleteOrCancelButton.getActionMap().put("delete", new Delete());
+		backButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, KeyEvent.VK_ALT, true), "back");
+		backButton.getActionMap().put("back", new Back());
 	}
 	
 	private void layoutComponents()
@@ -170,5 +189,178 @@ public class PatientPanel extends DetailPanel
 	public PatientForm getPatientForm()
 	{
 		return patientForm;
+	}
+	
+	private class Cancel implements Action
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			deleteOrCancelButton.doClick();
+		}
+		
+		@Override
+		public Object getValue(String key) {
+			return null;
+		}
+
+		@Override
+		public void putValue(String key, Object value) {}
+
+		@Override
+		public void setEnabled(boolean b) {}
+
+		@Override
+		public boolean isEnabled() {
+			if(deleteOrCancelButton.getActionCommand().equals(ActionConstants.CANCEL))
+				return true;
+			return false;
+		}
+
+		@Override
+		public void addPropertyChangeListener(
+				PropertyChangeListener listener) {}
+
+		@Override
+		public void removePropertyChangeListener(
+				PropertyChangeListener listener) {}
+	}
+	
+	private class Edit implements Action
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			editOrSaveButton.doClick();
+		}
+		
+		@Override
+		public Object getValue(String key) {
+			return null;
+		}
+
+		@Override
+		public void putValue(String key, Object value) {}
+
+		@Override
+		public void setEnabled(boolean b) {}
+
+		@Override
+		public boolean isEnabled() {
+			if(editOrSaveButton.getActionCommand().equals(ActionConstants.EDIT_RECORD))
+				return true;
+			return false;
+		}
+
+		@Override
+		public void addPropertyChangeListener(
+				PropertyChangeListener listener) {}
+
+		@Override
+		public void removePropertyChangeListener(
+				PropertyChangeListener listener) {}
+	}
+	
+	private class Save implements Action
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			editOrSaveButton.doClick();
+		}
+		
+		@Override
+		public Object getValue(String key) {
+			return null;
+		}
+
+		@Override
+		public void putValue(String key, Object value) {}
+
+		@Override
+		public void setEnabled(boolean b) {}
+
+		@Override
+		public boolean isEnabled() {
+			if(editOrSaveButton.getActionCommand().equals(ActionConstants.SAVE))
+				return true;
+			return false;
+		}
+
+		@Override
+		public void addPropertyChangeListener(
+				PropertyChangeListener listener) {}
+
+		@Override
+		public void removePropertyChangeListener(
+				PropertyChangeListener listener) {}
+	}
+	
+	private class Delete implements Action
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			deleteOrCancelButton.doClick();
+		}
+		
+		@Override
+		public Object getValue(String key) {
+			return null;
+		}
+
+		@Override
+		public void putValue(String key, Object value) {}
+
+		@Override
+		public void setEnabled(boolean b) {}
+
+		@Override
+		public boolean isEnabled() {
+			if(deleteOrCancelButton.getActionCommand().equals(ActionConstants.DELETE_CURRENT))
+				return true;
+			return false;
+		}
+
+		@Override
+		public void addPropertyChangeListener(
+				PropertyChangeListener listener) {}
+
+		@Override
+		public void removePropertyChangeListener(
+				PropertyChangeListener listener) {}
+	}
+	
+	private class Back implements Action
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			backButton.doClick();
+		}
+		
+		@Override
+		public Object getValue(String key) {
+			return null;
+		}
+
+		@Override
+		public void putValue(String key, Object value) {}
+
+		@Override
+		public void setEnabled(boolean b) {}
+
+		@Override
+		public boolean isEnabled() {
+			return true;
+		}
+
+		@Override
+		public void addPropertyChangeListener(
+				PropertyChangeListener listener) {}
+
+		@Override
+		public void removePropertyChangeListener(
+				PropertyChangeListener listener) {}
 	}
 }

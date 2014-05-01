@@ -4,11 +4,17 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
 
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
 import org.introse.Constants;
@@ -28,26 +34,16 @@ public class ContentPanel extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-		private String currentView;
-		private String previousView;
-		private JPanel topPanel;
-		private JPanel itemPanel;
-		private JPanel listPanel;
-		private JPanel settingsPanel;
-		private JPanel detailsPanel;
+		private String currentView, previousView;
+		private JPanel topPanel, itemPanel, 
+		listPanel, settingsPanel, detailsPanel;
 		private DictionaryPanel dictionaryPanel;
 		private ToolsPanel toolsPanel;
-		private JButton newButton;
-		private JButton searchButton;
-		private JButton refreshButton;
-		private JLabel headerLabel;
-		private JLabel countLabel;
-		
-		private ListPanel patientList;
-		private ListPanel histopathologyList;
-		private ListPanel gynecologyList;
-		private ListPanel cytologyList;
-		private ListPanel searchList;
+		private JButton newButton, searchButton, refreshButton;
+		private JLabel headerLabel, countLabel;
+		private ListPanel patientList, 
+		histopathologyList, gynecologyList,
+		cytologyList, searchList;
 		
 		public ContentPanel(MainMenu menu)
 		{
@@ -130,6 +126,14 @@ public class ContentPanel extends JPanel
 			detailsPanel = new JPanel(new GridBagLayout());
 			detailsPanel.setBackground(Color.white);
 
+			newButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.VK_ALT, true), "new");
+			newButton.getActionMap().put("new", new New());
+			refreshButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F5, KeyEvent.VK_ALT, true), "refresh");
+			refreshButton.getActionMap().put("refresh", new Refresh());
+			searchButton.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.VK_ALT, true), "search");
+			searchButton.getActionMap().put("search", new Search());
+			
+			
 			GridBagConstraints c = new GridBagConstraints();
 			c.anchor = GridBagConstraints.WEST;
 			c.fill = GridBagConstraints.NONE;
@@ -349,4 +353,103 @@ public class ContentPanel extends JPanel
 		{
 			return dictionaryPanel;
 		}
-	}
+		
+		private class New implements Action
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				newButton.doClick();
+			}
+			
+			@Override
+			public Object getValue(String key) {
+				return null;
+			}
+
+			@Override
+			public void putValue(String key, Object value) {}
+
+			@Override
+			public void setEnabled(boolean b) {}
+
+			@Override
+			public boolean isEnabled() {
+				return newButton.isVisible();
+			}
+
+			@Override
+			public void addPropertyChangeListener(
+					PropertyChangeListener listener) {}
+
+			@Override
+			public void removePropertyChangeListener(
+					PropertyChangeListener listener) {}
+		}
+		
+		private class Search implements Action
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				searchButton.doClick();
+			}
+			
+			@Override
+			public Object getValue(String key) {
+				return null;
+			}
+
+			@Override
+			public void putValue(String key, Object value) {}
+
+			@Override
+			public void setEnabled(boolean b) {}
+
+			@Override
+			public boolean isEnabled() {
+				return searchButton.isVisible();
+			}
+
+			@Override
+			public void addPropertyChangeListener(
+					PropertyChangeListener listener) {}
+
+			@Override
+			public void removePropertyChangeListener(
+					PropertyChangeListener listener) {}
+		}
+		
+		private class Refresh implements Action
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				refreshButton.doClick();
+			}
+			
+			@Override
+			public Object getValue(String key) {
+				return null;
+			}
+
+			@Override
+			public void putValue(String key, Object value) {}
+
+			@Override
+			public void setEnabled(boolean b) {}
+
+			@Override
+			public boolean isEnabled() {
+				return refreshButton.isVisible();
+			}
+
+			@Override
+			public void addPropertyChangeListener(
+					PropertyChangeListener listener) {}
+
+			@Override
+			public void removePropertyChangeListener(
+					PropertyChangeListener listener) {}
+		}
+}

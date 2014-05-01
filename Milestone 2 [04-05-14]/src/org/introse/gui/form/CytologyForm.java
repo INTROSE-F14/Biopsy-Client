@@ -5,16 +5,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,29 +24,26 @@ import org.introse.Constants.ResultCategoriesConstants;
 import org.introse.Constants.StyleConstants;
 import org.introse.Constants.TitleConstants;
 import org.introse.core.CustomDocument;
-import org.introse.core.Result;
 import org.introse.core.Patient;
 import org.introse.core.Preferences;
 import org.introse.core.Record;
+import org.introse.core.Result;
 import org.introse.gui.event.CustomListener;
 import org.introse.gui.panel.RecordOverview;
 import org.introse.gui.window.LoginWindow;
 
-public class CytologyForm extends JPanel implements RecordForm, ActionListener
+public class CytologyForm extends RecordForm
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel findings1Panel, findings2Panel, cardPanel, bottomPanel;
+	private JPanel findings1Panel, findings2Panel;
 	private JTextArea diagnosisValue, remarksValue, grossDescValue, microNoteValue;
 	private JScrollPane diagnosisScroller, remarksScroller, grossDescScroller, 
 	microNoteScroller;
-	private JLabel diagnosisLabel, remarksLabel, grossDescLabel, microNoteLabel, pageLabel,
+	private JLabel diagnosisLabel, remarksLabel, grossDescLabel, microNoteLabel,
 	findings1Label, findings2Label;
-	private RecordOverview overviewPanel;
-	private JButton nextButton, previousButton;
-	private int page;
 	
 	public CytologyForm()
 	{
@@ -59,7 +51,6 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 		setBackground(Color.white);
 		initializeComponents();
 		layoutComponents();
-		page = 1;
 	}
 	
 	private void layoutComponents()
@@ -135,10 +126,6 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 		cardPanel.add("FINDINGS1", findings1Panel);
 		cardPanel.add("FINDINGS2", findings2Panel);
 		
-		bottomPanel.add(previousButton);
-		bottomPanel.add(pageLabel);
-		bottomPanel.add(nextButton);
-		
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.CENTER;
@@ -146,11 +133,6 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		add(cardPanel, c);
-		c.fill = GridBagConstraints.NONE;
-		c.gridy = 1;
-		c.weighty = 0.0;
-		c.weightx = 0.0;
-		add(bottomPanel, c);
 	}
 	
 	private void initializeComponents()
@@ -163,8 +145,6 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 		findings2Label.setFont(findings1Label.getFont());
 		findings1Label.setForeground(Color.gray);
 		findings2Label.setForeground(findings1Label.getForeground());
-		bottomPanel = new JPanel(new GridLayout(1, 3, 1, 1));
-		bottomPanel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
 		overviewPanel = new RecordOverview(RecordConstants.CYTOLOGY_RECORD);
 		cardPanel = new JPanel(new CardLayout());
 		findings1Panel = new JPanel(new GridBagLayout());
@@ -216,30 +196,6 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 		grossDescValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
 		microNoteValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
 		diagnosisValue.setDocument(new CustomDocument(RecordConstants.RESULTS_LENGTH));
-		
-		pageLabel = new JLabel("1 of 3");
-		pageLabel.setOpaque(true);
-		pageLabel.setBackground(Color.decode(StyleConstants.PRIMARY_COLOR));
-		pageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		nextButton = new JButton();
-		nextButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_next.png")));
-		nextButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_next_hover.png")));
-		nextButton.setContentAreaFilled(false);
-		nextButton.setBorderPainted(false);
-		nextButton.setOpaque(true);
-		nextButton.setBackground(Color.white);
-		previousButton = new JButton();
-		previousButton.setIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_previous.png")));
-		previousButton.setRolloverIcon(new ImageIcon(getClass().getResource("/res/icons/ic_action_previous_hover.png")));
-		previousButton.setContentAreaFilled(false);
-		previousButton.setBorderPainted(false);
-		previousButton.setOpaque(true);
-		previousButton.setBackground(Color.white);
-		previousButton.setVisible(false);
-		
-		nextButton.addActionListener(this);
-		previousButton.addActionListener(this);
 	}
 	
 	@Override
@@ -311,18 +267,6 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 	}
 
 	@Override
-	public Patient getPatient() 
-	{
-		return overviewPanel.getPatient();
-	}
-
-	@Override
-	public void setPatient(Patient patient) 
-	{
-		overviewPanel.setPatientFields(patient);
-	}
-
-	@Override
 	public void addListener(CustomListener listener) 
 	{
 		overviewPanel.addListener(listener);
@@ -339,12 +283,6 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 	}
 
 	@Override
-	public void setPatientEditable(boolean isEditable) 
-	{
-		overviewPanel.setPatientEditable(isEditable);
-	} 
-
-	@Override
 	public void setLoadPatientEnabled(boolean isEnabled) 
 	{
 		overviewPanel.getPatientForm().setLoadExisting(isEnabled);
@@ -355,41 +293,5 @@ public class CytologyForm extends JPanel implements RecordForm, ActionListener
 	public PatientForm getPatientForm() 
 	{
 		return overviewPanel.getPatientForm();
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) 
-	{
-		CardLayout cl = (CardLayout)cardPanel.getLayout();
-		Object source = e.getSource();
-		if(source.equals(nextButton))
-		{
-			if(page < 3)
-			{
-				page++;
-				cl.next(cardPanel);
-			}
-		}
-		else
-		{
-			if(page > 1)
-			{
-				page--;
-				cl.previous(cardPanel);
-			}
-		}
-		updateGUI();
-	}
-	
-	private void updateGUI()
-	{
-		if(page > 1)
-			previousButton.setVisible(true);
-		else previousButton.setVisible(false);
-		if(page < 3)
-			nextButton.setVisible(true);
-		else nextButton.setVisible(false);
-		
-		pageLabel.setText(page + " of 3");
 	}
 }

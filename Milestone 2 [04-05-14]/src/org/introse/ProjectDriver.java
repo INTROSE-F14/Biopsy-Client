@@ -633,7 +633,7 @@ public class ProjectDriver
 										case RecordConstants.CYTOLOGY_RECORD: recordForm = new CytologyForm();										
 										}
 										recordForm.setFields(record, p);
-										detailPanel = new RecordPanel((JPanel)recordForm, Constants.ActionConstants.VIEW);
+										detailPanel = new RecordPanel(recordForm, Constants.ActionConstants.VIEW);
 										detailPanel.addListener(listener);
 										mainMenu.getContentPanel().setDetailsPanel(detailPanel);
 										loadingDialog.dispose();
@@ -1007,7 +1007,7 @@ public class ProjectDriver
 	public void createNew(int type)
 	{
 		JPanel panel = null;
-		JPanel recordForm = null;
+		RecordForm recordForm = null;
 		PatientForm patientForm = null;
 		Record record = new Record();
 		Patient patient = new Patient();
